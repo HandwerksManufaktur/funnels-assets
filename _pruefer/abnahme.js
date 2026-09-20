@@ -18,8 +18,17 @@ window.funnelAbnahme = async function (opt = {}) {
     opt
   );
   // Erst messen, wenn die Seite wirklich steht — sonst fehlt z.B. das Kopf-Logo.
-  await new Promise((r) => (document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true })));
-  await Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); }))));
+  await Promise.race([
+    new Promise((r) => (document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true }))),
+    new Promise((r) => setTimeout(r, 8000)),
+  ]);
+  // 🔴 Jedes Warten braucht einen Deckel: ein Bild mit loading="lazy" unterhalb der Falz
+  // löst NIE 'load' aus — ohne Timeout hängt die Prüfung für immer (passiert am 20.09.2026).
+  const mitDeckel = (p, ms) => Promise.race([p, new Promise((r) => setTimeout(r, ms))]);
+  await mitDeckel(
+    Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); })))),
+    5000
+  );
   await new Promise((r) => setTimeout(r, 800));
 
   const befunde = [];
