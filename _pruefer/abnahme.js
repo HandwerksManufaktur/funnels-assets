@@ -17,6 +17,11 @@ window.funnelAbnahme = async function (opt = {}) {
     { kunde: null, logo: true, ctaMin: 2, impressum: null, bilderMin: 3, fremdeKunden: [] },
     opt
   );
+  // Erst messen, wenn die Seite wirklich steht — sonst fehlt z.B. das Kopf-Logo.
+  await new Promise((r) => (document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true })));
+  await Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); }))));
+  await new Promise((r) => setTimeout(r, 800));
+
   const befunde = [];
   const ok = (name, text) => befunde.push({ stand: '🟢', punkt: name, text });
   const rot = (name, text) => befunde.push({ stand: '🔴', punkt: name, text });
