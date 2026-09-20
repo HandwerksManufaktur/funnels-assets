@@ -122,6 +122,57 @@ window.funnelAbnahme = async function (opt = {}) {
   if (!document.title || document.title.length < 10) rot('Seitentitel', 'Titel fehlt oder ist zu kurz: „' + document.title + '"');
   else ok('Seitentitel', document.title);
 
+  // 9 — Logo steht zentriert (Noah, 20.09.2026: „soll immer zentriert sein")
+  if (o.logo) {
+    const l = quellen
+      .filter((q) => /logo/i.test(q.alt) || /logo/i.test(datei(q.url)))
+      .map((q) => q.el.getBoundingClientRect())
+      .filter((r) => r.width > 0)
+      .sort((a, b) => a.top - b.top)[0];
+    if (l) {
+      const mitte = l.left + l.width / 2;
+      const soll = window.innerWidth / 2;
+      if (Math.abs(mitte - soll) > 24)
+        rot('Logo zentriert', 'Logo-Mitte bei ' + Math.round(mitte) + 'px, Seitenmitte bei ' + Math.round(soll) + 'px.');
+      else ok('Logo zentriert', 'Abweichung ' + Math.round(Math.abs(mitte - soll)) + 'px.');
+    }
+  }
+
+  // 10 — Kein dritter Ausgang: nie anrufen lassen
+  const telLinks = [...document.querySelectorAll('a[href^="tel:"]')].map((a) => a.getAttribute('href'));
+  const anrufText = /ruf\s+(uns|mich)\s+an|jetzt\s+anrufen|telefonisch\s+melden|einfach\s+anrufen/i.exec(text);
+  if (telLinks.length) rot('Anruf-Ausgang', 'Telefon-Link auf der Seite: ' + telLinks.join(', ') + ' — ein Funnel lässt weiter oder disqualifiziert.');
+  else if (anrufText) rot('Anruf-Ausgang', 'Aufforderung zum Anruf im Text: „' + anrufText[0] + '"');
+  else ok('Anruf-Ausgang', 'Kein Telefon-Ausgang.');
+
+  // 11 — Keine Textwand (Noah, 20.09.2026: „ein Bildschirm, komplett nur Text")
+  const absaetze = [...document.querySelectorAll('p,li')]
+    .map((e) => ({ el: e, w: (e.innerText || '').trim().split(/\s+/).filter(Boolean).length }))
+    .filter((x) => x.w > 25);
+  if (absaetze.length)
+    rot('Zu lange Absätze', absaetze.length + ' Absatz/Absätze über 25 Wörter: ' +
+      absaetze.slice(0, 3).map((x) => '„' + x.el.innerText.trim().slice(0, 60) + '…" (' + x.w + ')').join(' · '));
+  else ok('Absatzlänge', 'Kein Absatz über 25 Wörter.');
+
+  // Bänder von je einer Bildschirmhöhe: jedes braucht einen sichtbaren Anker
+  const hoehe = window.innerHeight || 800;
+  const seite = document.body.scrollHeight;
+  const anker = [...document.querySelectorAll('img,svg,table,video,picture')]
+    .map((e) => e.getBoundingClientRect())
+    .filter((r) => r.width > 60 && r.height > 60)
+    .map((r) => [r.top + window.scrollY, r.bottom + window.scrollY]);
+  const nurText = [];
+  for (let y = 0; y + hoehe <= seite; y += hoehe) {
+    const bis = y + hoehe;
+    const hat = anker.some(([a, b]) => b > y + hoehe * 0.15 && a < bis - hoehe * 0.15);
+    const txt = document.elementsFromPoint ? '' : '';
+    if (!hat) nurText.push(Math.round(y) + '–' + Math.round(bis) + 'px');
+  }
+  if (nurText.length)
+    rot('Textwand', nurText.length + ' Bildschirmhöhe(n) ohne Bild, Tabelle oder Grafik: ' + nurText.join(', '));
+  else ok('Veranschaulichung', 'Jede Bildschirmhöhe trägt einen sichtbaren Anker.');
+
+
   const rote = befunde.filter((b) => b.stand === '🔴');
   console.table(befunde);
   console.log(rote.length ? '🔴 ' + rote.length + ' Punkt(e) offen — NICHT ausliefern.' : '🟢 Abnahme bestanden.');
