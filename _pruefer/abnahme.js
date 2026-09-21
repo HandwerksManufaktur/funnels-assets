@@ -187,6 +187,28 @@ window.funnelAbnahme = async function (opt = {}) {
   else ok('Veranschaulichung', 'Jede Bildschirmhöhe trägt einen sichtbaren Anker.');
 
 
+  // 12 — Button-Regel: der Block eines CTA trägt die Farbe der Sektion DARÜBER
+  // (Hausregel seit Senftleben; am 21.09.2026 an allen drei Fischer-CTAs verletzt).
+  const farbeVon = (e) => { let x = e; for (let i = 0; i < 12 && x; i++) { const c = getComputedStyle(x).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') return c; x = x.parentElement; } return 'transparent'; };
+  const merkGeschr = window.scrollY;
+  const schiefe = [];
+  for (const b of [...document.querySelectorAll('button')].filter((b) => b.textContent.trim().length > 8)) {
+    const y0 = b.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo(0, Math.max(0, y0 - 400));
+    await new Promise((r) => setTimeout(r, 250));
+    const r = b.getBoundingClientRect();
+    const x = Math.round(r.left + r.width / 2);
+    const oben = document.elementFromPoint(x, Math.round(r.top - 60));
+    const soll = oben ? farbeVon(oben) : null;
+    const ist = farbeVon(b.parentElement);
+    if (soll && soll !== 'transparent' && soll !== ist)
+      schiefe.push('„' + b.textContent.trim().slice(0, 28) + '" steht auf ' + ist + ', darüber ist ' + soll);
+  }
+  window.scrollTo(0, merkGeschr);
+  if (schiefe.length) rot('Button-Regel', schiefe.join(' · '));
+  else ok('Button-Regel', 'Jeder CTA-Block trägt die Farbe der Sektion darüber.');
+
+
   const rote = befunde.filter((b) => b.stand === '🔴');
   console.table(befunde);
   console.log(rote.length ? '🔴 ' + rote.length + ' Punkt(e) offen — NICHT ausliefern.' : '🟢 Abnahme bestanden.');
