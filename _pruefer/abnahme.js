@@ -245,6 +245,40 @@ window.funnelAbnahme = async function (opt = {}) {
   else ok('Button-Regel', 'Jeder CTA-Block trägt die Farbe der Sektion darüber.');
 
 
+  // 13 — Kein Spalt: ein dünner Streifen Seitenhintergrund zwischen einer farbigen
+  // Sektion und dem Block darunter. Entsteht in Perspective durch den Hintergrund-Abstand
+  // UNTEN am HTML-Block — die Farbe stimmt, trotzdem läuft eine helle Naht durchs Bild.
+  // Noah, 21.09.2026: „bei der ersten Sektion ist noch ein kleiner Spalt zwischen dem Blauen
+  // drin — beim Hintergrund muss man den Abstand unten einfach auf 0 setzen."
+  const seitenBg = getComputedStyle(document.body).backgroundColor;
+  const norm = (c) => (!c || c === 'transparent' || c === 'rgba(0, 0, 0, 0)' ? seitenBg : c);
+  const blockVon = (e) => { let x = e; for (let i = 0; i < 12 && x; i++) { const c = getComputedStyle(x).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') return x; x = x.parentElement; } return null; };
+  const spalte = [];
+  for (const b of [...document.querySelectorAll('button')].filter((b) => b.textContent.trim().length > 8)) {
+    const y0 = b.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo(0, Math.max(0, y0 - 400));
+    await new Promise((r) => setTimeout(r, 250));
+    const blk = blockVon(b.parentElement) || b.parentElement;
+    const br = blk.getBoundingClientRect();
+    if (br.top < 60) continue; // Oberkante nicht im Bild — nicht messbar, nicht raten
+    const farbeBei = (dy) => {
+      const treffer = [0.25, 0.5, 0.75]
+        .map((f) => document.elementFromPoint(Math.round(br.left + br.width * f), Math.round(br.top - dy)))
+        .filter(Boolean)
+        .map((e) => norm(farbeVon(e)));
+      return treffer.length ? treffer[0] : null;
+    };
+    const streifen = farbeBei(3) || farbeBei(6);
+    const darueber = farbeBei(40);
+    const meine = norm(getComputedStyle(blk).backgroundColor);
+    if (streifen && darueber && darueber === meine && streifen !== meine)
+      spalte.push('„' + b.textContent.trim().slice(0, 28) + '“ — ' + streifen + ' zwischen zwei Flächen in ' + meine);
+  }
+  window.scrollTo(0, merkGeschr);
+  if (spalte.length) rot('Spalt vor dem CTA', spalte.join(' · ') + ' — Hintergrund-Abstand UNTEN am Block darüber auf 0.');
+  else ok('Spalt vor dem CTA', 'Keine Naht zwischen Sektion und CTA-Block.');
+
+
   const rote = befunde.filter((b) => b.stand === '🔴');
   console.table(befunde);
   console.log(rote.length ? '🔴 ' + rote.length + ' Punkt(e) offen — NICHT ausliefern.' : '🟢 Abnahme bestanden.');
