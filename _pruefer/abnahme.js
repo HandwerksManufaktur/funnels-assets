@@ -181,17 +181,29 @@ window.funnelAbnahme = async function (opt = {}) {
   const seite = document.body.scrollHeight;
   // Anker = Foto, Tabelle, Video ODER eine grosse Zahl (Zahlenkachel) — genau das,
   // was die Regel als Veranschaulichung zulaesst.
+  // 🔴 Die Regel nennt vier Anker: Foto, Zahl, Tabelle, Zeitleiste. Der Pruefer muss alle
+  // vier erkennen — sonst meldet er eine Zeitleiste mit CSS-Hintergrundfotos als "leer"
+  // (passiert am 21.09.2026 an der Fischer-Zeitleiste und der Vergleichstabelle).
+  const grossGenug = (e) => { const r = e.getBoundingClientRect(); return r.width > 60 && r.height > 60; };
   const grosseZahl = [...document.querySelectorAll('div,span,strong,p,h1,h2,h3')].filter((e) => {
     const t = (e.textContent || '').trim();
-    if (!/^[~><]?\s*[0-9][0-9.,\s\u2013-]{0,9}(km|%|\u20ac)?$/.test(t)) return false;
-    return parseFloat(getComputedStyle(e).fontSize) >= 26;
+    if (!/^[~><]?\s*[0-9][0-9.,\s\u2013-]{0,12}(km|%|\u20ac|Jahre)?$/.test(t)) return false;
+    return parseFloat(getComputedStyle(e).fontSize) >= 22;
+  });
+  const hintergrundbild = [...document.querySelectorAll('div,section,a,span')].filter((e) => {
+    const b = getComputedStyle(e).backgroundImage;
+    return b && b.startsWith('url') && !/data:image\/svg/.test(b) && grossGenug(e);
+  });
+  const raster = [...document.querySelectorAll('div,section')].filter((e) => {
+    const c = getComputedStyle(e);
+    if (c.display !== 'grid' && c.display !== 'table') return false;
+    return e.children.length >= 4 && grossGenug(e);
   });
   const anker = [
-    ...[...document.querySelectorAll('img,svg,table,video,picture')].filter((e) => {
-      const r = e.getBoundingClientRect();
-      return r.width > 60 && r.height > 60;
-    }),
+    ...[...document.querySelectorAll('img,svg,table,video,picture')].filter(grossGenug),
     ...grosseZahl,
+    ...hintergrundbild,
+    ...raster,
   ]
     .map((e) => e.getBoundingClientRect())
     .map((r) => [r.top + window.scrollY, r.bottom + window.scrollY]);
