@@ -246,36 +246,15 @@ window.funnelAbnahme = async function (opt = {}) {
 
 
   // 13 — Kein Spalt: ein dünner Streifen Seitenhintergrund zwischen einer farbigen
-  // Sektion und dem Block darunter. Entsteht in Perspective durch den Hintergrund-Abstand
-  // UNTEN am HTML-Block — die Farbe stimmt, trotzdem läuft eine helle Naht durchs Bild.
-  // Noah, 21.09.2026: „bei der ersten Sektion ist noch ein kleiner Spalt zwischen dem Blauen
-  // drin — beim Hintergrund muss man den Abstand unten einfach auf 0 setzen."
-  const seitenBg = getComputedStyle(document.body).backgroundColor;
-  const norm = (c) => (!c || c === 'transparent' || c === 'rgba(0, 0, 0, 0)' ? seitenBg : c);
-  const blockVon = (e) => { let x = e; for (let i = 0; i < 12 && x; i++) { const c = getComputedStyle(x).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') return x; x = x.parentElement; } return null; };
-  const spalte = [];
-  for (const b of [...document.querySelectorAll('button')].filter((b) => b.textContent.trim().length > 8)) {
-    const y0 = b.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo(0, Math.max(0, y0 - 400));
-    await new Promise((r) => setTimeout(r, 250));
-    const blk = blockVon(b.parentElement) || b.parentElement;
-    const br = blk.getBoundingClientRect();
-    if (br.top < 60) continue; // Oberkante nicht im Bild — nicht messbar, nicht raten
-    const farbeBei = (dy) => {
-      const treffer = [0.25, 0.5, 0.75]
-        .map((f) => document.elementFromPoint(Math.round(br.left + br.width * f), Math.round(br.top - dy)))
-        .filter(Boolean)
-        .map((e) => norm(farbeVon(e)));
-      return treffer.length ? treffer[0] : null;
-    };
-    const streifen = farbeBei(3) || farbeBei(6);
-    const darueber = farbeBei(40);
-    const meine = norm(getComputedStyle(blk).backgroundColor);
-    if (streifen && darueber && darueber === meine && streifen !== meine)
-      spalte.push('„' + b.textContent.trim().slice(0, 28) + '“ — ' + streifen + ' zwischen zwei Flächen in ' + meine);
-  }
+  // Sektion und dem farbigen Block darunter. Entsteht in Perspective durch den
+  // Hintergrund-Abstand UNTEN am HTML-Block — die Farbe stimmt, trotzdem läuft eine helle
+  // Naht durchs Bild. Noah, 21.09.2026: „bei der ersten Sektion ist noch ein kleiner Spalt
+  // zwischen dem Blauen drin — beim Hintergrund muss man den Abstand unten auf 0 setzen."
+  // Die Messung steht als window.funnelSpalt bereit, damit der Selbsttest sie an einem
+  // gebauten Fall prüfen kann (test/spalt_selbsttest.js).
+  const spalte = await window.funnelSpalt(document.body);
   window.scrollTo(0, merkGeschr);
-  if (spalte.length) rot('Spalt vor dem CTA', spalte.join(' · ') + ' — Hintergrund-Abstand UNTEN am Block darüber auf 0.');
+  if (spalte.length) rot('Spalt vor dem CTA', spalte.join(' · ') + ' — Hintergrund-Abstand UNTEN am Block darüber auf 0 setzen.');
   else ok('Spalt vor dem CTA', 'Keine Naht zwischen Sektion und CTA-Block.');
 
 
@@ -283,4 +262,43 @@ window.funnelAbnahme = async function (opt = {}) {
   console.table(befunde);
   console.log(rote.length ? '🔴 ' + rote.length + ' Punkt(e) offen — NICHT ausliefern.' : '🟢 Abnahme bestanden.');
   return { rot: rote.length, befunde };
+};
+
+/**
+ * Misst die Naht über jedem CTA-Block: ein Streifen Seitenhintergrund zwischen einer
+ * farbigen Sektion und dem farbigen Block darunter.
+ *
+ * 🔴 Gemessen wird in der MITTE des Buttons, nie über die volle Blockbreite: der CTA-Block
+ * läuft randlos über das Fenster, die HTML-Sektion darüber steht in der Inhaltsspalte —
+ * am Viertelpunkt misst man neben der Sektion und meldet jeden CTA falsch.
+ * 🔴 Die Bedingung ist „Streifen = Seitenhintergrund", nicht „oben und unten gleich":
+ * 40 px über der Kante sitzt oft eine Karte in einem anderen Ton — mit dem Gleichheits-
+ * vergleich blieb der eingebaute Fehler am 21.09.2026 unentdeckt.
+ * 🔴 Geprüft wird bis 12 px hinauf, nicht nur bis 6: Perspective vergibt 8 px, und der
+ * nächste Schritt des Reglers sind 16 px.
+ */
+window.funnelSpalt = async function (wurzel) {
+  const farbeVon = (e) => { let x = e; for (let i = 0; i < 12 && x; i++) { const c = getComputedStyle(x).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') return c; x = x.parentElement; } return 'transparent'; };
+  const blockVon = (e) => { let x = e; for (let i = 0; i < 12 && x; i++) { const c = getComputedStyle(x).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') return x; x = x.parentElement; } return null; };
+  const seitenBg = getComputedStyle(document.body).backgroundColor;
+  const norm = (c) => (!c || c === 'transparent' || c === 'rgba(0, 0, 0, 0)' ? seitenBg : c);
+  const treffer = [];
+  for (const b of [...(wurzel || document.body).querySelectorAll('button')].filter((b) => b.textContent.trim().length > 8)) {
+    const y0 = b.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo(0, Math.max(0, y0 - 400));
+    await new Promise((r) => setTimeout(r, 250));
+    const br0 = b.getBoundingClientRect();
+    const x = Math.round(br0.left + br0.width / 2);
+    const blk = blockVon(b.parentElement) || b.parentElement;
+    const br = blk.getBoundingClientRect();
+    if (br.top < 60) continue; // Oberkante nicht im Bild — nicht messbar, nicht raten
+    const meine = norm(getComputedStyle(blk).backgroundColor);
+    if (meine === seitenBg) continue; // weißer CTA-Block — dort gibt es keine sichtbare Naht
+    const farbeBei = (dy) => { const e = document.elementFromPoint(x, Math.round(br.top - dy)); return e ? norm(farbeVon(e)) : null; };
+    const streifen = [2, 4, 6, 9, 12].map(farbeBei).some((c) => c === seitenBg);
+    const darueber = farbeBei(40);
+    if (streifen && darueber && darueber !== seitenBg)
+      treffer.push('„' + b.textContent.trim().slice(0, 28) + '“ — Naht in ' + seitenBg + ' über dem Block in ' + meine);
+  }
+  return treffer;
 };
