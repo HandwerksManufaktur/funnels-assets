@@ -29,6 +29,14 @@ window.funnelAbnahme = async function (opt = {}) {
     Promise.all([...document.images].map((i) => (i.complete ? null : new Promise((r) => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); })))),
     5000
   );
+  // Einmal durch die Seite scrollen, sonst haben Bilder mit loading="lazy" unterhalb der
+  // Falz die Hoehe 0 und die Textwand-Pruefung meldet sie faelschlich als fehlend (20.09.2026).
+  const standVorher = window.scrollY;
+  for (let y = 0; y < document.body.scrollHeight; y += Math.round(window.innerHeight * 0.8)) {
+    window.scrollTo(0, y);
+    await new Promise((r) => setTimeout(r, 90));
+  }
+  window.scrollTo(0, standVorher);
   await new Promise((r) => setTimeout(r, 800));
 
   const befunde = [];
@@ -171,9 +179,21 @@ window.funnelAbnahme = async function (opt = {}) {
   // Bänder von je einer Bildschirmhöhe: jedes braucht einen sichtbaren Anker
   const hoehe = window.innerHeight || 800;
   const seite = document.body.scrollHeight;
-  const anker = [...document.querySelectorAll('img,svg,table,video,picture')]
+  // Anker = Foto, Tabelle, Video ODER eine grosse Zahl (Zahlenkachel) — genau das,
+  // was die Regel als Veranschaulichung zulaesst.
+  const grosseZahl = [...document.querySelectorAll('div,span,strong,p,h1,h2,h3')].filter((e) => {
+    const t = (e.textContent || '').trim();
+    if (!/^[~><]?\s*[0-9][0-9.,\s\u2013-]{0,9}(km|%|\u20ac)?$/.test(t)) return false;
+    return parseFloat(getComputedStyle(e).fontSize) >= 26;
+  });
+  const anker = [
+    ...[...document.querySelectorAll('img,svg,table,video,picture')].filter((e) => {
+      const r = e.getBoundingClientRect();
+      return r.width > 60 && r.height > 60;
+    }),
+    ...grosseZahl,
+  ]
     .map((e) => e.getBoundingClientRect())
-    .filter((r) => r.width > 60 && r.height > 60)
     .map((r) => [r.top + window.scrollY, r.bottom + window.scrollY]);
   const nurText = [];
   for (let y = 0; y + hoehe <= seite; y += hoehe) {
