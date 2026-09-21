@@ -32,9 +32,11 @@ window.funnelAbnahme = async function (opt = {}) {
   // Einmal durch die Seite scrollen, sonst haben Bilder mit loading="lazy" unterhalb der
   // Falz die Hoehe 0 und die Textwand-Pruefung meldet sie faelschlich als fehlend (20.09.2026).
   const standVorher = window.scrollY;
-  for (let y = 0; y < document.body.scrollHeight; y += Math.round(window.innerHeight * 0.8)) {
-    window.scrollTo(0, y);
-    await new Promise((r) => setTimeout(r, 90));
+  const schritt = Math.max(200, Math.round(window.innerHeight * 0.8));
+  const runden = Math.min(40, Math.ceil(document.body.scrollHeight / schritt)); // 🔴 Deckel: die Seite waechst beim Scrollen mit
+  for (let n = 0; n <= runden; n++) {
+    window.scrollTo(0, n * schritt);
+    await new Promise((r) => setTimeout(r, 80));
   }
   window.scrollTo(0, standVorher);
   await new Promise((r) => setTimeout(r, 800));
