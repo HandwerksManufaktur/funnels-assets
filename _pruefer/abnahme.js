@@ -210,7 +210,9 @@ window.funnelAbnahme = async function (opt = {}) {
   const nurText = [];
   for (let y = 0; y + hoehe <= seite; y += hoehe) {
     const bis = y + hoehe;
-    const hat = anker.some(([a, b]) => b > y + hoehe * 0.15 && a < bis - hoehe * 0.15);
+    // Ein Anker zaehlt, wenn er mit mindestens 120 px in dieses Band ragt. Die fruehere
+    // 70-%-Mitte-Regel schlug an Sektionsgrenzen falsch an (Fischer, 21.09.2026).
+    const hat = anker.some(([a, b]) => Math.min(b, bis) - Math.max(a, y) >= 120);
     const txt = document.elementsFromPoint ? '' : '';
     if (!hat) nurText.push(Math.round(y) + '–' + Math.round(bis) + 'px');
   }
