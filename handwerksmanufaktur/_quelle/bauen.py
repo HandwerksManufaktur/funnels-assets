@@ -136,7 +136,7 @@ ZAHLEN = ('<div class="zahlen">'
   '<div class="zk"><span class="zf">5,0</span><span>★★★★★ bei 57 Google-Bewertungen</span></div>'
   '<div class="zk"><span class="zf">130+</span><span>Betriebe betreut</span></div>'
   '<div class="zk"><span class="zf">2019</span><span>seit dem Jahr nur Handwerk</span></div>'
-  '<div class="zk"><span class="zf">30</span><span>Minuten Videocall</span></div>'
+  '<div class="zk"><span class="zf">0 €</span><span>kostet dich das Konzept</span></div>'
   '</div>')
 
 CHIP = f'<div class="chip">{img("team-noah.jpg","Noah Seelau")}<span><b>Noah Seelau</b> · Gründer HandwerksManufaktur</span></div>'
@@ -153,14 +153,14 @@ def hero(eb, h1, sub):
 # ---------- 1A ----------
 A1 = hero('🎁 Website-Konzept geschenkt',
   'Erst siehst du deine neue Homepage. <span class="dunkel">Dann entscheidest du.</span>',
-  'Wir bauen vorab ein fertiges Konzept für deinen Betrieb. In 30 Minuten zeige ich es dir per Videocall. Kostenlos und unverbindlich.')
+  'Wir bauen vorab ein fertiges Konzept für deinen Betrieb. In einem kurzen Videocall zeige ich es dir. Kostenlos und unverbindlich.')
 
-def noah_block(text, zeile, schritte):
+def noah_block(text, zeile, schritte, zitat=''):
     return blk('weiss', f'''<div class="sek"><div class="ww"><div class="zwei">
 <div class="foto">{img("noah-laptop.jpg","Noah Seelau am Laptop")}</div>
 <div><span class="eb">👋 Dein Ansprechpartner</span>
 <h2>Servus, ich bin Noah.</h2>
-<p class="lead">{text}</p></div>
+<p class="lead">{text}</p>{zitat}</div>
 </div>
 <div class="w" style="margin-top:44px"><h3 style="font-size:22px">{zeile}</h3>{zl(schritte)}</div>
 </div></div>''')
@@ -170,7 +170,7 @@ B1 = noah_block('Ich baue seit 2019 Websites für Handwerksbetriebe. Früher has
   ('📝 Du beantwortest ein paar kurze Fragen.', ''),
   ('📅 Du suchst dir einen Termin für den Videocall aus.', ''),
   ('🛠️ Wir bauen das Konzept deiner neuen Seite.', 'Du musst nichts vorbereiten.'),
-  ('💻 Ich zeige es dir in 30 Minuten.', 'Danach entscheidest du.')])
+  ('💻 Ich zeige es dir im Videocall.', 'Danach entscheidest du.')])
 
 C1 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Warum wir das verschenken</span>
 <h2>Du sollst nicht die Katze im Sack kaufen.</h2>
@@ -255,22 +255,44 @@ H1B = abschluss('Schau dir deine neue Homepage an, bevor du irgendwas entscheide
 # ---------- 1B ----------
 A2 = hero('🛠️ Für Chefs, die auf der Baustelle stehen',
   'Keine Zeit für deine Homepage? <span class="dunkel">Brauchst du auch nicht.</span>',
-  'Wir bauen das Konzept deiner neuen Seite, während du arbeitest. Du schaust es dir in 30 Minuten an. Kostenlos.')
+  'Wir bauen das Konzept deiner neuen Seite, während du arbeitest. Du schaust es dir in einem kurzen Videocall an. Kostenlos.')
 B2 = noah_block('Am Telefon höre ich jeden Tag denselben Satz: „Ich komm nicht dazu.“ Verstehe ich. Deshalb brauche ich von dir fast nichts.',
   'Das kostet dich:', [
   ('⏱️ Zwei Minuten für ein paar Fragen.', ''),
   ('📅 Einen Klick für den Termin.', ''),
   ('🛠️ Null Minuten, während wir bauen.', 'Wir nehmen, was es von deinem Betrieb schon gibt.'),
-  ('💻 30 Minuten Videocall,', 'in dem ich dir das Konzept zeige.')])
+  ('💻 Ein kurzer Videocall,', 'in dem ich dir das Konzept zeige.')])
 C2 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Du musst nichts lernen</span>
 <h2>Du machst die Baustelle. Wir die Homepage.</h2>
 <p class="lead">Vormittags klingelt das Telefon, nachmittags bist du draußen. Die Homepage bleibt liegen, bis es brennt.</p>''' + karten([
   ('🔎', 'Wir sammeln selbst.', 'Alte Seite, Google-Eintrag, Logo: Das holen wir uns.'),
   ('🛠️', 'Wir bauen das Konzept.', 'Mit deinen Leistungen und deinem Ort.'),
-  ('💻', 'Du schaust nur zu.', '30 Minuten per Videocall, gern vom Handy aus.'),
+  ('💻', 'Du schaust nur zu.', 'Im kurzen Videocall, gern vom Handy aus.'),
   ('✍️', 'Du entscheidest in Ruhe.', 'Vorher unterschreibst du nichts.')]) + '</div></div>')
-H2B = abschluss('Zwei Minuten Fragen, 30 Minuten Termin. Den Rest machen wir.',
+H2B = abschluss('Zwei Minuten Fragen, ein kurzer Termin. Den Rest machen wir.',
   'Das Konzept bauen wir, bevor wir reden. Du siehst deine neue Seite zum ersten Mal im Termin.')
+
+
+# ---------- 1C ----------
+A3 = hero('🔎 Empfohlen. Und dann gegoogelt.',
+  'Dein Kunde empfiehlt dich. Der Nächste googelt dich. <span class="dunkel">Was sieht er?</span>',
+  'Wir bauen vorab ein Konzept deiner neuen Homepage. Im Videocall zeige ich es dir. Kostenlos und unverbindlich.')
+B3 = noah_block('Die meisten Betriebe, mit denen ich rede, leben von Empfehlungen. Das hast du dir über Jahre erarbeitet.</p><p class="lead" style="margin-top:10px">Nur schaut heute fast jeder vorher im Internet nach.',
+  'So läuft\'s:', [
+  ('📝 Du beantwortest ein paar kurze Fragen.', ''),
+  ('📅 Du suchst dir einen Termin für den Videocall aus.', ''),
+  ('🛠️ Wir bauen das Konzept deiner neuen Seite.', 'Du musst nichts vorbereiten.'),
+  ('💻 Ich zeige es dir im Termin.', 'Danach entscheidest du.')],
+  '<p style="margin-top:18px;padding-left:14px;border-left:3px solid #16130E;font-size:15px;color:#6B6459">„Die kennen unsere Website besser als wir.“<br><span style="font-size:13px;color:rgba(22,19,14,.45)">Ein Fliesenleger im Gespräch mit uns</span></p>')
+C3 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Bevor einer anruft</span>
+<h2>Die Empfehlung bringt ihn zu dir. Die Seite sorgt dafür, dass er anruft.</h2>
+<p class="lead">Kunden und Bewerber schauen abends am Handy nach. Was sie dort finden, entscheidet über den Anruf.</p>''' + karten([
+  ('🏡', 'Der empfohlene Kunde.', 'Er will sehen, dass es dich gibt und was du machst. Mit deinem Ort und deinen Arbeiten.'),
+  ('👷', 'Der Bewerber.', 'Er schaut, wo er arbeiten würde. Ohne Team und ohne offene Stelle ruft er nicht an.'),
+  ('📐', 'Wer Angebote vergleicht.', 'Er schaut sich zwei, drei Betriebe an, bevor er fragt.'),
+  ('🤝', 'Dein Stammkunde.', 'Er empfiehlt dich leichter, wenn er einen Link schicken kann.')]) + '</div></div>')
+H3B = abschluss('Schau dir an, was der Nächste über dich finden soll.',
+  'Ein paar kurze Fragen, dann suchst du dir einen Termin aus. Das Konzept bauen wir bis dahin.')
 
 # ---------- Fragen-Kopf (klein, über jeder Frage) ----------
 def fkopf(schritt, von, titel):
@@ -304,11 +326,11 @@ DANKE_UNTEN = blk('weiss', '''<div class="sek" style="padding:56px 20px 64px"><d
 <div class="mitte"><span class="eb">🧭 So geht es weiter</span></div>''' + zl([
   ('📅 Du wählst einen Termin.', 'Die Bestätigung kommt per Mail.'),
   ('🛠️ Wir bauen dein Konzept.', 'Du musst nichts vorbereiten.'),
-  ('💻 Noah zeigt es dir in 30 Minuten per Videocall.', ''),
+  ('💻 Noah zeigt es dir in einem kurzen Videocall.', ''),
   ('✍️ Du entscheidest in Ruhe,', 'ob wir weitermachen.')]) + '''
 <div class="zwei" style="margin-top:40px;grid-template-columns:1fr 1fr 1fr;gap:12px">''' + ''.join(tel(f, a) for f, a in [
   ('m-kreitner-home.jpg','Startseite der Schreinerei Kreitner am Handy'),('m-knappich-home.jpg','Startseite der Zimmerei Knappich am Handy'),('m-vogel-home.jpg','Startseite von Vogel Holzbau am Handy')]) +
-  '</div><p class="dunkel mitte" style="font-size:13px;margin-top:14px">Seiten, die wir für Kunden gebaut haben.</p></div></div>')
+  '</div><p class="dunkel mitte" style="font-size:13px;margin-top:14px">Seiten, die wir für Kunden gebaut haben.</p><p class="mitte" style="font-size:15px;margin-top:26px;color:#4A443B">Kein passender Termin dabei? Antworte einfach auf die Bestätigungsmail.</p></div></div>')
 
 # ---------- P ----------
 PREIS = blk('papier', f'''<div class="sek"><div class="w mitte">
@@ -344,7 +366,7 @@ M_KARTEN = blk('weiss', '<div class="sek"><div class="ww"><div class="team">' + 
    ('d-kraus.jpg','Startseite von Dachbau Kraus','🛠️','Was wir bauen.','Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.'),
    ('noah-laptop.jpg','Noah Seelau im Videocall','💻','Was du bekommst.','Einen Termin mit Noah, in dem du die Seite siehst und einen festen Preis hörst.')]) + '</div></div></div>')
 
-BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2':B2,'c2':C2,'h2':H2B,
+BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2':B2,'c2':C2,'h2':H2B,'a3':A3,'b3':B3,'c3':C3,'h3':H3B,
   'f2':fkopf(1,6,'In welchem Gewerk bist du unterwegs?'),
   'f3':fkopf(2,6,'Wo sitzt dein Betrieb?'),
   'f4':fkopf(3,6,'Hast du schon eine Homepage?'),
