@@ -1,0 +1,108 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+.hw{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:#16130E;line-height:1.5;-webkit-font-smoothing:antialiased;text-align:left}
+.hw *{box-sizing:border-box}
+.hw img{display:block;max-width:100%}
+.hw h1,.hw h2,.hw h3,.hw h4,.hw .zf{font-family:'Archivo','Inter',system-ui,sans-serif;font-weight:800;letter-spacing:-.03em;margin:0;color:inherit}
+.hw p{margin:0}
+.hw.papier{background:#FAF7F1}.hw.weiss{background:#FFFFFF}.hw.tinte{background:#16130E;color:#FAF7F1}
+.hw .sek{padding:72px 20px 0}
+.hw .w{max-width:720px;margin:0 auto}
+.hw .ww{max-width:1040px;margin:0 auto}
+.hw .mitte{text-align:center}
+.hw .eb{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:999px;border:1px solid rgba(22,19,14,.14);background:#FFFFFF}
+.hw.tinte .eb{border-color:rgba(250,247,241,.18);background:rgba(250,247,241,.06);color:#FAF7F1}
+.hw h1{font-size:clamp(38px,9.6vw,68px);line-height:1.02;margin:18px 0 18px}
+.hw h2{font-size:clamp(30px,7vw,48px);line-height:1.05;margin:16px 0 14px}
+.hw h3{font-size:19px;line-height:1.2;letter-spacing:-.02em}
+.hw .lead{font-size:17px;color:#4A443B;max-width:560px;line-height:1.55}
+.hw.tinte .lead{color:rgba(250,247,241,.72)}
+.hw .mitte .lead{margin-left:auto;margin-right:auto}
+.hw .dunkel{color:rgba(22,19,14,.42)}
+.hw.tinte .dunkel{color:rgba(250,247,241,.45)}
+/* Kopf-Chip */
+.hw .chip{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border-radius:999px;background:#FFFFFF;border:1px solid rgba(22,19,14,.10);font-size:13px;color:#4A443B;box-shadow:0 6px 20px rgba(22,19,14,.06)}
+.hw .chip img{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 18%}
+.hw .chip b{color:#16130E}
+/* Zahlen-Kacheln */
+.hw .zahlen{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px}
+.hw .zk{background:#FFFFFF;border:1px solid rgba(22,19,14,.08);border-radius:18px;padding:16px 10px;text-align:center}
+.hw.tinte .zk{background:rgba(250,247,241,.05);border-color:rgba(250,247,241,.12)}
+.hw .zk .zf{font-size:clamp(24px,5.6vw,34px);line-height:1;display:block}
+.hw .zk span{display:block;font-size:12px;line-height:1.3;margin-top:6px;color:#6B6459}
+.hw.tinte .zk span{color:rgba(250,247,241,.6)}
+@media(max-width:520px){.hw .zahlen{grid-template-columns:repeat(2,1fr)}.hw .zk{padding:14px 8px}}
+.hw .zk span.zf{color:#16130E;margin:0}
+.hw.tinte .zk span.zf{color:#FAF7F1}
+.hw .zk span.zf.em{font-size:28px}
+/* Telefon-Rahmen */
+.hw .tel{border-radius:34px;background:#16130E;padding:8px;box-shadow:0 30px 60px -20px rgba(22,19,14,.45),0 0 0 1px rgba(22,19,14,.08)}
+.hw .tel img{border-radius:27px;width:100%;height:auto}
+.hw .tel.hell{background:#2A251D}
+/* Browser-Rahmen */
+.hw .br{border-radius:14px;background:#FFFFFF;overflow:hidden;box-shadow:0 24px 50px -18px rgba(0,0,0,.5);border:1px solid rgba(22,19,14,.10)}
+.hw .br i{display:flex;gap:6px;padding:9px 12px;background:#EFEAE0}
+.hw .br i b{width:9px;height:9px;border-radius:50%;background:rgba(22,19,14,.22)}
+.hw .br img{width:100%;height:auto}
+/* Laufband */
+.hw .band{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.hw .bandin{display:flex;gap:18px;width:max-content;animation:hwlauf 48s linear infinite}
+.hw .bandin .br{width:340px;flex:0 0 auto}
+@keyframes hwlauf{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.hw .bandin{animation:none}}
+@media(max-width:520px){.hw .bandin .br{width:260px}}
+/* Zeitleiste */
+.hw .zl{position:relative;margin-top:30px;padding-left:0;list-style:none}
+.hw .zl li{position:relative;padding:0 0 26px 66px;list-style:none}
+.hw .zl li:last-child{padding-bottom:0}
+.hw .zl li:before{content:'';position:absolute;left:23px;top:48px;bottom:4px;width:2px;background:rgba(22,19,14,.12)}
+.hw .zl li:last-child:before{display:none}
+.hw .zl .nr{position:absolute;left:0;top:0;width:48px;height:48px;border-radius:50%;background:#16130E;color:#FAF7F1;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:18px}
+.hw.tinte .zl li:before{background:rgba(250,247,241,.16)}
+.hw.tinte .zl .nr{background:#FAF7F1;color:#16130E}
+.hw .zl h4{font-size:18px;line-height:1.25;letter-spacing:-.02em;padding-top:4px}
+.hw .zl p{font-size:15px;color:#6B6459;margin-top:4px}
+.hw.tinte .zl p{color:rgba(250,247,241,.6)}
+/* Karten */
+.hw .karten{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+@media(max-width:620px){.hw .karten{grid-template-columns:1fr}}
+.hw .ka{border-radius:22px;padding:26px 24px;background:#FFFFFF;border:1px solid rgba(22,19,14,.08)}
+.hw.tinte .ka{background:rgba(250,247,241,.05);border-color:rgba(250,247,241,.12)}
+.hw .ka .em{font-size:30px;line-height:1;display:block;margin-bottom:16px}
+.hw .ka p{font-size:15px;color:#6B6459;margin-top:6px}
+.hw.tinte .ka p{color:rgba(250,247,241,.66)}
+/* Zweispalter */
+.hw .zwei{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+@media(max-width:720px){.hw .zwei{grid-template-columns:1fr;gap:28px}}
+.hw .foto{border-radius:24px;overflow:hidden;box-shadow:0 30px 60px -24px rgba(22,19,14,.35)}
+.hw .foto img{width:100%;height:auto}
+/* Reihen mit Handy */
+.hw .reihe{display:grid;grid-template-columns:200px 1fr;gap:30px;align-items:center;padding:26px;border-radius:26px;background:#FFFFFF;border:1px solid rgba(22,19,14,.08);margin-top:16px}
+.hw .reihe .tel{max-width:200px}
+@media(max-width:620px){.hw .reihe{grid-template-columns:1fr;text-align:center;padding:24px 20px}.hw .reihe .tel{max-width:168px;margin:0 auto}}
+.hw .reihe p{font-size:15.5px;color:#6B6459;margin-top:8px}
+.hw .reihe .em{font-size:28px}
+/* Team */
+.hw .team{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+@media(max-width:640px){.hw .team{grid-template-columns:1fr;gap:12px}.hw .tm{display:grid;grid-template-columns:118px 1fr;align-items:center}.hw .tm .bild{aspect-ratio:1/1.15;height:100%}.hw .tm .txt{padding:14px 16px}}
+.hw .tm{border-radius:24px;overflow:hidden;background:#FFFFFF;border:1px solid rgba(22,19,14,.08)}
+.hw .tm .bild{aspect-ratio:4/5;overflow:hidden;background:#EFEAE0}
+.hw .tm .bild img{width:100%;height:100%;object-fit:cover}
+.hw .tm .txt{padding:18px 20px 22px}
+.hw .tm .rolle{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(22,19,14,.45);margin-top:2px}
+.hw .tm p{font-size:14.5px;color:#6B6459;margin-top:8px}
+/* Stimmen */
+.hw .stimmen{columns:2;column-gap:14px;margin-top:34px}
+@media(max-width:640px){.hw .stimmen{columns:1}}
+.hw .st{break-inside:avoid;margin:0 0 14px;border-radius:22px;padding:24px;background:rgba(250,247,241,.05);border:1px solid rgba(250,247,241,.12)}
+.hw .st .sterne{letter-spacing:3px;font-size:14px}
+.hw .st p{font-size:15.5px;line-height:1.5;margin-top:10px;color:#FAF7F1}
+.hw .st .wer{font-size:13px;color:rgba(250,247,241,.5);margin-top:12px}
+/* Liste */
+.hw .liste{display:grid;gap:12px;margin-top:30px}
+.hw .li{display:flex;gap:16px;align-items:center;padding:18px 20px;border-radius:18px;background:#FFFFFF;border:1px solid rgba(22,19,14,.08);font-size:16px;font-weight:600}
+.hw .li .em{font-size:24px;flex:0 0 auto}
+/* Portrait rund */
+.hw .rund{width:112px;height:112px;border-radius:50%;object-fit:cover;object-position:50% 20%;border:3px solid rgba(250,247,241,.9);margin:0 auto}
+</style>
+<div class="hw weiss"><div class="sek"><div class="ww"><div class="team"><div class="tm"><div class="bild" style="aspect-ratio:4/3"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@main/handwerksmanufaktur/d-vogel.jpg" alt="Startseite von Vogel Holzbau" loading="lazy" style='object-position:50% 0'></div><div class="txt"><span style="font-size:26px">🔎</span><h3 style="margin-top:6px">Was wir uns anschauen.</h3><p>Deine alte Seite, deinen Google-Eintrag und dein Logo. Gibt es noch keine Seite, fragen wir dich kurz nach Fotos.</p></div></div><div class="tm"><div class="bild" style="aspect-ratio:4/3"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@main/handwerksmanufaktur/d-kraus.jpg" alt="Startseite von Dachbau Kraus" loading="lazy" style='object-position:50% 0'></div><div class="txt"><span style="font-size:26px">🛠️</span><h3 style="margin-top:6px">Was wir bauen.</h3><p>Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.</p></div></div><div class="tm"><div class="bild" style="aspect-ratio:4/3"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@main/handwerksmanufaktur/noah-laptop.jpg" alt="Noah Seelau im Videocall" loading="lazy" style='object-position:50% 0'></div><div class="txt"><span style="font-size:26px">💻</span><h3 style="margin-top:6px">Was du bekommst.</h3><p>Einen Termin mit Noah, in dem du die Seite siehst und einen festen Preis hörst.</p></div></div></div></div></div></div>
