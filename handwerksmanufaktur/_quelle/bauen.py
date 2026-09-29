@@ -89,7 +89,7 @@ CSS = """<style>
 /* Reihen mit Handy */
 .hw .reihe{display:grid;grid-template-columns:200px 1fr;gap:30px;align-items:center;padding:26px;border-radius:26px;background:#FFFFFF;border:1px solid rgba(22,19,14,.08);margin-top:16px}
 .hw .reihe .tel{max-width:200px}
-@media(max-width:620px){.hw .reihe{grid-template-columns:1fr;text-align:center;padding:24px 20px}.hw .reihe .tel{max-width:168px;margin:0 auto}}
+@media(max-width:620px){.hw .reihe{grid-template-columns:112px 1fr;gap:18px;padding:16px;border-radius:22px}.hw .reihe .tel{max-width:112px;border-radius:22px;padding:5px}.hw .reihe .tel img{border-radius:18px}.hw .reihe h3{font-size:18px!important}.hw .reihe p{font-size:14.5px}.hw .reihe .em{font-size:22px}}
 .hw .reihe p{font-size:15.5px;color:#6B6459;margin-top:8px}
 .hw .reihe .em{font-size:28px}
 /* Team */
