@@ -327,7 +327,7 @@ KONTAKT = blk('papier', f'''<div class="sek" style="padding:26px 20px 6px"><div 
 <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:rgba(22,19,14,.5)">LETZTER SCHRITT</span>
 <div style="flex:1;height:6px;border-radius:9px;background:rgba(22,19,14,.10);overflow:hidden"><div style="width:96%;height:100%;background:#16130E;border-radius:9px"></div></div>
 </div>
-<h2 style="font-size:clamp(28px,7vw,40px);margin:22px 0 10px">Fast fertig. Wohin dürfen wir das Konzept schicken?</h2>
+<h2 style="font-size:clamp(28px,7vw,40px);margin:22px 0 10px">Fast fertig. Jetzt reservierst du die Vorstellung deines Konzepts.</h2>
 <div class="chip gross" style="margin-top:8px">{img("team-noah.jpg","Noah Seelau")}<span>Noah meldet sich persönlich. Deine Daten bleiben bei uns.</span></div>
 </div></div>''')
 
