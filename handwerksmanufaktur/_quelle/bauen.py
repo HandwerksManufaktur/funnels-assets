@@ -64,12 +64,12 @@ CSS = """<style>
 @media(max-width:520px){.hw .bandin .br{width:260px}}
 /* Zeitleiste */
 .hw .zl{position:relative;margin-top:30px;padding-left:0;list-style:none;display:grid;grid-template-columns:1fr}
-.hw .zl li{position:relative;padding:0 0 26px 66px;list-style:none}
-.hw .zl li:last-child{padding-bottom:0}
-.hw .zl li:before{content:'';position:absolute;left:23px;top:48px;bottom:4px;width:2px;background:rgba(22,19,14,.12)}
-.hw .zl li:last-child:before{display:none}
+.hw .zl .zli{position:relative;padding:0 0 26px 66px;list-style:none}
+.hw .zl .zli:last-child{padding-bottom:0}
+.hw .zl .zli:before{content:'';position:absolute;left:23px;top:48px;bottom:4px;width:2px;background:rgba(22,19,14,.12)}
+.hw .zl .zli:last-child:before{display:none}
 .hw .zl .nr{position:absolute;left:0;top:0;width:48px;height:48px;border-radius:50%;background:#16130E;color:#FAF7F1;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:18px}
-.hw.tinte .zl li:before{background:rgba(250,247,241,.16)}
+.hw.tinte .zl .zli:before{background:rgba(250,247,241,.16)}
 .hw.tinte .zl .nr{background:#FAF7F1;color:#16130E}
 .hw .zl h4{font-size:18px;line-height:1.25;letter-spacing:-.02em;padding-top:4px}
 .hw .zl p{font-size:15px;color:#6B6459;margin-top:4px}
@@ -140,9 +140,9 @@ tel = lambda f, alt, cls='tel': f'<div class="{cls}">{img(f, alt)}</div>'
 br = lambda f, alt: f'<div class="br"><i><b></b><b></b><b></b></i>{img(f, alt)}</div>'
 
 def zl(schritte):
-    return '<ol class="zl">' + ''.join(
-        f'<li><span class="nr">{i+1}</span><h4>{t}</h4>' + (f'<p>{p}</p>' if p else '') + '</li>'
-        for i, (t, p) in enumerate(schritte)) + '</ol>'
+    return '<div class="zl" role="list">' + ''.join(
+        f'<div class="zli" role="listitem"><span class="nr">{i+1}</span><h4>{t}</h4>' + (f'<p>{p}</p>' if p else '') + '</div>'
+        for i, (t, p) in enumerate(schritte)) + '</div>'
 
 def karten(k):
     return '<div class="karten">' + ''.join(

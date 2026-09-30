@@ -54,12 +54,12 @@
 @media(max-width:520px){.hw .bandin .br{width:260px}}
 /* Zeitleiste */
 .hw .zl{position:relative;margin-top:30px;padding-left:0;list-style:none;display:grid;grid-template-columns:1fr}
-.hw .zl li{position:relative;padding:0 0 26px 66px;list-style:none}
-.hw .zl li:last-child{padding-bottom:0}
-.hw .zl li:before{content:'';position:absolute;left:23px;top:48px;bottom:4px;width:2px;background:rgba(22,19,14,.12)}
-.hw .zl li:last-child:before{display:none}
+.hw .zl .zli{position:relative;padding:0 0 26px 66px;list-style:none}
+.hw .zl .zli:last-child{padding-bottom:0}
+.hw .zl .zli:before{content:'';position:absolute;left:23px;top:48px;bottom:4px;width:2px;background:rgba(22,19,14,.12)}
+.hw .zl .zli:last-child:before{display:none}
 .hw .zl .nr{position:absolute;left:0;top:0;width:48px;height:48px;border-radius:50%;background:#16130E;color:#FAF7F1;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:18px}
-.hw.tinte .zl li:before{background:rgba(250,247,241,.16)}
+.hw.tinte .zl .zli:before{background:rgba(250,247,241,.16)}
 .hw.tinte .zl .nr{background:#FAF7F1;color:#16130E}
 .hw .zl h4{font-size:18px;line-height:1.25;letter-spacing:-.02em;padding-top:4px}
 .hw .zl p{font-size:15px;color:#6B6459;margin-top:4px}
@@ -120,5 +120,5 @@
 <h2>Servus, ich bin Noah.</h2>
 <p class="lead">Die meisten Betriebe, mit denen ich rede, leben von Empfehlungen. Das hast du dir über Jahre erarbeitet.</p><p class="lead" style="margin-top:10px">Nur schaut heute fast jeder vorher im Internet nach.</p><p style="margin-top:18px;padding-left:14px;border-left:3px solid #16130E;font-size:15px;color:#6B6459">„Die kennen unsere Website besser als wir.“<br><span style="font-size:13px;color:rgba(22,19,14,.45)">Ein Fliesenleger im Gespräch mit uns</span></p></div>
 </div>
-<div class="w" style="margin-top:44px"><h3 style="font-size:22px">So läuft's:</h3><ol class="zl"><li><span class="nr">1</span><h4>📝 Du beantwortest ein paar kurze Fragen.</h4></li><li><span class="nr">2</span><h4>📅 Du suchst dir einen Termin für den Videocall aus.</h4></li><li><span class="nr">3</span><h4>🛠️ Wir bauen das Konzept deiner neuen Seite.</h4><p>Du musst nichts vorbereiten.</p></li><li><span class="nr">4</span><h4>💻 Ich zeige es dir im Termin.</h4><p>Danach entscheidest du.</p></li></ol></div>
+<div class="w" style="margin-top:44px"><h3 style="font-size:22px">So läuft's:</h3><div class="zl" role="list"><div class="zli" role="listitem"><span class="nr">1</span><h4>📝 Du beantwortest ein paar kurze Fragen.</h4></div><div class="zli" role="listitem"><span class="nr">2</span><h4>📅 Du suchst dir einen Termin für den Videocall aus.</h4></div><div class="zli" role="listitem"><span class="nr">3</span><h4>🛠️ Wir bauen das Konzept deiner neuen Seite.</h4><p>Du musst nichts vorbereiten.</p></div><div class="zli" role="listitem"><span class="nr">4</span><h4>💻 Ich zeige es dir im Termin.</h4><p>Danach entscheidest du.</p></div></div></div>
 </div></div></div>
