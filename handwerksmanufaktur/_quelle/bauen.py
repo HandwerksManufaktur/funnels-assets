@@ -179,7 +179,7 @@ def karten(k):
 def zk(ic, zahl, text):
     return f'<div class="zk"><span class="ic">{ic}</span><span class="zf">{zahl}</span><span>{text}</span></div>'
 ZAHLEN = ('<div class="zahlen">' + zk('⭐','5,0','bei 57 Google-Bewertungen') + zk('🎁','0 €','kostet dich das Konzept')
-  + zk('💻','1 Videocall','dann entscheidest du') + zk('📱','Handy','zuerst gebaut') + '</div>')
+  + zk('💻','1 Videocall','zeigt dir dein Konzept') + zk('📱','Handy','zuerst gebaut') + '</div>')
 
 def iz(zeilen):
     return '<div class="iz">' + ''.join(f'<div class="izz"><span class="ic">{e}</span><span>{t}</span></div>' for e, t in zeilen) + '</div>'
@@ -218,7 +218,7 @@ B1 = noah_block('Wir bauen seit 2019 Homepages für Handwerksbetriebe. Dein Konz
   ('💻 Wir zeigen es dir im kurzen Videocall,', 'danach entscheidest du.')])
 
 C1 = blk('tinte', f'''<div class="sek"><div class="w">
-<span class="eb">👀 Erst sehen</span>
+<span class="eb">🎁 Kostenloses Website-Konzept</span>
 <h2>Du siehst deine neue Homepage, bevor du etwas unterschreibst.</h2>
 <div class="br" style="margin-top:22px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
 <p class="lead" style="margin-top:22px">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
@@ -316,7 +316,7 @@ B2 = noah_block('Am Telefon hören wir jeden Tag denselben Satz: „Ich komm nic
   ('🛠️ Keine Arbeit, während wir bauen.', 'Wir nehmen, was es von deinem Betrieb schon gibt.'),
   ('💻 Einen kurzen Videocall,', 'in dem wir dir das Konzept zeigen.')])
 C2 = blk('tinte', f'''<div class="sek"><div class="w">
-<span class="eb">Du musst nichts lernen</span>
+<span class="eb">🎁 Kostenloses Website-Konzept</span>
 <h2>Du machst die Baustelle. Wir die Homepage.</h2>
 <div class="br" style="margin-top:22px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
 <p class="lead" style="margin-top:22px">Alte Seite, Google-Eintrag und Logo holen wir uns selbst. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
