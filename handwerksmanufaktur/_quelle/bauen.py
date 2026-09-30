@@ -226,12 +226,12 @@ E = blk('weiss', '''<div class="sek"><div class="ww"><div class="w mitte">
   '</div></div></div>')
 
 STIMMEN = [
- ('Noah hat unsere Homepage erstellt und betreut diese. Wir sind sehr zufrieden! Auch der Kontakt ist immer freundlich.', 'Senftleben Haustechnik, Ehingen'),
+ ('Noah hat unsere Homepage erstellt und betreut diese. Wir sind sehr zufrieden! Auch der Kontakt mit Noah ist immer freundlich.', 'Senftleben Sanitär Heizung, Ehingen'),
  ('Sehr gute Unterstützung, auch für ältere Handwerksmeister ohne große IT-Erfahrung.', 'Schreinerei, Wielenbach'),
- ('Nach einem kurzen Telefonat verlief die Umsetzung reibungslos und zu unserer vollen Zufriedenheit. Auch ohne große Computerkenntnisse können wir die Seite selber bearbeiten.', 'Heizungsbauer, Krün'),
+ ('Nach einem kurzen Telefonat und Kennenlernen verlief die Umsetzung reibungslos und zu unserer vollen Zufriedenheit. Auch ohne große Computerkenntnisse, können wir nun die Seite auch selber bearbeiten Dank Noah´s Schritt für Schritt Anleitung.', 'Heizungsbauer, Krün'),
  ('Super Service. Alles ganz unkompliziert. Unsere Erwartungen wurden absolut erfüllt. Uneingeschränkte Empfehlung!', 'Zimmerei, Reichling'),
- ('Die HandwerksManufaktur hat meine Website erstellt und ich bin voll zufrieden – war ganz unkompliziert und eine tolle Zusammenarbeit. Wenn ich ein Problem habe, regelt er es schnell.', 'Innenausbau, Ehingen'),
- ('Noah macht einen super Job, ist sehr verlässlich und meldet sich immer zeitnah zurück. Wir sind mega happy mit unserer neuen Homepage – wärmste Empfehlung!', 'Zimmerei, Penzing')]
+ ('Die HandwerksManufaktur Hat meine Website erstellt und ich bin voll zufrieden war ganz unkompliziert und eine tolle Zusammenarbeit. Wenn ich ein Problem habe regelt er es schnell.', 'Innenausbau, Ehingen'),
+ ('Noah macht einen super Job, ist sehr verlässlich und meldet sich immer zeitnah beim Kunden zurück. Wir sind mega happy mit unserer neuen Homepage und können die HandwerksManufaktur wärmstens weiterempfehlen!', 'Zimmerei, Penzing')]
 F = blk('tinte', '''<div class="sek"><div class="ww"><div class="w mitte">
 <span class="eb">⭐ Google-Bewertungen</span>
 <h2>Was Betriebe über uns schreiben</h2>
@@ -331,6 +331,8 @@ KONTAKT = blk('papier', f'''<div class="sek" style="padding:26px 20px 6px"><div 
 <div class="chip gross" style="margin-top:8px">{img("team-noah.jpg","Noah Seelau")}<span>Noah meldet sich persönlich. Deine Daten bleiben bei uns.</span></div>
 </div></div>''')
 
+KONTAKT_HINWEIS = blk('weiss', '<div style="max-width:420px;margin:0 auto;padding:6px 24px 2px;text-align:center;font-size:13px;line-height:1.45;color:#6B6459">Mit dem Absenden meldet sich Noah zu deiner Anfrage per Telefon und E-Mail. Abmelden geht jederzeit mit einem Klick.</div>')
+
 # ---------- Danke ----------
 DANKE_OBEN = blk('papier', f'''<div class="sek" style="padding:34px 20px 10px"><div class="w mitte">
 <div style="position:relative;width:128px;height:128px;margin:0 auto">{img("team-noah.jpg","Noah Seelau","style='width:128px;height:128px;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block'")}<svg width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Erledigt" style="position:absolute;right:-4px;bottom:-4px"><circle cx="22" cy="22" r="20" fill="#16130E" stroke="#FAF7F1" stroke-width="4"/><path d="M13 22.5l6 6L31 16" fill="none" stroke="#FAF7F1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -389,7 +391,7 @@ BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2'
   'f5':fkopf(4,6,'Was soll deine neue Seite vor allem schaffen?'),
   'f6':fkopf(5,6,'Wie viele Leute seid ihr im Betrieb?'),
   'f7':fkopf(6,6,'Wann soll deine neue Seite online gehen?'),
-  'kontakt':KONTAKT,'danke_oben':DANKE_OBEN,'danke_unten':DANKE_UNTEN,'preis':PREIS,'privat':PRIVAT,'m_intro':M_INTRO,'m_karten':M_KARTEN}
+  'kontakt':KONTAKT,'kontakt_hinweis':KONTAKT_HINWEIS,'danke_oben':DANKE_OBEN,'danke_unten':DANKE_UNTEN,'preis':PREIS,'privat':PRIVAT,'m_intro':M_INTRO,'m_karten':M_KARTEN}
 OUT.mkdir(exist_ok=True)
 for k, v in BLOECKE.items():
     (OUT / f'{k}.html').write_text(v)
