@@ -35,6 +35,8 @@ CSS = """<style>
 .hw .chip{display:inline-flex;align-items:center;gap:10px;padding:5px 14px 5px 5px;border-radius:999px;background:#FFFFFF;border:1px solid rgba(22,19,14,.10);font-size:13px;color:#4A443B;box-shadow:0 6px 20px rgba(22,19,14,.06)}
 .hw .chip img{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 18%}
 .hw .chip b{color:#16130E}
+.hw .chip.gross{padding:6px 18px 6px 6px;border-radius:40px;text-align:left}
+.hw .chip.gross img{width:64px;height:64px}
 /* Zahlen-Kacheln */
 .hw .zahlen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:26px}
 .hw .zk{background:#FFFFFF;border:1px solid rgba(22,19,14,.08);border-radius:18px;padding:16px 10px;text-align:center}
@@ -326,12 +328,12 @@ KONTAKT = blk('papier', f'''<div class="sek" style="padding:26px 20px 6px"><div 
 <div style="flex:1;height:6px;border-radius:9px;background:rgba(22,19,14,.10);overflow:hidden"><div style="width:96%;height:100%;background:#16130E;border-radius:9px"></div></div>
 </div>
 <h2 style="font-size:clamp(28px,7vw,40px);margin:22px 0 10px">Fast fertig. Wohin dürfen wir das Konzept schicken?</h2>
-<div class="chip" style="margin-top:8px">{img("team-noah.jpg","Noah Seelau")}<span>Noah meldet sich persönlich. Deine Daten bleiben bei uns.</span></div>
+<div class="chip gross" style="margin-top:8px">{img("team-noah.jpg","Noah Seelau")}<span>Noah meldet sich persönlich. Deine Daten bleiben bei uns.</span></div>
 </div></div>''')
 
 # ---------- Danke ----------
 DANKE_OBEN = blk('papier', f'''<div class="sek" style="padding:34px 20px 10px"><div class="w mitte">
-<div style="width:72px;height:72px;border-radius:50%;background:#16130E;color:#FAF7F1;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:34px;font-weight:800">✓</div>
+<svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="Erledigt" style="display:block;margin:0 auto"><circle cx="36" cy="36" r="36" fill="#16130E"/><path d="M22 37.5l9.5 9.5L51 27" fill="none" stroke="#FAF7F1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 <h1 style="font-size:clamp(34px,8.4vw,54px)">Danke! Jetzt fehlt nur noch dein Termin.</h1>
 <p class="lead">Such dir unten eine Zeit aus. Bis dahin bauen wir das Konzept deiner neuen Homepage.</p>
 <div class="chip" style="margin-top:20px">{img("team-noah.jpg","Noah Seelau")}<span><b>Noah</b> zeigt dir dein Konzept</span></div>
