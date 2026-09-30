@@ -23,7 +23,7 @@ CSS = """<style>
 .hw .mitte{text-align:center}
 .hw .eb{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:7px 14px;border-radius:999px;border:1px solid rgba(22,19,14,.14);background:#FFFFFF}
 .hw.tinte .eb{border-color:rgba(250,247,241,.18);background:rgba(250,247,241,.06);color:#FAF7F1}
-.hw h1{font-size:clamp(38px,9.6vw,68px);line-height:1.02;margin:18px 0 18px}
+.hw h1{font-size:clamp(34px,9vw,68px);line-height:1.02;margin:18px 0 18px}
 .hw h2{font-size:clamp(30px,7vw,48px);line-height:1.05;margin:16px 0 14px}
 .hw h3{font-size:19px;line-height:1.2;letter-spacing:-.02em}
 .hw .lead{font-size:17px;color:#4A443B;max-width:560px;line-height:1.55}
@@ -38,7 +38,7 @@ CSS = """<style>
 .hw .chip.gross{padding:6px 18px 6px 6px;border-radius:40px;text-align:left}
 .hw .chip.gross img{width:64px;height:64px;flex-shrink:0}
 /* Zahlen-Kacheln */
-.hw .zahlen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:26px}
+.hw .zahlen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
 .hw .zk{background:#FFFFFF;border:1px solid rgba(22,19,14,.08);border-radius:18px;padding:16px 10px;text-align:center}
 .hw.tinte .zk{background:rgba(250,247,241,.05);border-color:rgba(250,247,241,.12)}
 .hw .zk .zf{font-size:clamp(24px,5.6vw,34px);line-height:1;display:block}
@@ -189,7 +189,7 @@ CHIP = '<div class="chip" style="padding:8px 16px"><span><b>HandwerksManufaktur<
 def hero(eb, h1, sub):
     return blk('papier', f'''<div class="sek" style="padding:30px 20px 34px"><div class="w mitte">
 {CHIP}
-<div style="margin-top:22px"><span class="eb">{eb}</span></div>
+<div style="margin-top:14px"><span class="eb">{eb}</span></div>
 <h1>{h1}</h1>
 <p class="lead">{sub}</p>
 {ZAHLEN}
@@ -220,9 +220,9 @@ B1 = noah_block('Wir bauen seit 2019 Homepages für Handwerksbetriebe. Dein Konz
 C1 = blk('tinte', f'''<div class="sek"><div class="w">
 <span class="eb">👀 Erst sehen</span>
 <h2>Du siehst deine neue Homepage, bevor du etwas unterschreibst.</h2>
-<p class="lead">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. So sieht zum Beispiel die Startseite aus, die wir für Vogel Holzbau gebaut haben:</p>
-<div class="br" style="margin-top:26px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
-''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🏗️','Deine Arbeit steht vorne. Deine Leistungen und deine Baustellen sind schon im Konzept drin.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.')]) + '<p class="schluss">Das Konzept kostet dich nichts.</p></div></div>')
+<div class="br" style="margin-top:22px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
+<p class="lead" style="margin-top:22px">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
+''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🏗️','Deine Arbeit steht vorne. Deine Leistungen und deine Baustellen sind schon im Konzept drin.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.'),('🎁','Das Konzept kostet dich nichts.')]) + '</div></div>')
 
 BAND = ['d-kreitner.jpg','d-vogel.jpg','d-kraus.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
 def band():
@@ -308,7 +308,7 @@ H1B = abschluss('Schau dir dein fertiges Website-Konzept an, bevor du irgendwas 
 # ---------- 1B ----------
 A2 = hero('🛠️ Für Chefs, die auf der Baustelle stehen',
   'Keine Zeit für die Homepage? Wir bauen dir das Konzept, du schaust es nur an.',
-  'Kostenlos und mit deinem Logo, deinen Leistungen und deinem Ort. Du beantwortest zwei kurze Fragen, den Rest holen wir uns selbst. Im kurzen Videocall siehst du das Ergebnis.')
+  'Kostenlos, mit deinem Logo und deinen Leistungen. Du beantwortest zwei Fragen, den Rest holen wir uns selbst.')
 B2 = noah_block('Am Telefon hören wir jeden Tag denselben Satz: „Ich komm nicht dazu.“ Deshalb brauchen wir von dir fast nichts.',
   'Das kostet dich:', [
   ('⏱️ Zwei kurze Fragen.', ''),
@@ -318,9 +318,9 @@ B2 = noah_block('Am Telefon hören wir jeden Tag denselben Satz: „Ich komm nic
 C2 = blk('tinte', f'''<div class="sek"><div class="w">
 <span class="eb">Du musst nichts lernen</span>
 <h2>Du machst die Baustelle. Wir die Homepage.</h2>
-<p class="lead">Alte Seite, Google-Eintrag und Logo holen wir uns selbst. Daraus entsteht eine Startseite wie diese, die wir für Vogel Holzbau gebaut haben:</p>
-<div class="br" style="margin-top:26px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
-''' + iz([('🔎','Wir sammeln selbst, was es von deinem Betrieb gibt.'),('🛠️','Wir bauen das Konzept mit deinen Leistungen und deinem Ort.'),('💻','Du schaust es dir im kurzen Videocall an, gern vom Handy aus.')]) + '<p class="schluss">Vorher unterschreibst du nichts.</p></div></div>')
+<div class="br" style="margin-top:22px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
+<p class="lead" style="margin-top:22px">Alte Seite, Google-Eintrag und Logo holen wir uns selbst. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
+''' + iz([('🔎','Wir sammeln selbst, was es von deinem Betrieb gibt.'),('🛠️','Wir bauen das Konzept mit deinen Leistungen und deinem Ort.'),('💻','Du schaust es dir im kurzen Videocall an, gern vom Handy aus.'),('✍️','Vorher unterschreibst du nichts.')]) + '</div></div>')
 H2B = abschluss('Zwei Fragen, ein kurzer Termin. Den Rest machen wir.',
   'Das Konzept bauen wir, bevor wir reden. Du siehst deine neue Homepage zum ersten Mal im Videocall.')
 
