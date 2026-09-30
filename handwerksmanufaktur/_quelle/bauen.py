@@ -17,6 +17,7 @@ CSS = """<style>
 .hw p{margin:0}
 .hw.papier{background:#FAF7F1}.hw.weiss{background:#FFFFFF}.hw.tinte{background:#16130E;color:#FAF7F1}
 .hw .sek{padding:72px 20px 0}
+.hw.tinte .sek{padding-bottom:40px}
 .hw .w{max-width:720px;margin:0 auto}
 .hw .ww{max-width:1040px;margin:0 auto}
 .hw .mitte{text-align:center}
@@ -62,7 +63,7 @@ CSS = """<style>
 @media(prefers-reduced-motion:reduce){.hw .bandin{animation:none}}
 @media(max-width:520px){.hw .bandin .br{width:260px}}
 /* Zeitleiste */
-.hw .zl{position:relative;margin-top:30px;padding-left:0;list-style:none}
+.hw .zl{position:relative;margin-top:30px;padding-left:0;list-style:none;display:grid;grid-template-columns:1fr}
 .hw .zl li{position:relative;padding:0 0 26px 66px;list-style:none}
 .hw .zl li:last-child{padding-bottom:0}
 .hw .zl li:before{content:'';position:absolute;left:23px;top:48px;bottom:4px;width:2px;background:rgba(22,19,14,.12)}
@@ -110,9 +111,9 @@ CSS = """<style>
 .hw .mkk .txt{padding:18px 20px 22px}
 .hw .mkk p{font-size:14.5px;color:#6B6459;margin-top:8px}
 /* Stimmen */
-.hw .stimmen{columns:2;column-gap:14px;margin-top:34px}
-@media(max-width:640px){.hw .stimmen{columns:1}}
-.hw .st{break-inside:avoid;margin:0 0 14px;border-radius:22px;padding:24px;background:rgba(250,247,241,.05);border:1px solid rgba(250,247,241,.12)}
+.hw .stimmen{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px;align-items:start}
+@media(max-width:640px){.hw .stimmen{grid-template-columns:1fr}}
+.hw .st{margin:0;border-radius:22px;padding:24px;background:rgba(250,247,241,.05);border:1px solid rgba(250,247,241,.12)}
 .hw .st .sterne{letter-spacing:3px;font-size:14px}
 .hw .st p{font-size:15.5px;line-height:1.5;margin-top:10px;color:#FAF7F1}
 .hw .st .wer{font-size:13px;color:rgba(250,247,241,.5);margin-top:12px}
@@ -188,12 +189,11 @@ B1 = noah_block('Ich baue seit 2019 Websites für Handwerksbetriebe. Früher has
   ('💻 Ich zeige es dir im Videocall.', 'Danach entscheidest du.')])
 
 C1 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Warum wir das verschenken</span>
-<h2>Du sollst nicht die Katze im Sack kaufen.</h2>
-<p class="lead">Fast jeder fünfte Betrieb, mit dem wir reden, hat schon mal Geld für eine Homepage verbrannt. Das soll dir nicht passieren.</p>''' + karten([
+<h2>Du sollst nicht die Katze im Sack kaufen.</h2>''' + karten([
   ('👀', 'Du siehst die Seite selbst.', 'Deine Leistungen, dein Ort und dein Logo stehen schon drin.'),
   ('✍️', 'Du unterschreibst vorher nichts.', 'Gefällt dir das Konzept nicht, war es das.'),
   ('💬', 'Du bekommst eine klare Zahl.', 'Im Termin sagt dir Noah, was die fertige Seite kostet.'),
-  ('🤝', 'Du hast einen Ansprechpartner.', 'Vom ersten Gespräch bis die Seite online ist.')]) + '</div></div>')
+  ('🤝', 'Du hast einen Ansprechpartner.', 'Vom ersten Gespräch bis die Seite online ist.')]) + '<p class="lead" style="margin-top:26px">Fast jeder fünfte Betrieb, mit dem wir reden, hat schon mal Geld für eine Homepage verbrannt. Das soll dir nicht passieren.</p></div></div>')
 
 BAND = ['d-kreitner.jpg','d-vogel.jpg','d-kraus.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
 def band():
