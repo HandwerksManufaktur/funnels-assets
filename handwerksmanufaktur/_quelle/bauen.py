@@ -101,6 +101,14 @@ CSS = """<style>
 .hw .tm .txt{padding:18px 20px 22px}
 .hw .tm .rolle{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(22,19,14,.45);margin-top:2px}
 .hw .tm p{font-size:14.5px;color:#6B6459;margin-top:8px}
+/* Mehr-erfahren-Karten */
+.hw .mk{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.hw .mk{grid-template-columns:repeat(3,1fr)}}
+.hw .mkk{border-radius:22px;overflow:hidden;background:#FFFFFF;border:1px solid rgba(22,19,14,.08)}
+.hw .mkk .bild{aspect-ratio:16/10;overflow:hidden;background:#EFEAE0}
+.hw .mkk .bild img{width:100%;height:100%;object-fit:cover}
+.hw .mkk .txt{padding:18px 20px 22px}
+.hw .mkk p{font-size:14.5px;color:#6B6459;margin-top:8px}
 /* Stimmen */
 .hw .stimmen{columns:2;column-gap:14px;margin-top:34px}
 @media(max-width:640px){.hw .stimmen{columns:1}}
@@ -239,7 +247,7 @@ G = blk('papier', '''<div class="sek"><div class="w">
 <div class="mitte"><span class="eb">🏅 Kurz und knapp</span>
 <h2>Warum Betriebe mit uns arbeiten</h2></div>
 <div class="zahlen">
-<div class="zk"><span class="zf">2019</span><span>Seit 2019 nur Handwerk</span></div>
+<div class="zk"><span class="zf">2019</span><span>seit dem Jahr nur Handwerk</span></div>
 <div class="zk"><span class="zf">130+</span><span>Betriebe, die meisten zwischen Allgäu und München</span></div>
 <div class="zk"><span class="zf">70+</span><span>Konzepte gebaut</span></div>
 <div class="zk"><span class="zf em">📍</span><span>Wir kennen die Orte, in denen deine Kunden suchen</span></div>
@@ -366,8 +374,8 @@ M_INTRO = blk('tinte', f'''<div class="sek" style="padding-bottom:6px"><div clas
 <div class="foto" style="margin-top:30px">{img("noah-schreibtisch.jpg","Noah Seelau am Schreibtisch mit Laptop")}</div>
 </div></div>''')
 OBEN = "style='object-position:50% 0'"
-M_KARTEN = blk('weiss', '<div class="sek"><div class="ww"><div class="team">' + ''.join(
-  f'<div class="tm"><div class="bild" style="aspect-ratio:4/3">{img(f, a, OBEN)}</div><div class="txt"><span style="font-size:26px">{e}</span><h3 style="margin-top:6px">{t}</h3><p>{p}</p></div></div>'
+M_KARTEN = blk('weiss', '<div class="sek"><div class="ww"><div class="mk">' + ''.join(
+  f'<div class="mkk"><div class="bild">{img(f, a, OBEN)}</div><div class="txt"><span style="font-size:26px">{e}</span><h3 style="margin-top:6px">{t}</h3><p>{p}</p></div></div>'
   for f, a, e, t, p in [
    ('d-vogel.jpg','Startseite von Vogel Holzbau','🔎','Was wir uns anschauen.','Deine alte Seite, deinen Google-Eintrag und dein Logo. Gibt es noch keine Seite, fragen wir dich kurz nach Fotos.'),
    ('d-kraus.jpg','Startseite von Dachbau Kraus','🛠️','Was wir bauen.','Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.'),
