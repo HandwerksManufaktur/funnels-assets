@@ -224,7 +224,7 @@ C1 = blk('tinte', f'''<div class="sek"><div class="w">
 <p class="lead" style="margin-top:22px">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
 ''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🏗️','Deine Arbeit steht vorne. Deine Leistungen und deine Baustellen sind schon im Konzept drin.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.'),('🎁','Das Konzept kostet dich nichts.')]) + '<div style="height:44px"></div></div></div>')
 
-BAND = ['d-kreitner.jpg','d-vogel.jpg','d-kraus.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
+BAND = ['d-kreitner.jpg','d-vogel.jpg','d-wohner.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
 def band():
     items = ''.join(br(f, 'Startseite einer Kundenseite der HandwerksManufaktur') for f in BAND)
     return f'<div class="band" style="margin-top:40px"><div class="bandin">{items}{items}</div></div>'
@@ -416,7 +416,7 @@ M_KARTEN = blk('weiss', '<div class="sek"><div class="ww"><div class="mk">' + ''
   f'<div class="mkk"><div class="bild">{img(f, a, OBEN)}</div><div class="txt"><span style="font-size:26px">{e}</span><h3 style="margin-top:6px">{t}</h3><p>{p}</p></div></div>'
   for f, a, e, t, p in [
    ('d-vogel.jpg','Startseite von Vogel Holzbau','🔎','Was wir uns anschauen.','Deine alte Seite, deinen Google-Eintrag und dein Logo. Gibt es noch keine Seite, fragen wir dich kurz nach Fotos.'),
-   ('d-kraus.jpg','Startseite von Dachbau Kraus','🛠️','Was wir bauen.','Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.'),
+   ('d-wohner.jpg','Startseite von Elektrotechnik Wohner','🛠️','Was wir bauen.','Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.'),
    ('noah-laptop.jpg','Noah Seelau im Videocall','💻','Was du bekommst.','Einen kurzen Termin, in dem du deine neue Homepage fertig siehst.')]) + '</div></div></div>')
 
 BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':SEO+D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2':B2,'c2':C2,'h2':H2B,'a3':A3,'b3':B3,'c3':C3,'h3':H3B,
