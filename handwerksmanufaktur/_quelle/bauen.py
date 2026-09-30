@@ -312,12 +312,11 @@ H3B = abschluss('Schau dir an, was der Nächste über dich finden soll.',
 # ---------- Fragen-Kopf (klein, über jeder Frage) ----------
 def fkopf(schritt, von, titel):
     pct = round(schritt / von * 100)
-    return blk('papier', f'''<div class="sek" style="padding:26px 20px 6px"><div class="w mitte">
+    return blk('papier', f'''<div class="sek" style="padding:24px 20px 20px"><div class="w mitte">
 <div style="display:flex;align-items:center;gap:12px;max-width:420px;margin:0 auto">
 <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:rgba(22,19,14,.5)">SCHRITT {schritt}/{von}</span>
 <div style="flex:1;height:6px;border-radius:9px;background:rgba(22,19,14,.10);overflow:hidden"><div style="width:{pct}%;height:100%;background:#16130E;border-radius:9px"></div></div>
 </div>
-<h2 style="font-size:clamp(28px,7vw,40px);margin:22px 0 0">{titel}</h2>
 </div></div>''')
 
 # ---------- Kontakt ----------
