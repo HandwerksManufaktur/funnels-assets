@@ -7,7 +7,7 @@
 .hw p{margin:0}
 .hw.papier{background:#FAF7F1}.hw.weiss{background:#FFFFFF}.hw.tinte{background:#16130E;color:#FAF7F1}
 .hw .sek{padding:72px 20px 0}
-.hw.tinte .sek{padding-bottom:40px}
+.hw.tinte .sek{padding-bottom:0}
 .hw .w{max-width:720px;margin:0 auto}
 .hw .ww{max-width:1040px;margin:0 auto}
 .hw .mitte{text-align:center}
@@ -38,6 +38,32 @@
 .hw .zk span.zf{color:#16130E;margin:0}
 .hw.tinte .zk span.zf{color:#FAF7F1}
 .hw .zk span.zf.em{font-size:28px}
+.hw .zk .ic{display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0 auto 10px;border-radius:50%;background:#FAF7F1;font-size:20px;line-height:1}
+.hw.tinte .zk .ic{background:rgba(250,247,241,.10)}
+.hw .schluss{margin-top:26px;font-size:15px;color:#6B6459;text-align:center}
+.hw.tinte .schluss{color:rgba(250,247,241,.6)}
+/* Kunden-Logo in Bewertung */
+.hw .st .kopf{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hw .st .logo{background:#FFFFFF;border-radius:12px;padding:6px 10px;height:52px;display:flex;align-items:center}
+.hw .st .logo img{max-height:40px;width:auto;max-width:120px}
+/* Icon-Zeilen */
+.hw .iz{display:grid;gap:10px;margin-top:22px}
+.hw .izz{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;background:#FFFFFF;border:1px solid rgba(22,19,14,.08);font-size:15.5px;font-weight:600;line-height:1.35}
+.hw.tinte .izz{background:rgba(250,247,241,.06);border-color:rgba(250,247,241,.12);color:#FAF7F1}
+.hw .izz .ic{flex:0 0 40px;height:40px;border-radius:50%;background:#FAF7F1;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hw.tinte .izz .ic{background:rgba(250,247,241,.12)}
+/* Seitenplan */
+.hw .plan{display:grid;grid-template-columns:1fr 150px;gap:18px;align-items:center;margin-top:30px}
+@media(max-width:520px){.hw .plan{grid-template-columns:1fr 118px;gap:12px}}
+.hw .baum{display:grid;gap:8px;grid-template-columns:1fr}
+.hw .knoten{border-radius:14px;padding:12px 14px;background:#FAF7F1;border:1px solid rgba(22,19,14,.08);font-size:14.5px;font-weight:700;line-height:1.3}
+.hw .knoten small{display:block;font-weight:500;color:#6B6459;font-size:12.5px;margin-top:2px}
+.hw .knoten.wurzel{background:#16130E;color:#FAF7F1;border-color:#16130E}
+.hw .knoten.ast{margin-left:22px;position:relative}
+.hw .knoten.ast:before{content:'';position:absolute;left:-14px;top:50%;width:10px;height:2px;background:rgba(22,19,14,.25)}
+/* Monogramm */
+.hw .mono{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#16130E;color:#FAF7F1;font-family:'Archivo',sans-serif;font-weight:800;font-size:72px;letter-spacing:-.04em}
+@media(max-width:640px){.hw .mono{font-size:52px}}
 /* Telefon-Rahmen */
 .hw .tel{border-radius:34px;background:#16130E;padding:8px;box-shadow:0 30px 60px -20px rgba(22,19,14,.45),0 0 0 1px rgba(22,19,14,.08)}
 .hw .tel img{border-radius:27px;width:100%;height:auto}
@@ -117,10 +143,10 @@
 .hw .rund{width:112px;height:112px;border-radius:50%;object-fit:cover;object-position:50% 20%;border:3px solid rgba(250,247,241,.9);margin:0 auto}
 </style>
 <div class="hw weiss"><div class="sek"><div class="ww"><div class="zwei">
-<div class="foto"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@0d075a5d207d2424b882190a951b37952ecb8b8e/handwerksmanufaktur/noah-laptop.jpg" alt="Noah Seelau am Laptop" width="1100" height="733" decoding="async" ></div>
-<div><span class="eb">👋 Dein Ansprechpartner</span>
-<h2>Servus, ich bin Noah.</h2>
-<p class="lead">Am Telefon höre ich jeden Tag denselben Satz: „Ich komm nicht dazu.“ Verstehe ich. Deshalb brauche ich von dir fast nichts.</p></div>
+<div class="foto"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@test/handwerksmanufaktur/noah-laptop.jpg" alt="Noah Seelau am Laptop" width="1100" height="733" decoding="async" ></div>
+<div><span class="eb">🤝 Wer wir sind</span>
+<h2>Wir bauen seit 2019 Homepages für Handwerksbetriebe.</h2>
+<p class="lead">Viele Betriebe sagen uns am Telefon: „Ich komm nicht dazu.“ Deshalb brauchen wir von dir fast nichts.</p></div>
 </div>
-<div class="w" style="margin-top:44px"><h3 style="font-size:22px">Das kostet dich:</h3><div class="zl" role="list"><div class="zli" role="listitem"><span class="nr">1</span><h4>⏱️ Ein paar kurze Fragen.</h4></div><div class="zli" role="listitem"><span class="nr">2</span><h4>📅 Einen Klick für den Termin.</h4></div><div class="zli" role="listitem"><span class="nr">3</span><h4>🛠️ Null Aufwand, während wir bauen.</h4><p>Wir nehmen, was es von deinem Betrieb schon gibt.</p></div><div class="zli" role="listitem"><span class="nr">4</span><h4>💻 Ein kurzer Videocall,</h4><p>in dem ich dir das Konzept zeige.</p></div></div></div>
+<div class="w" style="margin-top:44px"><h3 style="font-size:22px">Das kostet dich:</h3><div class="zl" role="list"><div class="zli" role="listitem"><span class="nr">1</span><h4>⏱️ Zwei kurze Fragen.</h4></div><div class="zli" role="listitem"><span class="nr">2</span><h4>📅 Einen Klick für den Termin.</h4></div><div class="zli" role="listitem"><span class="nr">3</span><h4>🛠️ Keine Arbeit, während wir bauen.</h4><p>Wir nehmen, was es von deinem Betrieb schon gibt.</p></div><div class="zli" role="listitem"><span class="nr">4</span><h4>💻 Einen kurzen Videocall,</h4><p>in dem wir dir das Konzept zeigen.</p></div></div></div>
 </div></div></div>

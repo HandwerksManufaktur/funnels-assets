@@ -17,7 +17,7 @@ CSS = """<style>
 .hw p{margin:0}
 .hw.papier{background:#FAF7F1}.hw.weiss{background:#FFFFFF}.hw.tinte{background:#16130E;color:#FAF7F1}
 .hw .sek{padding:72px 20px 0}
-.hw.tinte .sek{padding-bottom:40px}
+.hw.tinte .sek{padding-bottom:0}
 .hw .w{max-width:720px;margin:0 auto}
 .hw .ww{max-width:1040px;margin:0 auto}
 .hw .mitte{text-align:center}
@@ -48,6 +48,32 @@ CSS = """<style>
 .hw .zk span.zf{color:#16130E;margin:0}
 .hw.tinte .zk span.zf{color:#FAF7F1}
 .hw .zk span.zf.em{font-size:28px}
+.hw .zk .ic{display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0 auto 10px;border-radius:50%;background:#FAF7F1;font-size:20px;line-height:1}
+.hw.tinte .zk .ic{background:rgba(250,247,241,.10)}
+.hw .schluss{margin-top:26px;font-size:15px;color:#6B6459;text-align:center}
+.hw.tinte .schluss{color:rgba(250,247,241,.6)}
+/* Kunden-Logo in Bewertung */
+.hw .st .kopf{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hw .st .logo{background:#FFFFFF;border-radius:12px;padding:6px 10px;height:52px;display:flex;align-items:center}
+.hw .st .logo img{max-height:40px;width:auto;max-width:120px}
+/* Icon-Zeilen */
+.hw .iz{display:grid;gap:10px;margin-top:22px}
+.hw .izz{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;background:#FFFFFF;border:1px solid rgba(22,19,14,.08);font-size:15.5px;font-weight:600;line-height:1.35}
+.hw.tinte .izz{background:rgba(250,247,241,.06);border-color:rgba(250,247,241,.12);color:#FAF7F1}
+.hw .izz .ic{flex:0 0 40px;height:40px;border-radius:50%;background:#FAF7F1;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hw.tinte .izz .ic{background:rgba(250,247,241,.12)}
+/* Seitenplan */
+.hw .plan{display:grid;grid-template-columns:1fr 150px;gap:18px;align-items:center;margin-top:30px}
+@media(max-width:520px){.hw .plan{grid-template-columns:1fr 118px;gap:12px}}
+.hw .baum{display:grid;gap:8px;grid-template-columns:1fr}
+.hw .knoten{border-radius:14px;padding:12px 14px;background:#FAF7F1;border:1px solid rgba(22,19,14,.08);font-size:14.5px;font-weight:700;line-height:1.3}
+.hw .knoten small{display:block;font-weight:500;color:#6B6459;font-size:12.5px;margin-top:2px}
+.hw .knoten.wurzel{background:#16130E;color:#FAF7F1;border-color:#16130E}
+.hw .knoten.ast{margin-left:22px;position:relative}
+.hw .knoten.ast:before{content:'';position:absolute;left:-14px;top:50%;width:10px;height:2px;background:rgba(22,19,14,.25)}
+/* Monogramm */
+.hw .mono{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#16130E;color:#FAF7F1;font-family:'Archivo',sans-serif;font-weight:800;font-size:72px;letter-spacing:-.04em}
+@media(max-width:640px){.hw .mono{font-size:52px}}
 /* Telefon-Rahmen */
 .hw .tel{border-radius:34px;background:#16130E;padding:8px;box-shadow:0 30px 60px -20px rgba(22,19,14,.45),0 0 0 1px rgba(22,19,14,.08)}
 .hw .tel img{border-radius:27px;width:100%;height:auto}
@@ -150,12 +176,13 @@ def karten(k):
     return '<div class="karten">' + ''.join(
         f'<div class="ka"><span class="em">{e}</span><h3>{t}</h3><p>{p}</p></div>' for e, t, p in k) + '</div>'
 
-ZAHLEN = ('<div class="zahlen">'
-  '<div class="zk"><span class="zf">5,0</span><span>★★★★★ bei 57 Google-Bewertungen</span></div>'
-  '<div class="zk"><span class="zf">130+</span><span>Betriebe betreut</span></div>'
-  '<div class="zk"><span class="zf">2019</span><span>seit dem Jahr nur Handwerk</span></div>'
-  '<div class="zk"><span class="zf">0 €</span><span>kostet dich das Konzept</span></div>'
-  '</div>')
+def zk(ic, zahl, text):
+    return f'<div class="zk"><span class="ic">{ic}</span><span class="zf">{zahl}</span><span>{text}</span></div>'
+ZAHLEN = ('<div class="zahlen">' + zk('⭐','5,0','bei 57 Google-Bewertungen') + zk('🏗️','130+','Betriebe betreut')
+  + zk('📅','2019','seit dem Jahr nur Handwerk') + zk('🎁','0 €','kostet dich das Konzept') + '</div>')
+
+def iz(zeilen):
+    return '<div class="iz">' + ''.join(f'<div class="izz"><span class="ic">{e}</span><span>{t}</span></div>' for e, t in zeilen) + '</div>'
 
 CHIP = f'<div class="chip">{img("team-noah.jpg","Noah Seelau")}<span><b>Noah Seelau</b> · Gründer HandwerksManufaktur</span></div>'
 
@@ -169,38 +196,53 @@ def hero(eb, h1, sub):
 </div></div>''')
 
 # ---------- 1A ----------
-A1 = hero('🎁 Website-Konzept geschenkt',
-  'Erst siehst du deine neue Homepage. <span class="dunkel">Dann entscheidest du.</span>',
-  'Wir bauen vorab ein fertiges Konzept für deinen Betrieb. In einem kurzen Videocall zeige ich es dir. Kostenlos und unverbindlich.')
+A1 = hero('🎁 Kostenloses Website-Konzept',
+  'Wir bauen dir kostenlos ein Konzept deiner neuen Homepage.',
+  'Mit deinem Logo, deinen Leistungen und deinem Ort. Im kurzen Videocall zeigen wir es dir. So weißt du vorher genau, wie deine neue Seite aussieht.')
 
 def noah_block(text, zeile, schritte, zitat=''):
     return blk('weiss', f'''<div class="sek"><div class="ww"><div class="zwei">
 <div class="foto">{img("noah-laptop.jpg","Noah Seelau am Laptop")}</div>
-<div><span class="eb">👋 Dein Ansprechpartner</span>
-<h2>Servus, ich bin Noah.</h2>
+<div><span class="eb">🤝 Wer wir sind</span>
+<h2>Wir bauen seit 2019 Homepages für Handwerksbetriebe.</h2>
 <p class="lead">{text}</p>{zitat}</div>
 </div>
 <div class="w" style="margin-top:44px"><h3 style="font-size:22px">{zeile}</h3>{zl(schritte)}</div>
 </div></div>''')
 
-B1 = noah_block('Ich baue seit 2019 Websites für Handwerksbetriebe. Früher hast du deine Seite erst gesehen, als schon alles unterschrieben war. Heute baue ich zuerst.',
+B1 = noah_block('Bei uns bekommst du zuerst das Konzept deiner neuen Homepage. Erst danach entscheidest du, ob wir die Seite fertig bauen.',
   'So läuft\'s:', [
-  ('📝 Du beantwortest ein paar kurze Fragen.', ''),
+  ('📝 Du beantwortest zwei kurze Fragen.', ''),
   ('📅 Du suchst dir einen Termin für den Videocall aus.', ''),
-  ('🛠️ Wir bauen das Konzept deiner neuen Seite.', 'Du musst nichts vorbereiten.'),
-  ('💻 Ich zeige es dir im Videocall.', 'Danach entscheidest du.')])
+  ('🛠️ Wir bauen das Konzept deiner neuen Homepage.', 'Du musst nichts vorbereiten.'),
+  ('💻 Wir zeigen es dir im Videocall.', 'Danach entscheidest du in Ruhe.')])
 
-C1 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Warum wir das verschenken</span>
-<h2>Du sollst nicht die Katze im Sack kaufen.</h2>''' + karten([
-  ('👀', 'Du siehst die Seite selbst.', 'Deine Leistungen, dein Ort und dein Logo stehen schon drin.'),
-  ('✍️', 'Du unterschreibst vorher nichts.', 'Gefällt dir das Konzept nicht, war es das.'),
-  ('💬', 'Du bekommst eine klare Zahl.', 'Im Termin sagt dir Noah, was die fertige Seite kostet.'),
-  ('🤝', 'Du hast einen Ansprechpartner.', 'Vom ersten Gespräch bis die Seite online ist.')]) + '<p class="lead" style="margin-top:26px">Fast jeder fünfte Betrieb, mit dem wir reden, hat schon mal Geld für eine Homepage verbrannt. Das soll dir nicht passieren.</p></div></div>')
+C1 = blk('tinte', f'''<div class="sek"><div class="w">
+<span class="eb">👀 Erst sehen</span>
+<h2>Du siehst deine neue Homepage, bevor du etwas unterschreibst.</h2>
+<p class="lead">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. So sieht zum Beispiel die Startseite aus, die wir für Vogel Holzbau gebaut haben:</p>
+<div class="br" style="margin-top:26px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
+''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🤝','Du hast ein Team vom ersten Gespräch bis die Seite online ist.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.')]) + '<p class="schluss">Das Konzept kostet dich nichts.</p></div></div>')
 
 BAND = ['d-kreitner.jpg','d-vogel.jpg','d-kraus.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
 def band():
     items = ''.join(br(f, 'Startseite einer Kundenseite der HandwerksManufaktur') for f in BAND)
     return f'<div class="band" style="margin-top:40px"><div class="bandin">{items}{items}</div></div>'
+
+SEO = blk('weiss', f'''<div class="sek"><div class="w">
+<div class="mitte"><span class="eb">🔎 Für Google gebaut</span>
+<h2>Dein Konzept ist von Anfang an für Google gebaut.</h2>
+<p class="lead">Wer in deinem Ort nach einer deiner Leistungen sucht, soll genau die passende Seite von dir finden. Deshalb planen wir die Homepage so:</p></div>
+<div class="plan"><div class="baum">
+<div class="knoten wurzel">🏠 Startseite<small style="color:rgba(250,247,241,.6)">dein Betrieb auf einen Blick</small></div>
+<div class="knoten ast">🔧 Leistung 1<small>mit deinem Ort, eigene Seite</small></div>
+<div class="knoten ast">🔧 Leistung 2<small>mit deinem Ort, eigene Seite</small></div>
+<div class="knoten ast">🔧 Leistung 3<small>mit deinem Ort, eigene Seite</small></div>
+<div class="knoten ast">👷 Karriere<small>für Bewerber aus der Gegend</small></div>
+</div>{tel("m-kreitner-leistung.jpg","Leistungsseite Treppenbau der Schreinerei Kreitner am Handy")}</div>
+<div class="zahlen" style="margin-top:22px">''' + zk('📄','1 Seite','je Leistung, mit deinem Ort') + zk('⚡','schnell','geladen, auch unterwegs') + zk('📱','Handy','zuerst gebaut') + zk('🔎','Titel','und Text je Seite für Google') + '''</div>
+<p class="schluss">Links der Aufbau, rechts eine Leistungsseite der Schreinerei Kreitner am Handy.</p>
+</div></div>''')
 
 D = blk('papier', '''<div class="sek" style="padding-left:0;padding-right:0"><div class="w mitte" style="padding:0 20px">
 <span class="eb">💻 So sehen unsere Seiten aus</span>
@@ -210,21 +252,26 @@ D = blk('papier', '''<div class="sek" style="padding-left:0;padding-right:0"><di
   for f, alt, e, t, p in [
    ('m-doerfler-home.jpg','Startseite von Dörfler Bau am Handy','📱','Deine Startseite.','So sieht dich jeder, der dich empfohlen bekommt und abends am Handy nachschaut.'),
    ('m-kreitner-leistung.jpg','Leistungsseite Treppenbau der Schreinerei Kreitner','🧰','Eine Seite je Leistung.','Mit deinem Ort darin, damit dich findet, wer genau diese Arbeit sucht.'),
-   ('m-kraus-karriere.jpg','Karriereseite von Dachbau Kraus','👷','Dein Team und deine offene Stelle.','Bewerber sehen, wo sie arbeiten würden, und bewerben sich direkt vom Handy.')]) +
-  '<p class="dunkel mitte" style="font-size:13px;margin-top:14px">Echte Seiten, die wir für Kunden gebaut haben.</p></div></div>')
+   ('m-dinkel-karriere.jpg','Karriereseite von Dinkel Metallbau','👷','Dein Team und deine offene Stelle.','Bewerber sehen, wo sie arbeiten würden, und bewerben sich direkt vom Handy.')]) +
+  '<p class="dunkel mitte" style="font-size:13px;margin-top:14px">Seiten, die wir für Kunden gebaut haben.</p></div></div>')
+
+def bild_oder_mono(f, n, sty):
+    return img(f, n, sty) if f else '<div class="mono" role="img" aria-label="' + n + '">' + n[0] + '</div>'
 
 E = blk('weiss', '''<div class="sek"><div class="ww"><div class="w mitte">
 <span class="eb">🤝 Dein Team</span>
 <h2>Die Leute hinter deinem Auftritt</h2>
 <p class="lead">Von Anfang bis Ende dieselben drei.</p></div>
 <div class="team">''' + ''.join(
-  f'<div class="tm"><div class="bild">{img(f, n, sty)}</div><div class="txt"><h3>{n}</h3><div class="rolle">{r}</div><p>{p}</p></div></div>'
+  f'<div class="tm"><div class="bild">{bild_oder_mono(f, n, sty)}</div><div class="txt"><h3>{n}</h3><div class="rolle">{r}</div><p>{p}</p></div></div>'
   for f, n, r, p, sty in [
    ('team-noah.jpg','Noah','Gründer','Dein Ansprechpartner vom ersten Gespräch bis die Seite online ist.','style="object-position:50% 20%"'),
    ('team-robert.jpg','Robert','Shooting & Schnitt','Kommt mit Kamera und Drohne zu dir in den Betrieb.','style="object-position:50% 15%"'),
-   ('team-rudolf.jpg','Rudolf','Websites & Anzeigen','Baut die Seite und hält Google und Anzeigen am Laufen.','style="object-position:50% 30%"')]) +
+   ('','Rudolf','Websites & Anzeigen','Baut die Seite und hält Google und Anzeigen am Laufen.','')]) +
   '</div></div></div>')
 
+STIMMEN_LOGO = ['logo-k-senftleben.png','logo-k-damnig.png','logo-k-schmidt.png','logo-k-rauschmair.png','logo-k-jirka.png','logo-k-schneider.png']
+STIMMEN_BETRIEB = ['Senftleben Haustechnik','Schreinerei Damnig','Hannes Schmidt GmbH','Zimmerei Rauschmair','Jirka Hotelsanierung','Zimmerei Schneider']
 STIMMEN = [
  ('Noah hat unsere Homepage erstellt und betreut diese. Wir sind sehr zufrieden! Auch der Kontakt mit Noah ist immer freundlich.', 'Senftleben Sanitär Heizung, Ehingen'),
  ('Sehr gute Unterstützung, auch für ältere Handwerksmeister ohne große IT-Erfahrung.', 'Schreinerei, Wielenbach'),
@@ -235,59 +282,48 @@ STIMMEN = [
 F = blk('tinte', '''<div class="sek"><div class="ww"><div class="w mitte">
 <span class="eb">⭐ Google-Bewertungen</span>
 <h2>Was Betriebe über uns schreiben</h2>
-<div class="zahlen" style="max-width:560px;margin:26px auto 0">
-<div class="zk"><span class="zf">5,0</span><span>Schnitt auf Google</span></div>
-<div class="zk"><span class="zf">57</span><span>Google-Bewertungen</span></div>
-<div class="zk"><span class="zf">0</span><span>unter fünf Sternen</span></div>
-<div class="zk"><span class="zf">2019</span><span>erste Seite gebaut</span></div>
-</div></div>
+<div class="zahlen" style="max-width:560px;margin:26px auto 0">''' + zk('⭐','5,0','Schnitt auf Google') + zk('💬','57','Google-Bewertungen') + zk('✅','0','unter fünf Sternen') + zk('📅','2019','erste Seite gebaut') + '''</div></div>
 <div class="stimmen">''' + ''.join(
-  f'<div class="st"><div class="sterne">★★★★★</div><div style="margin-top:10px;font-size:15.5px;line-height:1.5">„{t}“</div><div class="wer">{w}</div></div>' for t, w in STIMMEN) +
-  '</div></div></div>')
+  f'<div class="st"><div class="kopf"><div class="sterne">★★★★★</div><div class="logo">{img(STIMMEN_LOGO[k], "Logo " + STIMMEN_BETRIEB[k])}</div></div><div style="margin-top:12px;font-size:15.5px;line-height:1.5">„{t}“</div><div class="wer">{w}</div></div>' for k, (t, w) in enumerate(STIMMEN)) +
+  '</div><p class="schluss">Alle Bewertungen stehen öffentlich auf Google.</p></div></div>')
 
-G = blk('papier', '''<div class="sek"><div class="w">
+G = blk('papier', f'''<div class="sek"><div class="w">
 <div class="mitte"><span class="eb">🏅 Kurz und knapp</span>
 <h2>Warum Betriebe mit uns arbeiten</h2></div>
-<div class="zahlen">
-<div class="zk"><span class="zf">2019</span><span>seit dem Jahr nur Handwerk</span></div>
-<div class="zk"><span class="zf">130+</span><span>Betriebe, die meisten zwischen Allgäu und München</span></div>
-<div class="zk"><span class="zf">70+</span><span>Konzepte gebaut</span></div>
-<div class="zk"><span class="zf em">📍</span><span>Wir kennen die Orte, in denen deine Kunden suchen</span></div>
-</div>
-<div class="foto" style="margin-top:26px">NOAHVORORT</div>
-</div></div>'''.replace('NOAHVORORT', img("noah-vor-ort.jpg","Noah Seelau mit einem Kundenteam vor dem Firmenwagen")))
+<div class="zahlen">''' + zk('📅','2019','seit dem Jahr nur Handwerk') + zk('🏗️','130+','Betriebe betreut') + zk('📍','Dein Ort','auf jeder Leistungsseite') + zk('🤝','3 Leute','von Anfang bis Ende') + f'''</div>
+<div class="foto" style="margin-top:26px">{img("noah-vor-ort.jpg","Noah Seelau mit einem Kundenteam vor dem Firmenwagen")}</div>
+</div></div>''')
 
 RUND = img("team-noah.jpg","Noah Seelau","class='rund'")
 def abschluss(h2, sub):
-    return blk('tinte', f'''<div class="sek" style="padding-bottom:40px"><div class="w mitte">
+    return blk('tinte', f'''<div class="sek"><div class="w mitte">
 {RUND}
 <h2 style="margin-top:22px">{h2}</h2>
-<p class="lead">{sub}</p>
-<div style="max-width:560px;margin:30px auto 0" class="br"><i><b></b><b></b><b></b></i>{img("d-kreitner.jpg","Startseite der Schreinerei Kreitner, gebaut von der HandwerksManufaktur")}</div>
+<div style="max-width:560px;margin:26px auto 0" class="br"><i><b></b><b></b><b></b></i>{img("d-kreitner.jpg","Startseite der Schreinerei Kreitner, gebaut von der HandwerksManufaktur")}</div>
+<p class="lead" style="margin-top:26px">{sub}</p>
 </div></div>''')
 
-H1B = abschluss('Schau dir deine neue Homepage an, bevor du irgendwas entscheidest.',
-  'Ein paar kurze Fragen, dann suchst du dir einen Termin aus. Das Konzept bauen wir bis dahin.')
+H1B = abschluss('Hol dir jetzt dein kostenloses Konzept.',
+  'Zwei kurze Fragen, dann suchst du dir einen Termin aus. Bis dahin bauen wir das Konzept deiner neuen Homepage.')
 
 # ---------- 1B ----------
 A2 = hero('🛠️ Für Chefs, die auf der Baustelle stehen',
-  'Keine Zeit für deine Homepage? <span class="dunkel">Brauchst du auch nicht.</span>',
-  'Wir bauen das Konzept deiner neuen Seite, während du arbeitest. Du schaust es dir in einem kurzen Videocall an. Kostenlos.')
-B2 = noah_block('Am Telefon höre ich jeden Tag denselben Satz: „Ich komm nicht dazu.“ Verstehe ich. Deshalb brauche ich von dir fast nichts.',
+  'Wir bauen das Konzept deiner neuen Homepage, während du arbeitest.',
+  'Kostenlos und mit deinem Logo, deinen Leistungen und deinem Ort. Du beantwortest zwei kurze Fragen, den Rest holen wir uns selbst. Im kurzen Videocall siehst du das Ergebnis.')
+B2 = noah_block('Viele Betriebe sagen uns am Telefon: „Ich komm nicht dazu.“ Deshalb brauchen wir von dir fast nichts.',
   'Das kostet dich:', [
-  ('⏱️ Ein paar kurze Fragen.', ''),
+  ('⏱️ Zwei kurze Fragen.', ''),
   ('📅 Einen Klick für den Termin.', ''),
-  ('🛠️ Null Aufwand, während wir bauen.', 'Wir nehmen, was es von deinem Betrieb schon gibt.'),
-  ('💻 Ein kurzer Videocall,', 'in dem ich dir das Konzept zeige.')])
-C2 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Du musst nichts lernen</span>
+  ('🛠️ Keine Arbeit, während wir bauen.', 'Wir nehmen, was es von deinem Betrieb schon gibt.'),
+  ('💻 Einen kurzen Videocall,', 'in dem wir dir das Konzept zeigen.')])
+C2 = blk('tinte', f'''<div class="sek"><div class="w">
+<span class="eb">Du musst nichts lernen</span>
 <h2>Du machst die Baustelle. Wir die Homepage.</h2>
-<p class="lead">Vormittags klingelt das Telefon, nachmittags bist du draußen. Die Homepage bleibt liegen, bis es brennt.</p>''' + karten([
-  ('🔎', 'Wir sammeln selbst.', 'Alte Seite, Google-Eintrag, Logo: Das holen wir uns.'),
-  ('🛠️', 'Wir bauen das Konzept.', 'Mit deinen Leistungen und deinem Ort.'),
-  ('💻', 'Du schaust nur zu.', 'Im kurzen Videocall, gern vom Handy aus.'),
-  ('✍️', 'Du entscheidest in Ruhe.', 'Vorher unterschreibst du nichts.')]) + '</div></div>')
-H2B = abschluss('Ein paar Fragen, ein kurzer Termin. Den Rest machen wir.',
-  'Das Konzept bauen wir, bevor wir reden. Du siehst deine neue Seite zum ersten Mal im Termin.')
+<p class="lead">Alte Seite, Google-Eintrag und Logo holen wir uns selbst. Daraus entsteht eine Startseite wie diese, die wir für Vogel Holzbau gebaut haben:</p>
+<div class="br" style="margin-top:26px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
+''' + iz([('🔎','Wir sammeln selbst, was es von deinem Betrieb gibt.'),('🛠️','Wir bauen das Konzept mit deinen Leistungen und deinem Ort.'),('💻','Du schaust es dir im kurzen Videocall an, gern vom Handy aus.')]) + '<p class="schluss">Vorher unterschreibst du nichts.</p></div></div>')
+H2B = abschluss('Zwei Fragen, ein kurzer Termin. Den Rest machen wir.',
+  'Das Konzept bauen wir, bevor wir reden. Du siehst deine neue Homepage zum ersten Mal im Videocall.')
 
 
 # ---------- 1C ----------
@@ -314,7 +350,7 @@ H3B = abschluss('Schau dir an, was der Nächste über dich finden soll.',
 # ---------- Fragen-Kopf (klein, über jeder Frage) ----------
 def fkopf(schritt, von, titel):
     pct = round(schritt / von * 100)
-    return blk('papier', f'''<div class="sek" style="padding:24px 20px 20px"><div class="w mitte">
+    return blk('weiss', f'''<div class="sek" style="padding:28px 20px 18px"><div class="w mitte">
 <div style="display:flex;align-items:center;gap:12px;max-width:420px;margin:0 auto">
 <span style="font-size:12px;font-weight:700;letter-spacing:.1em;color:rgba(22,19,14,.5)">SCHRITT {schritt}/{von}</span>
 <div style="flex:1;height:6px;border-radius:9px;background:rgba(22,19,14,.10);overflow:hidden"><div style="width:{pct}%;height:100%;background:#16130E;border-radius:9px"></div></div>
@@ -351,14 +387,14 @@ DANKE_UNTEN = blk('weiss', '''<div class="sek" style="padding:56px 20px 64px"><d
   '</div><p class="dunkel mitte" style="font-size:13px;margin-top:14px">Seiten, die wir für Kunden gebaut haben.</p><p class="mitte" style="font-size:15px;margin-top:26px;color:#4A443B">Kein passender Termin dabei? Antworte einfach auf die Bestätigungsmail.</p></div></div>')
 
 # ---------- P ----------
-PREIS = blk('papier', f'''<div class="sek"><div class="w mitte">
+PREIS = blk('papier', f'''<div class="sek" style="padding-top:30px"><div class="w mitte">
 <span class="eb">💬 Zum Preis</span>
-<h2>Klar, erst die Zahl.</h2>
-<p class="lead">Was deine Seite kostet, hängt davon ab, wie viele Leistungen und Seiten sie braucht. Ohne Konzept wäre jede Zahl geraten.</p>
-<p class="lead" style="margin-top:14px">Deshalb bekommst du im Termin beides: dein fertiges Konzept und einen festen Preis. Vorher unterschreibst du nichts.</p>
-<div class="zwei" style="margin-top:36px;grid-template-columns:1fr 1fr;gap:14px;max-width:440px;margin-left:auto;margin-right:auto">
+<h2>Was kostet eine Homepage bei uns?</h2>
+<p class="lead">Das Konzept kostet dich nichts. Was die fertige Homepage kostet, hängt davon ab, wie viele Leistungen dein Betrieb anbietet und wie viele Seiten sie braucht.</p>
+<p class="lead" style="margin-top:14px">Deshalb rechnen wir erst, wenn wir deinen Betrieb kennen. Mit dem Konzept bekommst du dann einen festen Preis.</p>
+<div class="zwei" style="margin-top:30px;grid-template-columns:1fr 1fr;gap:14px;max-width:440px;margin-left:auto;margin-right:auto">
 {tel("m-dinkel-home.jpg","Startseite von Dinkel Metallbau am Handy")}{tel("m-dinkel-leistung.jpg","Leistungsseite Treppen von Dinkel Metallbau am Handy")}
-</div></div></div>''')
+</div><p class="schluss">Zwei Seiten, die wir für Dinkel Metallbau gebaut haben.</p></div></div>''')
 
 # ---------- X ----------
 PRIVAT = blk('papier', f'''<div class="sek" style="padding:40px 20px 64px"><div class="w mitte">
@@ -382,15 +418,11 @@ M_KARTEN = blk('weiss', '<div class="sek"><div class="ww"><div class="mk">' + ''
   for f, a, e, t, p in [
    ('d-vogel.jpg','Startseite von Vogel Holzbau','🔎','Was wir uns anschauen.','Deine alte Seite, deinen Google-Eintrag und dein Logo. Gibt es noch keine Seite, fragen wir dich kurz nach Fotos.'),
    ('d-kraus.jpg','Startseite von Dachbau Kraus','🛠️','Was wir bauen.','Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.'),
-   ('noah-laptop.jpg','Noah Seelau im Videocall','💻','Was du bekommst.','Einen Termin mit Noah, in dem du die Seite siehst und einen festen Preis hörst.')]) + '</div></div></div>')
+   ('noah-laptop.jpg','Noah Seelau im Videocall','💻','Was du bekommst.','Einen kurzen Videocall, in dem wir dir dein Konzept zeigen. Danach entscheidest du in Ruhe.')]) + '</div></div></div>')
 
-BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2':B2,'c2':C2,'h2':H2B,'a3':A3,'b3':B3,'c3':C3,'h3':H3B,
-  'f2':fkopf(1,6,'In welchem Gewerk bist du unterwegs?'),
-  'f3':fkopf(2,6,'Wo sitzt dein Betrieb?'),
-  'f4':fkopf(3,6,'Hast du schon eine Homepage?'),
-  'f5':fkopf(4,6,'Was soll deine neue Seite vor allem schaffen?'),
-  'f6':fkopf(5,6,'Wie viele Leute seid ihr im Betrieb?'),
-  'f7':fkopf(6,6,'Wann soll deine neue Seite online gehen?'),
+BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':SEO+D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2':B2,'c2':C2,'h2':H2B,'a3':A3,'b3':B3,'c3':C3,'h3':H3B,
+  'f2':fkopf(1,2,'In welchem Gewerk bist du unterwegs?'),
+  'f3':fkopf(2,2,'Hast du schon ein Logo?'),
   'kontakt':KONTAKT,'kontakt_hinweis':KONTAKT_HINWEIS,'danke_oben':DANKE_OBEN,'danke_unten':DANKE_UNTEN,'preis':PREIS,'privat':PRIVAT,'m_intro':M_INTRO,'m_karten':M_KARTEN}
 OUT.mkdir(exist_ok=True)
 for k, v in BLOECKE.items():
