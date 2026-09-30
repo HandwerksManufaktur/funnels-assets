@@ -36,7 +36,7 @@ CSS = """<style>
 .hw .chip img{width:34px;height:34px;border-radius:50%;object-fit:cover;object-position:50% 18%}
 .hw .chip b{color:#16130E}
 .hw .chip.gross{padding:6px 18px 6px 6px;border-radius:40px;text-align:left}
-.hw .chip.gross img{width:64px;height:64px}
+.hw .chip.gross img{width:64px;height:64px;flex-shrink:0}
 /* Zahlen-Kacheln */
 .hw .zahlen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:26px}
 .hw .zk{background:#FFFFFF;border:1px solid rgba(22,19,14,.08);border-radius:18px;padding:16px 10px;text-align:center}
@@ -333,10 +333,10 @@ KONTAKT = blk('papier', f'''<div class="sek" style="padding:26px 20px 6px"><div 
 
 # ---------- Danke ----------
 DANKE_OBEN = blk('papier', f'''<div class="sek" style="padding:34px 20px 10px"><div class="w mitte">
-<svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-label="Erledigt" style="display:block;margin:0 auto"><circle cx="36" cy="36" r="36" fill="#16130E"/><path d="M22 37.5l9.5 9.5L51 27" fill="none" stroke="#FAF7F1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="position:relative;width:128px;height:128px;margin:0 auto">{img("team-noah.jpg","Noah Seelau","style='width:128px;height:128px;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block'")}<svg width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Erledigt" style="position:absolute;right:-4px;bottom:-4px"><circle cx="22" cy="22" r="20" fill="#16130E" stroke="#FAF7F1" stroke-width="4"/><path d="M13 22.5l6 6L31 16" fill="none" stroke="#FAF7F1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 <h1 style="font-size:clamp(34px,8.4vw,54px)">Danke! Jetzt fehlt nur noch dein Termin.</h1>
 <p class="lead">Such dir unten eine Zeit aus. Bis dahin bauen wir das Konzept deiner neuen Homepage.</p>
-<div class="chip" style="margin-top:20px">{img("team-noah.jpg","Noah Seelau")}<span><b>Noah</b> zeigt dir dein Konzept</span></div>
+<p style="margin-top:14px;font-size:14px;color:#6B6459"><b style="color:#16130E">Noah</b> zeigt dir dein Konzept.</p>
 </div></div>''')
 DANKE_UNTEN = blk('weiss', '''<div class="sek" style="padding:56px 20px 64px"><div class="w">
 <div class="mitte"><span class="eb">🧭 So geht es weiter</span></div>''' + zl([
