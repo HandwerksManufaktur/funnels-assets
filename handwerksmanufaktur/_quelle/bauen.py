@@ -178,13 +178,13 @@ def karten(k):
 
 def zk(ic, zahl, text):
     return f'<div class="zk"><span class="ic">{ic}</span><span class="zf">{zahl}</span><span>{text}</span></div>'
-ZAHLEN = ('<div class="zahlen">' + zk('⭐','5,0','bei 57 Google-Bewertungen') + zk('🏗️','130+','Betriebe betreut')
-  + zk('📅','2019','seit dem Jahr nur Handwerk') + zk('🎁','0 €','kostet dich das Konzept') + '</div>')
+ZAHLEN = ('<div class="zahlen">' + zk('⭐','5,0','bei 57 Google-Bewertungen') + zk('🎁','0 €','kostet dich das Konzept')
+  + zk('💻','1 Videocall','dann entscheidest du') + zk('📱','Handy','zuerst gebaut') + '</div>')
 
 def iz(zeilen):
     return '<div class="iz">' + ''.join(f'<div class="izz"><span class="ic">{e}</span><span>{t}</span></div>' for e, t in zeilen) + '</div>'
 
-CHIP = f'<div class="chip">{img("team-noah.jpg","Noah Seelau")}<span><b>Noah Seelau</b> · Gründer HandwerksManufaktur</span></div>'
+CHIP = '<div class="chip" style="padding:8px 16px"><span><b>HandwerksManufaktur</b> · seit 2019 nur Handwerk · über 130 Betriebe</span></div>'
 
 def hero(eb, h1, sub):
     return blk('papier', f'''<div class="sek" style="padding:30px 20px 34px"><div class="w mitte">
@@ -197,32 +197,32 @@ def hero(eb, h1, sub):
 
 # ---------- 1A ----------
 A1 = hero('🎁 Kostenloses Website-Konzept',
-  'Wir bauen dir kostenlos ein Konzept deiner neuen Homepage.',
-  'Mit deinem Logo, deinen Leistungen und deinem Ort. Im kurzen Videocall zeigen wir es dir. So weißt du vorher genau, wie deine neue Seite aussieht.')
+  'Wir bauen dir kostenlos ein Website-Konzept für deine neue Homepage.',
+  'Mit deinem Logo und deinen Leistungen. Im kurzen Videocall zeigen wir es dir, das kostet dich nichts.')
 
 def noah_block(text, zeile, schritte, zitat=''):
     return blk('weiss', f'''<div class="sek"><div class="ww"><div class="zwei">
 <div class="foto">{img("noah-laptop.jpg","Noah Seelau am Laptop")}</div>
 <div><span class="eb">🤝 Wer wir sind</span>
-<h2>Wir bauen seit 2019 Homepages für Handwerksbetriebe.</h2>
+<h2>So läuft's bei uns</h2>
 <p class="lead">{text}</p>{zitat}</div>
 </div>
-<div class="w" style="margin-top:44px"><h3 style="font-size:22px">{zeile}</h3>{zl(schritte)}</div>
+<div class="w" style="margin-top:36px">{zl(schritte)}</div>
 </div></div>''')
 
-B1 = noah_block('Bei uns bekommst du zuerst das Konzept deiner neuen Homepage. Erst danach entscheidest du, ob wir die Seite fertig bauen.',
+B1 = noah_block('Wir bauen seit 2019 Homepages für Handwerksbetriebe. Dein Konzept bauen wir, bevor du irgendetwas unterschreibst.',
   'So läuft\'s:', [
   ('📝 Du beantwortest zwei kurze Fragen.', ''),
   ('📅 Du suchst dir einen Termin für den Videocall aus.', ''),
   ('🛠️ Wir bauen das Konzept deiner neuen Homepage.', 'Du musst nichts vorbereiten.'),
-  ('💻 Wir zeigen es dir im Videocall.', 'Danach entscheidest du in Ruhe.')])
+  ('💻 Wir zeigen es dir im kurzen Videocall,', 'danach entscheidest du.')])
 
 C1 = blk('tinte', f'''<div class="sek"><div class="w">
 <span class="eb">👀 Erst sehen</span>
 <h2>Du siehst deine neue Homepage, bevor du etwas unterschreibst.</h2>
 <p class="lead">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. So sieht zum Beispiel die Startseite aus, die wir für Vogel Holzbau gebaut haben:</p>
 <div class="br" style="margin-top:26px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
-''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🤝','Du hast ein Team vom ersten Gespräch bis die Seite online ist.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.')]) + '<p class="schluss">Das Konzept kostet dich nichts.</p></div></div>')
+''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🏗️','Deine Arbeit steht vorne. Deine Leistungen und deine Baustellen sind schon im Konzept drin.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.')]) + '<p class="schluss">Das Konzept kostet dich nichts.</p></div></div>')
 
 BAND = ['d-kreitner.jpg','d-vogel.jpg','d-kraus.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
 def band():
@@ -294,23 +294,22 @@ G = blk('papier', f'''<div class="sek"><div class="w">
 <div class="foto" style="margin-top:26px">{img("noah-vor-ort.jpg","Noah Seelau mit einem Kundenteam vor dem Firmenwagen")}</div>
 </div></div>''')
 
-RUND = img("team-noah.jpg","Noah Seelau","class='rund'")
+RUND = '<div class="foto" style="max-width:420px;margin:0 auto">' + img("noah-mit-kunde-hirschvogel.jpg","Noah Seelau mit einem Kunden am Küchentisch, Laptop aufgeklappt") + '</div>'
 def abschluss(h2, sub):
     return blk('tinte', f'''<div class="sek"><div class="w mitte">
 {RUND}
-<h2 style="margin-top:22px">{h2}</h2>
-<div style="max-width:560px;margin:26px auto 0" class="br"><i><b></b><b></b><b></b></i>{img("d-kreitner.jpg","Startseite der Schreinerei Kreitner, gebaut von der HandwerksManufaktur")}</div>
-<p class="lead" style="margin-top:26px">{sub}</p>
+<h2 style="margin-top:26px">{h2}</h2>
+<p class="lead">{sub}</p>
 </div></div>''')
 
-H1B = abschluss('Hol dir jetzt dein kostenloses Konzept.',
+H1B = abschluss('Schau dir dein fertiges Website-Konzept an, bevor du irgendwas entscheidest.',
   'Zwei kurze Fragen, dann suchst du dir einen Termin aus. Bis dahin bauen wir das Konzept deiner neuen Homepage.')
 
 # ---------- 1B ----------
 A2 = hero('🛠️ Für Chefs, die auf der Baustelle stehen',
-  'Wir bauen das Konzept deiner neuen Homepage, während du arbeitest.',
+  'Keine Zeit für die Homepage? Wir bauen dir das Konzept, du schaust es nur an.',
   'Kostenlos und mit deinem Logo, deinen Leistungen und deinem Ort. Du beantwortest zwei kurze Fragen, den Rest holen wir uns selbst. Im kurzen Videocall siehst du das Ergebnis.')
-B2 = noah_block('Viele Betriebe sagen uns am Telefon: „Ich komm nicht dazu.“ Deshalb brauchen wir von dir fast nichts.',
+B2 = noah_block('Am Telefon hören wir jeden Tag denselben Satz: „Ich komm nicht dazu.“ Deshalb brauchen wir von dir fast nichts.',
   'Das kostet dich:', [
   ('⏱️ Zwei kurze Fragen.', ''),
   ('📅 Einen Klick für den Termin.', ''),
@@ -364,23 +363,23 @@ KONTAKT = blk('papier', f'''<div class="sek" style="padding:26px 20px 6px"><div 
 <div style="flex:1;height:6px;border-radius:9px;background:rgba(22,19,14,.10);overflow:hidden"><div style="width:96%;height:100%;background:#16130E;border-radius:9px"></div></div>
 </div>
 <h2 style="font-size:clamp(28px,7vw,40px);margin:22px 0 10px">Fast fertig. Jetzt reservierst du die Vorstellung deines Konzepts.</h2>
-<div class="chip gross" style="margin-top:8px">{img("team-noah.jpg","Noah Seelau")}<span>Noah meldet sich persönlich. Deine Daten bleiben bei uns.</span></div>
+<div class="chip gross" style="margin-top:8px">{img("team-noah.jpg","Noah Seelau")}<span>Wir melden uns persönlich bei dir. Deine Daten bleiben bei uns.</span></div>
 </div></div>''')
 
-KONTAKT_HINWEIS = blk('weiss', '<div style="max-width:420px;margin:0 auto;padding:6px 24px 2px;text-align:center;font-size:13px;line-height:1.45;color:#6B6459">Mit dem Absenden meldet sich Noah zu deiner Anfrage per Telefon und E-Mail. Abmelden geht jederzeit mit einem Klick.</div>')
+KONTAKT_HINWEIS = blk('weiss', '<div style="max-width:420px;margin:0 auto;padding:6px 24px 2px;text-align:center;font-size:13px;line-height:1.45;color:#6B6459">Mit dem Absenden melden wir uns zu deiner Anfrage per Telefon und E-Mail. Abmelden geht jederzeit mit einem Klick.</div>')
 
 # ---------- Danke ----------
 DANKE_OBEN = blk('papier', f'''<div class="sek" style="padding:34px 20px 10px"><div class="w mitte">
 <div style="position:relative;width:128px;height:128px;margin:0 auto">{img("team-noah.jpg","Noah Seelau","style='width:128px;height:128px;border-radius:50%;object-fit:cover;object-position:50% 18%;display:block'")}<svg width="44" height="44" viewBox="0 0 44 44" role="img" aria-label="Erledigt" style="position:absolute;right:-4px;bottom:-4px"><circle cx="22" cy="22" r="20" fill="#16130E" stroke="#FAF7F1" stroke-width="4"/><path d="M13 22.5l6 6L31 16" fill="none" stroke="#FAF7F1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 <h1 style="font-size:clamp(34px,8.4vw,54px)">Danke! Jetzt fehlt nur noch dein Termin.</h1>
 <p class="lead">Such dir unten eine Zeit aus. Bis dahin bauen wir das Konzept deiner neuen Homepage.</p>
-<p style="margin-top:14px;font-size:14px;color:#6B6459"><b style="color:#16130E">Noah</b> zeigt dir dein Konzept.</p>
+<p style="margin-top:14px;font-size:14px;color:#6B6459">Wir zeigen dir dein Konzept im Videocall.</p>
 </div></div>''')
 DANKE_UNTEN = blk('weiss', '''<div class="sek" style="padding:56px 20px 64px"><div class="w">
 <div class="mitte"><span class="eb">🧭 So geht es weiter</span></div>''' + zl([
   ('📅 Du wählst einen Termin.', 'Die Bestätigung kommt per Mail.'),
   ('🛠️ Wir bauen dein Konzept.', 'Du musst nichts vorbereiten.'),
-  ('💻 Noah zeigt es dir in einem kurzen Videocall.', ''),
+  ('💻 Wir zeigen es dir im kurzen Videocall.', ''),
   ('✍️ Du entscheidest in Ruhe,', 'ob wir weitermachen.')]) + '''
 <div class="zwei" style="margin-top:40px;grid-template-columns:1fr 1fr 1fr;gap:12px">''' + ''.join(tel(f, a) for f, a in [
   ('m-kreitner-home.jpg','Startseite der Schreinerei Kreitner am Handy'),('m-knappich-home.jpg','Startseite der Zimmerei Knappich am Handy'),('m-vogel-home.jpg','Startseite von Vogel Holzbau am Handy')]) +
@@ -389,9 +388,9 @@ DANKE_UNTEN = blk('weiss', '''<div class="sek" style="padding:56px 20px 64px"><d
 # ---------- P ----------
 PREIS = blk('papier', f'''<div class="sek" style="padding-top:30px"><div class="w mitte">
 <span class="eb">💬 Zum Preis</span>
-<h2>Was kostet eine Homepage bei uns?</h2>
-<p class="lead">Das Konzept kostet dich nichts. Was die fertige Homepage kostet, hängt davon ab, wie viele Leistungen dein Betrieb anbietet und wie viele Seiten sie braucht.</p>
-<p class="lead" style="margin-top:14px">Deshalb rechnen wir erst, wenn wir deinen Betrieb kennen. Mit dem Konzept bekommst du dann einen festen Preis.</p>
+<h2>Klar, erst die Zahl.</h2>
+<p class="lead">Was deine Seite kostet, hängt davon ab, wie viele Leistungen und Seiten sie braucht. Ohne Konzept wäre jede Zahl geraten.</p>
+<p class="lead" style="margin-top:14px">Deshalb bekommst du im Termin beides: dein fertiges Konzept und einen festen Preis. Vorher unterschreibst du nichts.</p>
 <div class="zwei" style="margin-top:30px;grid-template-columns:1fr 1fr;gap:14px;max-width:440px;margin-left:auto;margin-right:auto">
 {tel("m-dinkel-home.jpg","Startseite von Dinkel Metallbau am Handy")}{tel("m-dinkel-leistung.jpg","Leistungsseite Treppen von Dinkel Metallbau am Handy")}
 </div><p class="schluss">Zwei Seiten, die wir für Dinkel Metallbau gebaut haben.</p></div></div>''')
@@ -418,7 +417,7 @@ M_KARTEN = blk('weiss', '<div class="sek"><div class="ww"><div class="mk">' + ''
   for f, a, e, t, p in [
    ('d-vogel.jpg','Startseite von Vogel Holzbau','🔎','Was wir uns anschauen.','Deine alte Seite, deinen Google-Eintrag und dein Logo. Gibt es noch keine Seite, fragen wir dich kurz nach Fotos.'),
    ('d-kraus.jpg','Startseite von Dachbau Kraus','🛠️','Was wir bauen.','Eine Startseite und die Seiten zu deinen Leistungen, mit deinem Ort darin.'),
-   ('noah-laptop.jpg','Noah Seelau im Videocall','💻','Was du bekommst.','Einen kurzen Videocall, in dem wir dir dein Konzept zeigen. Danach entscheidest du in Ruhe.')]) + '</div></div></div>')
+   ('noah-laptop.jpg','Noah Seelau im Videocall','💻','Was du bekommst.','Einen kurzen Termin, in dem du deine neue Homepage fertig siehst.')]) + '</div></div></div>')
 
 BLOECKE = {'a1':A1,'b1':B1,'c1':C1,'d':SEO+D,'e':E,'f':F,'g':G,'h1':H1B,'a2':A2,'b2':B2,'c2':C2,'h2':H2B,'a3':A3,'b3':B3,'c3':C3,'h3':H3B,
   'f2':fkopf(1,2,'In welchem Gewerk bist du unterwegs?'),
