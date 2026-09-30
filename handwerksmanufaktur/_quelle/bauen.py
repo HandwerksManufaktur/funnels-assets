@@ -38,7 +38,7 @@ CSS = """<style>
 .hw .chip.gross{padding:6px 18px 6px 6px;border-radius:40px;text-align:left}
 .hw .chip.gross img{width:64px;height:64px;flex-shrink:0}
 /* Zahlen-Kacheln */
-.hw .zahlen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+.hw .zahlen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
 .hw .zk{background:#FFFFFF;border:1px solid rgba(22,19,14,.08);border-radius:18px;padding:16px 10px;text-align:center}
 .hw.tinte .zk{background:rgba(250,247,241,.05);border-color:rgba(250,247,241,.12)}
 .hw .zk .zf{font-size:clamp(24px,5.6vw,34px);line-height:1;display:block}
@@ -187,10 +187,10 @@ def iz(zeilen):
 CHIP = '<div class="chip" style="padding:8px 16px"><span><b>HandwerksManufaktur</b> · seit 2019 nur Handwerk · über 130 Betriebe</span></div>'
 
 def hero(eb, h1, sub):
-    return blk('papier', f'''<div class="sek" style="padding:30px 20px 34px"><div class="w mitte">
+    return blk('papier', f'''<div class="sek" style="padding:16px 20px 34px"><div class="w mitte">
 {CHIP}
-<div style="margin-top:14px"><span class="eb">{eb}</span></div>
-<h1>{h1}</h1>
+<div style="margin-top:10px"><span class="eb">{eb}</span></div>
+<h1 style="margin:10px 0 10px">{h1}</h1>
 <p class="lead">{sub}</p>
 {ZAHLEN}
 </div></div>''')
@@ -222,7 +222,7 @@ C1 = blk('tinte', f'''<div class="sek"><div class="w">
 <h2>Du siehst deine neue Homepage, bevor du etwas unterschreibst.</h2>
 <div class="br" style="margin-top:22px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
 <p class="lead" style="margin-top:22px">Im Konzept stehen schon dein Logo, deine Leistungen und dein Ort. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
-''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🏗️','Deine Arbeit steht vorne. Deine Leistungen und deine Baustellen sind schon im Konzept drin.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.'),('🎁','Das Konzept kostet dich nichts.')]) + '</div></div>')
+''' + iz([('✍️','Vorher unterschreibst du nichts.'),('🏗️','Deine Arbeit steht vorne. Deine Leistungen und deine Baustellen sind schon im Konzept drin.'),('📱','Die Seite ist fürs Handy gebaut, weil deine Kunden dort nachschauen.'),('🎁','Das Konzept kostet dich nichts.')]) + '<div style="height:44px"></div></div></div>')
 
 BAND = ['d-kreitner.jpg','d-vogel.jpg','d-kraus.jpg','d-knappich.jpg','d-dinkel.jpg','d-sdhirsch.jpg','d-hirschvogel.jpg','d-tankschutz.jpg']
 def band():
@@ -320,7 +320,7 @@ C2 = blk('tinte', f'''<div class="sek"><div class="w">
 <h2>Du machst die Baustelle. Wir die Homepage.</h2>
 <div class="br" style="margin-top:22px"><i><b></b><b></b><b></b></i>{img("d-vogel.jpg","Startseite von Vogel Holzbau, gebaut von der HandwerksManufaktur")}</div>
 <p class="lead" style="margin-top:22px">Alte Seite, Google-Eintrag und Logo holen wir uns selbst. Oben siehst du die Startseite, die wir für Vogel Holzbau gebaut haben.</p>
-''' + iz([('🔎','Wir sammeln selbst, was es von deinem Betrieb gibt.'),('🛠️','Wir bauen das Konzept mit deinen Leistungen und deinem Ort.'),('💻','Du schaust es dir im kurzen Videocall an, gern vom Handy aus.'),('✍️','Vorher unterschreibst du nichts.')]) + '</div></div>')
+''' + iz([('🔎','Wir sammeln selbst, was es von deinem Betrieb gibt.'),('🛠️','Wir bauen das Konzept mit deinen Leistungen und deinem Ort.'),('💻','Du schaust es dir im kurzen Videocall an, gern vom Handy aus.'),('✍️','Vorher unterschreibst du nichts.')]) + '<div style="height:44px"></div></div></div>')
 H2B = abschluss('Zwei Fragen, ein kurzer Termin. Den Rest machen wir.',
   'Das Konzept bauen wir, bevor wir reden. Du siehst deine neue Homepage zum ersten Mal im Videocall.')
 
