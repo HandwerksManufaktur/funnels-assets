@@ -257,7 +257,7 @@ G = blk('papier', '''<div class="sek"><div class="w">
 
 RUND = img("team-noah.jpg","Noah Seelau","class='rund'")
 def abschluss(h2, sub):
-    return blk('tinte', f'''<div class="sek" style="padding-bottom:6px"><div class="w mitte">
+    return blk('tinte', f'''<div class="sek" style="padding-bottom:40px"><div class="w mitte">
 {RUND}
 <h2 style="margin-top:22px">{h2}</h2>
 <p class="lead">{sub}</p>
