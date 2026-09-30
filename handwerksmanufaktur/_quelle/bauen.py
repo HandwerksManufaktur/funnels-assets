@@ -208,7 +208,7 @@ D = blk('papier', '''<div class="sek" style="padding-left:0;padding-right:0"><di
   for f, alt, e, t, p in [
    ('m-doerfler-home.jpg','Startseite von Dörfler Bau am Handy','📱','Deine Startseite.','So sieht dich jeder, der dich empfohlen bekommt und abends am Handy nachschaut.'),
    ('m-kreitner-leistung.jpg','Leistungsseite Treppenbau der Schreinerei Kreitner','🧰','Eine Seite je Leistung.','Mit deinem Ort darin, damit dich findet, wer genau diese Arbeit sucht.'),
-   ('m-kraus-karriere.jpg','Karriereseite von Dachbau Kraus','👷','Dein Team und deine offene Stelle.','Bewerber sehen, wo sie arbeiten würden, und bewerben sich in einer Minute.')]) +
+   ('m-kraus-karriere.jpg','Karriereseite von Dachbau Kraus','👷','Dein Team und deine offene Stelle.','Bewerber sehen, wo sie arbeiten würden, und bewerben sich direkt vom Handy.')]) +
   '<p class="dunkel mitte" style="font-size:13px;margin-top:14px">Echte Seiten, die wir für Kunden gebaut haben.</p></div></div>')
 
 E = blk('weiss', '''<div class="sek"><div class="ww"><div class="w mitte">
@@ -273,9 +273,9 @@ A2 = hero('🛠️ Für Chefs, die auf der Baustelle stehen',
   'Wir bauen das Konzept deiner neuen Seite, während du arbeitest. Du schaust es dir in einem kurzen Videocall an. Kostenlos.')
 B2 = noah_block('Am Telefon höre ich jeden Tag denselben Satz: „Ich komm nicht dazu.“ Verstehe ich. Deshalb brauche ich von dir fast nichts.',
   'Das kostet dich:', [
-  ('⏱️ Zwei Minuten für ein paar Fragen.', ''),
+  ('⏱️ Ein paar kurze Fragen.', ''),
   ('📅 Einen Klick für den Termin.', ''),
-  ('🛠️ Null Minuten, während wir bauen.', 'Wir nehmen, was es von deinem Betrieb schon gibt.'),
+  ('🛠️ Null Aufwand, während wir bauen.', 'Wir nehmen, was es von deinem Betrieb schon gibt.'),
   ('💻 Ein kurzer Videocall,', 'in dem ich dir das Konzept zeige.')])
 C2 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Du musst nichts lernen</span>
 <h2>Du machst die Baustelle. Wir die Homepage.</h2>
@@ -284,7 +284,7 @@ C2 = blk('tinte', '<div class="sek"><div class="w">' + '''<span class="eb">Du mu
   ('🛠️', 'Wir bauen das Konzept.', 'Mit deinen Leistungen und deinem Ort.'),
   ('💻', 'Du schaust nur zu.', 'Im kurzen Videocall, gern vom Handy aus.'),
   ('✍️', 'Du entscheidest in Ruhe.', 'Vorher unterschreibst du nichts.')]) + '</div></div>')
-H2B = abschluss('Zwei Minuten Fragen, ein kurzer Termin. Den Rest machen wir.',
+H2B = abschluss('Ein paar Fragen, ein kurzer Termin. Den Rest machen wir.',
   'Das Konzept bauen wir, bevor wir reden. Du siehst deine neue Seite zum ersten Mal im Termin.')
 
 
