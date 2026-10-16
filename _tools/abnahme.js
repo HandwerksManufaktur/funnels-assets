@@ -60,6 +60,9 @@ window.funnelAbnahme = async function (opt = {}) {
   const datei = (u) => u.split('/').pop().split('?')[0];
   const host = (u) => (u.split('/')[2] || '');
   const emoji = (u) => /^[0-9a-f]{4,6}\.png$/i.test(datei(u)); // Twemoji
+  // Piktogramme aus Perspectives eigener Icon-Auswahl (Quiz-Antwortkarten) laufen über img.icons8.com.
+  // Das sind Symbole wie Emojis, keine Stockfotos (Stimpfle 16.10.2026: einziger Rest-Rotpunkt war das Wannen-Icon der Startfrage).
+  const piktogramm = (u) => emoji(u) || /(^|\.)icons8\.com$/i.test(host(u));
 
   // 1 — Logo ganz oben
   if (o.logo) {
@@ -104,7 +107,7 @@ window.funnelAbnahme = async function (opt = {}) {
   );
   const unbekannt = quellen.filter(
     (q) =>
-      !emoji(q.url) &&
+      !piktogramm(q.url) &&
       !/funnels-assets/.test(q.url) &&
       !/favicon|32x32/.test(datei(q.url)) &&
       !/logo/i.test(q.alt)
