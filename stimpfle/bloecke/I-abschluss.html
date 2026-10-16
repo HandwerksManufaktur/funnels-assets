@@ -25,7 +25,16 @@
 .stf-lbl{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px}
 @media (min-width:640px){.stf-vz{grid-template-columns:1fr 1fr}.stf-vz .stf-neu{border-top:0;border-left:1px solid #e3e6ef}.stf-vkopf{display:grid}.stf-lbl{display:none}.stf-trenn{border-top:1px solid #dfe3ef}}
 </style>
-<div style="background:#14171f;box-shadow:0 0 0 100vmax #14171f;clip-path:inset(0 -100vmax);padding:72px 20px 0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
+<style>
+/* Schlussfrage (Perspective-Trigger-Gruppe direkt unter diesem Block): leerer Titel weg, 32 px zum Satz, 56 px bis zum Fuss */
+div.fun-relative.fun-z-10 > div:last-child:has(.answer) .wrapper.fun-text-center{display:none}
+div.fun-relative.fun-z-10 > div:last-child:has(.answer) .answer{margin-top:32px!important}
+div.fun-relative.fun-z-10 > div:last-child:has(.answer) > div{padding-bottom:56px!important}
+/* Fuss in der Farbe des Abschlusses, damit unten keine weisse Kante steht */
+main:has(.stf-abschluss) > div.fun-border-box.fun-relative.fun-w-full:not(.fun-flex-1){background:#14171f!important;border-top:1px solid #262b38}
+main:has(.stf-abschluss) > div.fun-border-box.fun-relative.fun-w-full:not(.fun-flex-1) a{color:#a6abb8!important}
+</style>
+<div class="stf-abschluss" style="background:#14171f;box-shadow:0 0 0 100vmax #14171f;clip-path:inset(0 -100vmax);padding:72px 20px 0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
   <div style="max-width:760px;margin:0 auto;">
     <div style="text-align:center;margin:0 0 20px;"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@c0233eb7afe9966be6c137690426e919c94d2026/stimpfle/shooting-yannick-quadrat.webp" alt="Yannick Stimpfle" loading="lazy" style="width:112px;height:112px;border-radius:50%;object-fit:cover;display:inline-block;border:4px solid #2541b2;box-shadow:0 10px 30px rgba(0,0,0,.35);"><p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#a9b8f0;margin:10px 0 0;">Yannick Stimpfle</p></div>
     <div style="text-align:center;max-width:680px;margin:0 auto 0px;">
