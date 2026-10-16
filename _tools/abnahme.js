@@ -237,7 +237,13 @@ window.funnelAbnahme = async function (opt = {}) {
     await new Promise((r) => setTimeout(r, 250));
     const r = b.getBoundingClientRect();
     const x = Math.round(r.left + r.width / 2);
-    const oben = document.elementFromPoint(x, Math.round(r.top - 60));
+    // Gemessen wird direkt über der Oberkante des CTA-BLOCKS (nicht 60 px über dem Knopf):
+    // dort liegt der Rand der Sektion darüber. 60 px über dem Knopf traf bei Stimpfle (16.10.2026)
+    // die unterste Karte der Sektion (#f7f8fd) statt der Sektionsfläche (#eef1fb) — Fehlalarm.
+    let blockEl = b.parentElement;
+    for (let i = 0; i < 12 && blockEl; i++) { const c = getComputedStyle(blockEl).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') break; blockEl = blockEl.parentElement; }
+    const blockTop = blockEl ? blockEl.getBoundingClientRect().top : r.top;
+    const oben = document.elementFromPoint(x, Math.round(blockTop - 4));
     const soll = oben ? farbeVon(oben) : null;
     const ist = farbeVon(b.parentElement);
     if (soll && soll !== 'transparent' && soll !== ist)
