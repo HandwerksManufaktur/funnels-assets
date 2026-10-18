@@ -364,7 +364,12 @@ window.funnelKnopfAbstand = function (doc) {
       if (e.classList.contains('fx') || [...e.classList].some((c) => c.startsWith('fun-'))) return;
       if (rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98) return;
       const s = win.getComputedStyle(e);
-      const flaeche = s.backgroundColor !== 'rgba(0, 0, 0, 0)' && s.backgroundColor !== 'transparent';
+      // Fläche zählt nur, wenn sie sich vom Grund dahinter abhebt (Stimpfle 18.10.2026: weiße
+      // Hülle auf weißer Seite endete genau am Knopf, gemessen 0, sichtbar 32).
+      const leer = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent';
+      let grund = 'rgb(255, 255, 255)';
+      for (let a = e.parentElement; a; a = a.parentElement) { const c = win.getComputedStyle(a).backgroundColor; if (!leer(c)) { grund = c; break; } }
+      const flaeche = !leer(s.backgroundColor) && s.backgroundColor !== grund;
       const rahmen = parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderBottomWidth) > 0;
       if (!flaeche && !rahmen) return;
     }
