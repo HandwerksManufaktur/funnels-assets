@@ -334,7 +334,8 @@ window.funnelKnopfAbstand = function (doc) {
   const win = doc.defaultView;
   const sy = win.scrollY;
   const vis = (el) => { const s = win.getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05; };
-  const istFuss = (el) => /impressum|datenschutz/i.test((el.closest('footer,[class*="footer"]') || {}).textContent || '') || (el.closest('a') && /impressum|datenschutz/i.test(el.closest('a').textContent));
+  // Fuß = Perspectives Rechtszeile („Impressum · Datenschutz"); sie hat kein <footer>, deshalb über den Text der Vorfahren.
+  const istFuss = (el) => { let x = el; for (let i = 0; i < 5 && x; i++) { const t = (x.textContent || '').trim(); if (t.length < 60 && /impressum/i.test(t) && /datenschutz/i.test(t)) return true; x = x.parentElement; } return false; };
   const knoepfe = [...doc.querySelectorAll('button')].filter((b) => b.textContent.trim().length > 8 && b.offsetHeight > 30 && vis(b) && !b.closest('form'))
     .concat([...doc.querySelectorAll('.fx a')].filter((a) => { const s = win.getComputedStyle(a); return s.display === 'block' && parseFloat(s.borderTopWidth) > 0 && a.offsetHeight > 30; }));
   const rects = knoepfe.map((b) => { const r = b.getBoundingClientRect(); return { el: b, t: r.top + sy, u: r.bottom + sy, text: b.textContent.trim().slice(0, 30) }; })
