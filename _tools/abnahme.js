@@ -532,6 +532,25 @@ window.funnelStandard = async function (doc, o) {
   // 17 — Keine Eigentümer-Frage (Noah 18.10.2026: „wie bei Sussmann“)
   const eigRe = /wem\s+geh(ö|\\u00f6)rt|geh(ö|\\u00f6)rt\s+(dir|euch|ihnen|die\s+immobilie|das\s+haus)|eigent(ü|\\u00fc)mer|bist\s+du\s+(der\s+)?eigent/i;
   const eigFunde = [];
+  // 21 — Leistungsfrage („Was möchtest du machen lassen?“ / „Was soll in/an deinem Bad passieren?“) hat IMMER „Sonstiges“,
+  // und das Raster bleibt voll (letzte Reihe so voll wie die erste). Noah 19.10.2026 (Fischer):
+  // „Was möchtest du machen lassen? Sonstiges kannst du da noch hinzufügen“.
+  const lsRe = /was\s+(m(ö|oe)chtest|willst)\s+du\s+machen\s+lassen|was\s+soll\s+(in|an)\s+deinem\s+bad\s+passieren|was\s+(m(ö|oe)chtest|planst)\s+du\s+(an|in|bei)\s+deinem|welche\s+leistung/i;
+  const sonstRe = /sonstig|etwas\s+anderes|was\s+anderes|anderes\s+anliegen/i;
+  const lsDaten = [];
+  // Fragentitel = Text der NÄCHSTEN Vorfahren-Ebene, die außer den Karten noch Text trägt (nie die ganze Seite).
+  // Reihenfolge je Ebene: eigener Text neben den Karten, dann die vorigen Geschwister (Titel steht über den Karten).
+  const frageText = (g) => {
+    let w = g.wurzel;
+    for (let i = 0; i < 5 && w && w !== doc.body; i++, w = w.parentElement) {
+      let t = w.innerText || '';
+      for (const k of g.ks) t = t.replace(k.innerText || '', ' ');
+      if (/[\p{L}]{3}/u.test(t)) return t.replace(/\s+/g, ' ').trim();
+      let s = w.previousElementSibling;
+      for (let j = 0; j < 3 && s; j++, s = s.previousElementSibling) if (vis(s) && /[\p{L}]{3}/u.test(s.innerText || '')) return s.innerText.replace(/\s+/g, ' ').trim();
+    }
+    return '';
+  };
   for (const g of liste) {
     let w = g.wurzel; for (let i = 0; i < 3 && w.parentElement; i++) w = w.parentElement;
     const t = (w.innerText || '');
@@ -563,6 +582,18 @@ window.funnelStandard = async function (doc, o) {
             if (pid && seiten[pid] && !erreicht.has(pid)) { erreicht.add(pid); schlange.push(pid); }
           }
         }
+        // 21 (Daten) — Leistungsfrage auf jeder erreichbaren Seite: Antwort „Sonstiges“ vorhanden (Noah 19.10.2026).
+        const lsWalk = (cs, slug) => {
+          for (const c of cs || []) {
+            const titel = (c.content && c.content.plainText) || '';
+            if (/^question/i.test(c.name || '') && !/answer/i.test(c.name || '') && lsRe.test(titel)) {
+              const antw = (c.components || []).filter((x) => /answer/i.test(x.name || '')).map((x) => (x.content && x.content.plainText) || '');
+              if (antw.length >= 2 && !antw.some((a) => sonstRe.test(a))) lsDaten.push(slug + ': „' + titel + '“ (' + antw.join(' · ') + ')');
+            }
+            lsWalk(c.components, slug);
+          }
+        };
+        for (const [id, { slug, j }] of Object.entries(seiten)) if (erreicht.has(id)) lsWalk(j.components, slug);
         for (const [id, { slug, j }] of Object.entries(seiten)) {
           const s = JSON.stringify(j.components || []);
           const m = eigRe.exec(s);
@@ -635,6 +666,66 @@ window.funnelStandard = async function (doc, o) {
   if (o.knopfText && texte.length && !texte.includes(norm(o.knopfText))) gelb('Knopftext', 'Grundtext „' + o.knopfText + '“ kommt nicht vor — gewollt?');
   if (kFehler.length) rot('Knopftext', kFehler.join(' · '));
   else ok('Knopftext', ctas.length ? ctas.length + ' Knöpfe, ' + texte.length + ' Variante(n): ' + [...new Set(ctas.map((x) => x.t))].join(' · ') : 'Keine CTA-Knöpfe auf dieser Seite.');
+
+  // 21 — Leistungsfrage hat „Sonstiges“, Raster bleibt voll (Noah 19.10.2026). Diese Seite (DOM) + erreichbare Seiten (Daten, oben).
+  const lsFehler = [...lsDaten];
+  let lsGefunden = lsDaten.length;
+  for (const g of liste) {
+    if (g.ks.length < 2 || !lsRe.test(frageText(g))) continue;
+    lsGefunden++;
+    const labels = g.ks.map(label);
+    if (!labels.some((l) => sonstRe.test(l))) lsFehler.push('„' + frageText(g).slice(0, 50) + '“ ohne „Sonstiges“ (' + labels.join(' · ') + ')');
+    const reihen = [];
+    for (const k of g.ks) { const t = Math.round(k.getBoundingClientRect().top); const r = reihen.find((x) => Math.abs(x.t - t) < 8); if (r) r.n++; else reihen.push({ t, n: 1 }); }
+    reihen.sort((a, b) => a.t - b.t);
+    if (reihen.length > 1 && reihen[reihen.length - 1].n < reihen[0].n) lsFehler.push('Raster nicht voll: ' + reihen.map((r) => r.n).join('/') + ' Karten je Reihe bei ' + win.innerWidth + ' px');
+  }
+  if (lsFehler.length) rot('Leistungsfrage', lsFehler.join(' · ') + ' — Soll: Antwort „Sonstiges“ immer dabei, letzte Reihe voll (3+1 oder 5+1 statt 4+1).');
+  else ok('Leistungsfrage', lsGefunden ? lsGefunden + ' Leistungsfrage(n) mit „Sonstiges“, Raster voll.' : 'Keine Leistungsfrage auf dieser Seite.');
+
+  // 22 — Gleiche Bildart je Frage: alle Karten mit Foto oder keine (Noah 15.10.2026: „nicht solche diskrepanzen … links ein teamfoto“).
+  const gemischt = liste.filter((g) => g.ks.length >= 2).filter((g) => { const f = g.ks.map(hatFoto); return f.some(Boolean) && !f.every(Boolean); })
+    .map((g) => g.ks.map((k) => label(k) + (hatFoto(k) ? ' [Foto]' : ' [ohne]')).join(' / '));
+  if (gemischt.length) rot('Bildart je Frage', gemischt.join(' · ') + ' — eine Frage: alle Karten Foto ODER alle Icon/Emoji.');
+  else ok('Bildart je Frage', liste.length ? 'Je Frage einheitliche Bildart.' : 'Keine Antwortkarten auf dieser Seite.');
+
+  // 23 — Wörter vor der Startfrage ≤ 40 (Regel eine-funnel-seite-verkauft-mit, Noah 20.09.2026), gemessen bis Oberkante der Startfrage-Karten.
+  if (start && liste[0]) {
+    const oben = liste[0].top;
+    let worte = 0;
+    const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = tw.nextNode())) {
+      const t = n.textContent.trim();
+      if (!t || nurSymbol(t) || !n.parentElement || !vis(n.parentElement) || n.parentElement.closest('script,style,[role=button]')) continue;
+      const r = doc.createRange(); r.selectNodeContents(n); const rc = r.getBoundingClientRect();
+      if (rc.height && rc.bottom + sy() <= oben + 2) worte += t.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+    }
+    if (worte > 45) rot('Wörter vor Startfrage', worte + ' Wörter über den Startfrage-Karten — höchstens rund 40.');
+    else if (worte > 40) gelb('Wörter vor Startfrage', worte + ' Wörter — Grenze rund 40, kürzen prüfen.');
+    else ok('Wörter vor Startfrage', worte + ' Wörter über den Startfrage-Karten (≤ 40).');
+  }
+
+  // 24 — Ausrichtung einheitlich: alle Überschriften (h1/h2) mittig ODER alle linksbündig (Noah 18.10.2026 Fischer:
+  // „‚Seit 1988 in Chemnitz‘ … linksbündig, obwohl das oben mittig ist“).
+  const ausr = {};
+  doc.querySelectorAll('h1, h2').forEach((h) => {
+    if (!vis(h) || h.closest('[role=button],button,form') || !(h.innerText || '').trim()) return;
+    let a = win.getComputedStyle(h).textAlign;
+    a = /center/.test(a) ? 'mittig' : /right|end/.test(a) && win.getComputedStyle(h).direction !== 'rtl' ? 'rechts' : 'links';
+    (ausr[a] = ausr[a] || []).push((h.innerText || '').trim().slice(0, 30));
+  });
+  const arten = Object.keys(ausr);
+  if (arten.length > 1) rot('Ausrichtung', arten.map((a) => a + ': ' + ausr[a].map((t) => '„' + t + '“').join(', ')).join(' · ') + ' — Überschriften auf der ganzen Seite gleich ausrichten.');
+  else ok('Ausrichtung', arten.length ? 'Alle Überschriften ' + arten[0] + '.' : 'Keine Überschriften auf dieser Seite.');
+
+  // 25 — Jeder CTA-Knopf sitzt mittig (Noah 21.09.2026: „oben bei dem Button hast du ihn immer noch nicht zentriert“).
+  // Funnel-Knöpfe stehen in randlosen Blöcken: Knopfmitte = Fenstermitte (± 4 px). Formular-Knöpfe zählen nicht.
+  const fm = doc.documentElement.clientWidth / 2;
+  const schiefK = ctas.filter((x) => { const r = x.b.getBoundingClientRect(); return Math.abs(r.left + r.width / 2 - fm) > 4; })
+    .map((x) => { const r = x.b.getBoundingClientRect(); return '„' + x.t + '“ ' + Math.round(r.left + r.width / 2 - fm) + ' px'; });
+  if (schiefK.length) rot('Knopf mittig', [...new Set(schiefK)].join(', ') + ' neben der Mitte — jeder Knopf gemessen mittig.');
+  else ok('Knopf mittig', ctas.length ? ctas.length + ' Knöpfe mittig (± 4 px).' : 'Keine CTA-Knöpfe auf dieser Seite.');
 
   return out;
 };
