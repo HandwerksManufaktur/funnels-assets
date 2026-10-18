@@ -218,6 +218,8 @@ window.funnelAbnahme = async function (opt = {}) {
   // auch ohne fotos veranschaulichen!!“ — Stimpfle-Vergleich mit Icon-Kacheln war sonst Textwand-Fehlalarm).
   const anker = [
     ...[...document.querySelectorAll('img,svg,table,video,picture,[data-anker]')].filter(grossGenug),
+    // Ein Formular (PLZ, Kontakt) ist selbst das Element des Bildschirms — keine Textwand (Stimpfle PLZ-Seite 18.10.2026).
+    ...[...document.querySelectorAll('form')].filter((f) => f.querySelector('input:not([type=hidden]),textarea,select') && grossGenug(f)),
     ...grosseZahl,
     ...hintergrundbild,
     ...raster,
