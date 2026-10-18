@@ -44,6 +44,7 @@ window.funnelAbnahme = async function (opt = {}) {
   const befunde = [];
   const ok = (name, text) => befunde.push({ stand: '🟢', punkt: name, text });
   const rot = (name, text) => befunde.push({ stand: '🔴', punkt: name, text });
+  const gelb = (name, text) => befunde.push({ stand: '🟡', punkt: name, text });
 
   const text = document.body.innerText;
   const html = document.body.innerHTML;
@@ -60,6 +61,9 @@ window.funnelAbnahme = async function (opt = {}) {
   const datei = (u) => u.split('/').pop().split('?')[0];
   const host = (u) => (u.split('/')[2] || '');
   const emoji = (u) => /^[0-9a-f]{4,6}\.png$/i.test(datei(u)); // Twemoji
+  // Piktogramme aus Perspectives eigener Icon-Auswahl (Quiz-Antwortkarten) laufen über img.icons8.com.
+  // Das sind Symbole wie Emojis, keine Stockfotos (Stimpfle 16.10.2026: einziger Rest-Rotpunkt war das Wannen-Icon der Startfrage).
+  const piktogramm = (u) => emoji(u) || /(^|\.)icons8\.com$/i.test(host(u));
 
   // 1 — Logo ganz oben
   if (o.logo) {
@@ -104,7 +108,7 @@ window.funnelAbnahme = async function (opt = {}) {
   );
   const unbekannt = quellen.filter(
     (q) =>
-      !emoji(q.url) &&
+      !piktogramm(q.url) &&
       !/funnels-assets/.test(q.url) &&
       !/favicon|32x32/.test(datei(q.url)) &&
       !/logo/i.test(q.alt)
@@ -234,7 +238,13 @@ window.funnelAbnahme = async function (opt = {}) {
     await new Promise((r) => setTimeout(r, 250));
     const r = b.getBoundingClientRect();
     const x = Math.round(r.left + r.width / 2);
-    const oben = document.elementFromPoint(x, Math.round(r.top - 60));
+    // Gemessen wird direkt über der Oberkante des CTA-BLOCKS (nicht 60 px über dem Knopf):
+    // dort liegt der Rand der Sektion darüber. 60 px über dem Knopf traf bei Stimpfle (16.10.2026)
+    // die unterste Karte der Sektion (#f7f8fd) statt der Sektionsfläche (#eef1fb) — Fehlalarm.
+    let blockEl = b.parentElement;
+    for (let i = 0; i < 12 && blockEl; i++) { const c = getComputedStyle(blockEl).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') break; blockEl = blockEl.parentElement; }
+    const blockTop = blockEl ? blockEl.getBoundingClientRect().top : r.top;
+    const oben = document.elementFromPoint(x, Math.round(blockTop - 4));
     const soll = oben ? farbeVon(oben) : null;
     const ist = farbeVon(b.parentElement);
     if (soll && soll !== 'transparent' && soll !== ist)
@@ -256,6 +266,18 @@ window.funnelAbnahme = async function (opt = {}) {
   window.scrollTo(0, merkGeschr);
   if (spalte.length) rot('Spalt vor dem CTA', spalte.join(' · ') + ' — Hintergrund-Abstand UNTEN am Block darüber auf 0 setzen.');
   else ok('Spalt vor dem CTA', 'Keine Naht zwischen Sektion und CTA-Block.');
+
+
+  // 14 — Knopfabstände: oben 24–32 px, unten 40–56 px, unten nie kleiner als oben, in 390 UND 1440 px.
+  // Noah, 18.10.2026 (Fischer): „abstände unter den buttons sind oft noch zu gering und über den buttons
+  // manchmal noch zu groß". Gemessen wird vom sichtbaren Inhalt (Text, Bild, Karte mit Fläche/Rahmen)
+  // bis zur Knopfkante, nicht von Block zu Block. Knöpfe mit < 36 px Abstand zählen als eine Gruppe.
+  const knopf = window.funnelKnopfAbstand(document);
+  const knopfRot = knopf.filter((k) => k.fehler);
+  if (knopfRot.length) rot('Knopfabstände', knopfRot.map((k) => '„' + k.knopf + '" oben ' + k.oben + ' / unten ' + k.unten + ' (' + k.fehler + ')').join(' · ') + ' — Soll oben 24–32, unten 40–56.');
+  else ok('Knopfabstände', knopf.length + ' Knopfgruppe(n), oben 24–32 und unten 40–56 px.');
+  const knopfSicht = knopf.filter((k) => k.sicht);
+  if (knopfSicht.length) gelb('Knopfabstände', 'Neben fremdem iframe nicht messbar, Sichtprüfung: ' + knopfSicht.map((k) => '„' + k.knopf + '" (' + k.sicht + ')').join(' · '));
 
 
   const rote = befunde.filter((b) => b.stand === '🔴');
@@ -301,4 +323,69 @@ window.funnelSpalt = async function (wurzel) {
       treffer.push('„' + b.textContent.trim().slice(0, 28) + '“ — Naht in ' + seitenBg + ' über dem Block in ' + meine);
   }
   return treffer;
+};
+
+/**
+ * Misst je CTA-Knopf (bzw. Knopfgruppe) den Abstand zum sichtbaren Inhalt darüber und darunter.
+ * Inhalt = Textzeilen, Bilder/Videos/Eingabefelder und Kästen mit eigener Fläche oder eigenem Rahmen
+ * (Karten), NICHT die farbigen Sektionsflächen (.fx) und nicht Perspectives Rahmen-Divs (fun-*).
+ * Der Fuß (Impressum/Datenschutz) zählt nicht als Inhalt unter dem letzten Knopf.
+ * Grenzen: oben 24–32, unten 40–56, unten >= oben (je ±1 px Rundung).
+ */
+window.funnelKnopfAbstand = function (doc) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  const sy = win.scrollY;
+  const vis = (el) => { const s = win.getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05; };
+  // Fuß = Perspectives Rechtszeile („Impressum · Datenschutz"); sie hat kein <footer>, deshalb über den Text der Vorfahren.
+  const istFuss = (el) => { let x = el; for (let i = 0; i < 5 && x; i++) { const t = (x.textContent || '').trim(); if (t.length < 60 && /impressum/i.test(t) && /datenschutz/i.test(t)) return true; x = x.parentElement; } return false; };
+  const knoepfe = [...doc.querySelectorAll('button')].filter((b) => b.textContent.trim().length > 8 && b.offsetHeight > 30 && vis(b) && !b.closest('form'))
+    .concat([...doc.querySelectorAll('.fx a')].filter((a) => { const s = win.getComputedStyle(a); return s.display === 'block' && parseFloat(s.borderTopWidth) > 0 && a.offsetHeight > 30; }));
+  const rects = knoepfe.map((b) => { const r = b.getBoundingClientRect(); return { el: b, t: r.top + sy, u: r.bottom + sy, text: b.textContent.trim().slice(0, 30) }; })
+    .sort((a, b) => a.t - b.t);
+  const gruppen = [];
+  for (const k of rects) { const g = gruppen[gruppen.length - 1]; if (g && k.t - g.u < 36) { g.u = Math.max(g.u, k.u); g.els.push(k.el); } else gruppen.push({ t: k.t, u: k.u, els: [k.el], text: k.text }); }
+  const items = [];
+  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let n;
+  while ((n = tw.nextNode())) {
+    if (!n.textContent.trim()) continue;
+    const p = n.parentElement;
+    if (!p || !vis(p) || p.closest('button') || knoepfe.some((k) => k.contains(p))) continue;
+    const r = doc.createRange(); r.selectNodeContents(n);
+    for (const rc of r.getClientRects()) if (rc.height > 0 && rc.width > 0) items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(p) });
+  }
+  doc.querySelectorAll('img,video,iframe,svg,input,textarea,select,div,span,section,a').forEach((e) => {
+    if (!vis(e) || e.closest('button') || knoepfe.some((k) => k === e || k.contains(e))) return;
+    const rc = e.getBoundingClientRect();
+    if (rc.height < 8 || rc.width < 8) return;
+    const tag = e.tagName;
+    if (!/^(IMG|VIDEO|IFRAME|SVG|INPUT|TEXTAREA|SELECT)$/.test(tag)) {
+      if (e.classList.contains('fx') || [...e.classList].some((c) => c.startsWith('fun-'))) return;
+      if (rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98) return;
+      const s = win.getComputedStyle(e);
+      const flaeche = s.backgroundColor !== 'rgba(0, 0, 0, 0)' && s.backgroundColor !== 'transparent';
+      const rahmen = parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderBottomWidth) > 0;
+      if (!flaeche && !rahmen) return;
+    }
+    // Fremdes iframe (Perspective-Embed auf eigener Subdomain): sein Innenabstand ist von hier
+    // nicht sichtbar, der Abstand zum Rahmen sagt nichts (Irlbacher 18.10.2026: gemessen 0, sichtbar ~26).
+    let fremd = false;
+    if (tag === 'IFRAME') { try { fremd = !e.contentDocument; } catch (x) { fremd = true; } }
+    items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(e), fremd });
+  });
+  return gruppen.map((g, i) => {
+    let oben = -1e9, unten = 1e9, oFremd = false, uFremd = false;
+    for (const it of items) {
+      if (it.u <= g.t + 1 && it.u > oben) { oben = it.u; oFremd = it.fremd; }
+      if (!it.fuss && it.t >= g.u - 1 && it.t < unten) { unten = it.t; uFremd = it.fremd; }
+    }
+    const o = oben < -1e8 || oFremd ? null : Math.round(g.t - oben);
+    const u = unten > 1e8 || uFremd ? null : Math.round(unten - g.u);
+    const f = [];
+    if (o !== null && (o < 23 || o > 33)) f.push('oben');
+    if (u !== null && (u < 39 || u > 57)) f.push('unten');
+    if (o !== null && u !== null && u < o) f.push('unten < oben');
+    return { knopf: g.text, oben: o, unten: u, fehler: f.join(', '), sicht: [oFremd && 'oben', uFremd && 'unten'].filter(Boolean).join(', ') };
+  });
 };

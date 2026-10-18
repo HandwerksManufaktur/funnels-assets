@@ -44,6 +44,7 @@ window.funnelAbnahme = async function (opt = {}) {
   const befunde = [];
   const ok = (name, text) => befunde.push({ stand: '🟢', punkt: name, text });
   const rot = (name, text) => befunde.push({ stand: '🔴', punkt: name, text });
+  const gelb = (name, text) => befunde.push({ stand: '🟡', punkt: name, text });
 
   const text = document.body.innerText;
   const html = document.body.innerHTML;
@@ -275,6 +276,8 @@ window.funnelAbnahme = async function (opt = {}) {
   const knopfRot = knopf.filter((k) => k.fehler);
   if (knopfRot.length) rot('Knopfabstände', knopfRot.map((k) => '„' + k.knopf + '" oben ' + k.oben + ' / unten ' + k.unten + ' (' + k.fehler + ')').join(' · ') + ' — Soll oben 24–32, unten 40–56.');
   else ok('Knopfabstände', knopf.length + ' Knopfgruppe(n), oben 24–32 und unten 40–56 px.');
+  const knopfSicht = knopf.filter((k) => k.sicht);
+  if (knopfSicht.length) gelb('Knopfabstände', 'Neben fremdem iframe nicht messbar, Sichtprüfung: ' + knopfSicht.map((k) => '„' + k.knopf + '" (' + k.sicht + ')').join(' · '));
 
 
   const rote = befunde.filter((b) => b.stand === '🔴');
@@ -365,20 +368,24 @@ window.funnelKnopfAbstand = function (doc) {
       const rahmen = parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderBottomWidth) > 0;
       if (!flaeche && !rahmen) return;
     }
-    items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(e) });
+    // Fremdes iframe (Perspective-Embed auf eigener Subdomain): sein Innenabstand ist von hier
+    // nicht sichtbar, der Abstand zum Rahmen sagt nichts (Irlbacher 18.10.2026: gemessen 0, sichtbar ~26).
+    let fremd = false;
+    if (tag === 'IFRAME') { try { fremd = !e.contentDocument; } catch (x) { fremd = true; } }
+    items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(e), fremd });
   });
   return gruppen.map((g, i) => {
-    let oben = -1e9, unten = 1e9;
+    let oben = -1e9, unten = 1e9, oFremd = false, uFremd = false;
     for (const it of items) {
-      if (it.u <= g.t + 1 && it.u > oben) oben = it.u;
-      if (!it.fuss && it.t >= g.u - 1 && it.t < unten) unten = it.t;
+      if (it.u <= g.t + 1 && it.u > oben) { oben = it.u; oFremd = it.fremd; }
+      if (!it.fuss && it.t >= g.u - 1 && it.t < unten) { unten = it.t; uFremd = it.fremd; }
     }
-    const o = oben < -1e8 ? null : Math.round(g.t - oben);
-    const u = unten > 1e8 ? null : Math.round(unten - g.u);
+    const o = oben < -1e8 || oFremd ? null : Math.round(g.t - oben);
+    const u = unten > 1e8 || uFremd ? null : Math.round(unten - g.u);
     const f = [];
     if (o !== null && (o < 23 || o > 33)) f.push('oben');
     if (u !== null && (u < 39 || u > 57)) f.push('unten');
     if (o !== null && u !== null && u < o) f.push('unten < oben');
-    return { knopf: g.text, oben: o, unten: u, fehler: f.join(', ') };
+    return { knopf: g.text, oben: o, unten: u, fehler: f.join(', '), sicht: [oFremd && 'oben', uFremd && 'unten'].filter(Boolean).join(', ') };
   });
 };
