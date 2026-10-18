@@ -389,7 +389,10 @@ window.funnelKnopfAbstand = function (doc) {
     const tag = e.tagName;
     let bg = null;
     if (!/^(IMG|VIDEO|IFRAME|SVG|INPUT|TEXTAREA|SELECT)$/.test(tag)) {
-      if (e.classList.contains('fx') || [...e.classList].some((c) => c.startsWith('fun-'))) return;
+      if ([...e.classList].some((c) => c.startsWith('fun-'))) return;
+      // .fx-Hüllen (Fischer-Blöcke) zählen nur als randlose Sektion mit eigener Farbe, sonst nie (Fischer 18.10.2026:
+      // dunkle Sektion 64 px unter dem Knopf wurde übersehen, gemessen wurde bis zur Überschrift = 126).
+      if (e.classList.contains('fx') && !(rc.width > win.innerWidth * 0.98 && !['rgba(0, 0, 0, 0)', 'transparent'].includes(win.getComputedStyle(e).backgroundColor))) return;
       const gross = rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98;
       const s = win.getComputedStyle(e);
       // Fläche zählt nur, wenn sie sich vom Grund dahinter abhebt (Stimpfle 18.10.2026: weiße
