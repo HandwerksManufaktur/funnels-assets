@@ -569,6 +569,8 @@ window.funnelStandard = async function (doc, o) {
       } else gelb('Eigentümer-Frage', 'layoutData.json nicht gefunden — nur diese Seite geprüft.');
     } catch (x) { gelb('Eigentümer-Frage', 'Andere Seiten nicht lesbar (' + x.message + ') — nur diese Seite geprüft.'); }
   }
+  // 20 — Erste Inhaltsfrage nach Muster, nie „Worum geht es bei dir?“ (Noah 18.10.2026)
+  if (/worum geht es bei dir/i.test(doc.body.innerText)) rot('Erste Inhaltsfrage', '„Worum geht es bei dir?“ — Muster: „Was soll in/an deinem Bad passieren?“');
   if (eigFunde.length) rot('Eigentümer-Frage', [...new Set(eigFunde)].join(' · ') + ' — keine Eigentümer-Frage im Quiz (wie Sussmann).');
   else ok('Eigentümer-Frage', 'Keine Frage nach Eigentum/„gehört dir“.');
 
