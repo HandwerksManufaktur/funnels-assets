@@ -393,9 +393,11 @@ window.funnelKnopfAbstand = function (doc) {
       const rahmen = parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderBottomWidth) > 0;
       // „Gemessen am Bild“ (Noah 18.10.2026): eine randlose Sektion in ANDERER Farbe als das Knopf-Band ist
       // sichtbar der nächste Inhalt — ihre Kante zählt. Gleiche Farbe wie das Band = unsichtbar, zählt nicht (bg-Vergleich unten).
-      if (gross && !flaeche) return;
-      if (!flaeche && !rahmen) return;
-      if (flaeche) bg = s.backgroundColor;
+      // Randlose Sektion: zählt mit ihrer EIGENEN Farbe (auch Weiß auf weißer Seite — nach einem hellblauen Band ist das eine Kante).
+      const eigen = !leer(s.backgroundColor);
+      if (gross && !eigen) return;
+      if (!gross && !flaeche && !rahmen) return;
+      if (gross ? eigen : flaeche) bg = s.backgroundColor;
     }
     // Fremdes iframe (Perspective-Embed auf eigener Subdomain): sein Innenabstand ist von hier
     // nicht sichtbar, der Abstand zum Rahmen sagt nichts (Irlbacher 18.10.2026: gemessen 0, sichtbar ~26).
