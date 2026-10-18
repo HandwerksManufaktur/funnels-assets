@@ -588,6 +588,12 @@ window.funnelStandard = async function (doc, o) {
     const reihe = s.display === 'grid' ? false : !/column/.test(s.flexDirection);
     const tops = [...new Set(eintraege.map((k) => Math.round(k.getBoundingClientRect().top / 4)))];
     if (mehr.length) lFehler.push('Eintrag umgebrochen: ' + mehr.join(', '));
+    // Noah 18.10.2026: Kurzzeilen ohne Vorwissen verständlich, mit Nutzen — keine Abgrenzung („Kein Callcenter“), keine Kürzel.
+    for (const k of eintraege) {
+      const t = (k.innerText || '').trim();
+      if (/(^|\s)kein(e|en)?\s/i.test(t)) lFehler.push('Abgrenzung statt Nutzen: „' + t + '“');
+      else if (/(ca\.|~|≈|\bSHK\b)/.test(t)) gelb('Vertrauensleiste', 'Kürzel prüfen (ohne Vorwissen verständlich?): „' + t + '“');
+    }
     if (reihe && tops.length > 1) lFehler.push('Leiste „' + eintraege.map((k) => k.innerText.trim().slice(0, 18)).join(' · ') + '" bricht in ' + tops.length + ' Reihen um');
   }
   if (lFehler.length) rot('Vertrauensleiste', lFehler.join(' · ') + ' — kürzer oder kleiner, eine Zeile bei 390.');
