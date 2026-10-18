@@ -441,7 +441,7 @@ window.funnelKnopfAbstand = function (doc) {
  *   16 Kartenlabels:    alle Antwortkarten einer Frage haben gleich viele Zeilen und sind gleich hoch.
  *   17 Eigentümer-Frage: keine Quizfrage mit „gehört …“/„Wem gehört“/„Eigentümer“ (Seite + alle Quiz-Seiten des Funnels).
  *   18 Vertrauensleiste: jeder Eintrag steht in EINER Zeile, die Leiste bricht nicht in zwei Reihen um.
- *   19 Knopftext:       alle CTA-Knöpfe tragen denselben Text (o.knopfText), keine Varianten, keine Chips.
+ *   19 Knopftext:       höchstens 4 seriöse Varianten, keine aus der Sperrliste, jede einzeilig bei 390 (Noah 18.10.2026).
  * Rückgabe: Liste {stand, punkt, text} wie funnelAbnahme. Selbsttest: system/apps/funnel-check/test/standard_selbsttest.py
  */
 window.funnelStandard = async function (doc, o) {
@@ -604,19 +604,29 @@ window.funnelStandard = async function (doc, o) {
   else if (start && !leisten.length) gelb('Vertrauensleiste', 'Keine Leiste erkannt (Tipp: data-leiste an den Container) — Sichtprüfung.');
   else ok('Vertrauensleiste', leisten.length ? leisten.length + ' Leiste(n), jeder Eintrag einzeilig, keine zweite Reihe.' : 'Keine Leiste auf dieser Seite.');
 
-  // 19 — Ein Knopftext, keine verspielten Varianten, keine Chips
+  // 19 — Knopftexte (Noah 18.10.2026, ersetzt „nur ein Knopftext“): höchstens 4 seriöse, zum Abschnitt passende Varianten
+  // („Jetzt unverbindlich anfragen“, „Kostenlose Beratung anfragen“, „Termin vor Ort anfragen“ …), jede EINZEILIG bei 390,
+  // keine aus der Sperrliste (Spielereien wie „Passt für mich“), keine Chips wie „Schnellster Weg“.
   const norm = (t) => t.replace(/[^\p{L}\p{N} ]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
-  const ctas = [...doc.querySelectorAll('button')].filter((b) => vis(b) && b.offsetHeight > 30 && !b.closest('form') && !/^(open chat|dismiss|schließen)$/i.test(b.textContent.trim()))
-    .map((b) => (b.innerText || b.textContent).split('\n').map((s) => s.trim()).find((s) => s && !nurSymbol(s)) || '')
-    .filter((t) => t.length > 3);
-  const texte = [...new Set(ctas.map(norm))];
+  const knoepfe19 = [...doc.querySelectorAll('button')].filter((b) => vis(b) && b.offsetHeight > 30 && !b.closest('form') && !/^(open chat|dismiss|schließen)$/i.test(b.textContent.trim()));
+  const haupt = (b) => { const el = [...b.querySelectorAll('p,strong,span,div')].find((e) => { const t = (e.innerText || '').trim(); return t && !nurSymbol(t) && !e.querySelector('p,div'); }) || b; return el; };
+  const ctas = knoepfe19.map((b) => ({ b, t: ((b.innerText || b.textContent).split('\n').map((s) => s.trim()).find((s) => s && !nurSymbol(s)) || '') })).filter((x) => x.t.length > 3);
+  const texte = [...new Set(ctas.map((x) => norm(x.t)))];
+  const sperre = /passt f(ü|u)r mich|klingt nach mir|genau mein problem|schritt 1 starten|endlich anfragen|ich will so eine|los geht|schnellster weg/i;
   const kFehler = [];
-  if (texte.length > 1) kFehler.push(texte.length + ' verschiedene Knopftexte: ' + [...new Set(ctas)].join(' · '));
-  if (o.knopfText && texte.length && texte.some((t) => t !== norm(o.knopfText))) kFehler.push('Soll „' + o.knopfText + '“, ist ' + [...new Set(ctas)].map((t) => '„' + t + '“').join(', '));
-  const chip = /schnellster weg|passt f(ü|u)r mich|klingt nach mir|genau mein problem|schritt 1 starten/i.exec(doc.body.innerText);
-  if (chip) kFehler.push('verspielte Variante/Chip im Text: „' + chip[0] + '“');
+  const maxV = o.knopfVarianten || 4;
+  if (texte.length > maxV) kFehler.push(texte.length + ' Varianten (max. ' + maxV + '): ' + [...new Set(ctas.map((x) => x.t))].join(' · '));
+  const gesperrt = ctas.filter((x) => sperre.test(x.t)).map((x) => '„' + x.t + '“');
+  if (gesperrt.length) kFehler.push('Sperrliste: ' + [...new Set(gesperrt)].join(', '));
+  const chip = /schnellster weg|passt f(ü|u)r mich|klingt nach mir|genau mein problem/i.exec(doc.body.innerText);
+  if (chip && !gesperrt.length) kFehler.push('verspielte Variante/Chip im Text: „' + chip[0] + '“');
+  if (win.innerWidth <= 430) {
+    const zwei = ctas.filter((x) => zeilen(haupt(x.b)) > 1).map((x) => '„' + x.t + '“');
+    if (zwei.length) kFehler.push('nicht einzeilig bei 390: ' + [...new Set(zwei)].join(', '));
+  }
+  if (o.knopfText && texte.length && !texte.includes(norm(o.knopfText))) gelb('Knopftext', 'Grundtext „' + o.knopfText + '“ kommt nicht vor — gewollt?');
   if (kFehler.length) rot('Knopftext', kFehler.join(' · '));
-  else ok('Knopftext', ctas.length ? ctas.length + ' Knöpfe, ein Text: „' + ctas[0] + '“' : 'Keine CTA-Knöpfe auf dieser Seite.');
+  else ok('Knopftext', ctas.length ? ctas.length + ' Knöpfe, ' + texte.length + ' Variante(n): ' + [...new Set(ctas.map((x) => x.t))].join(' · ') : 'Keine CTA-Knöpfe auf dieser Seite.');
 
   return out;
 };
