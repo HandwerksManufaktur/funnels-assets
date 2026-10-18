@@ -241,6 +241,9 @@ window.funnelAbnahme = async function (opt = {}) {
   else ok('Veranschaulichung', 'Jede Bildschirmhöhe trägt einen sichtbaren Anker.');
 
 
+  // Schatten-Fläche (box-shadow 0 0 0 100vmax, Stimpfle-/Fischer-Bauweise): das Element ist schmal, seine Farbe
+  // läuft aber über die volle Fensterbreite. Ohne diese Erkennung meldete die Prüfung bei 1440 px Fehlalarme (Fischer 19.10.2026).
+  const breitFlaeche = (e) => { const bs = getComputedStyle(e).boxShadow || ''; const m = bs.match(/0px 0px 0px (\d+(?:\.\d+)?)px/); return !!m && parseFloat(m[1]) >= window.innerWidth / 2; };
   // 12 — Button-Regel: der Block eines CTA trägt die Farbe der Sektion DARÜBER
   // (Hausregel seit Senftleben; am 21.09.2026 an allen drei Fischer-CTAs verletzt).
   const farbeVon = (e) => { let x = e; for (let i = 0; i < 12 && x; i++) { const c = getComputedStyle(x).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') return c; x = x.parentElement; } return 'transparent'; };
@@ -262,7 +265,9 @@ window.funnelAbnahme = async function (opt = {}) {
     // der Sektion (Irlbacher 18.10.2026: weiße Karte auf grauer Sektion → Fehlalarm), am Rand die Sektionsfläche.
     const xRand = Math.round((blockEl ? blockEl.getBoundingClientRect().left : r.left) + 4);
     const oben = document.elementFromPoint(xRand, Math.round(blockTop - 4));
-    const soll = oben ? farbeVon(oben) : null;
+    let soll = oben ? farbeVon(oben) : null;
+    const bleedOben = document.elementsFromPoint(x, Math.round(blockTop - 4)).find((e) => breitFlaeche(e));
+    if (bleedOben && (!oben || !bleedOben.contains(oben) && !oben.contains(bleedOben) || farbeVon(oben) === farbeVon(document.body))) soll = getComputedStyle(bleedOben).backgroundColor;
     // Kein farbiger Vorfahr = Seitenhintergrund (Formular-Knopf auf weißer Seite, Irlbacher Kontakt 18.10.2026).
     const istRoh = farbeVon(b.parentElement);
     const ist = istRoh === 'transparent' ? (getComputedStyle(document.body).backgroundColor === 'rgba(0, 0, 0, 0)' ? 'rgb(255, 255, 255)' : getComputedStyle(document.body).backgroundColor) : istRoh;
@@ -393,7 +398,8 @@ window.funnelKnopfAbstand = function (doc) {
       // .fx-Hüllen (Fischer-Blöcke) zählen nur als randlose Sektion mit eigener Farbe, sonst nie (Fischer 18.10.2026:
       // dunkle Sektion 64 px unter dem Knopf wurde übersehen, gemessen wurde bis zur Überschrift = 126).
       if (e.classList.contains('fx') && !(rc.width > win.innerWidth * 0.98 && !['rgba(0, 0, 0, 0)', 'transparent'].includes(win.getComputedStyle(e).backgroundColor))) return;
-      const gross = rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98;
+      const bsK = win.getComputedStyle(e).boxShadow || ''; const mK = bsK.match(/0px 0px 0px (\d+(?:\.\d+)?)px/);
+      const gross = rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98 || (!!mK && parseFloat(mK[1]) >= win.innerWidth / 2);
       const s = win.getComputedStyle(e);
       // Fläche zählt nur, wenn sie sich vom Grund dahinter abhebt (Stimpfle 18.10.2026: weiße
       // Hülle auf weißer Seite endete genau am Knopf, gemessen 0, sichtbar 32).
