@@ -532,14 +532,31 @@ window.funnelStandard = async function (doc, o) {
         const basis = e.split('/data/')[0];
         const v = (e.split('v=')[1] || '').split('&')[0];
         const ld = await fetch(e).then((r) => r.json());
+        // Nur Seiten, die ein Besucher erreichen kann (Start + Varianten, dann jede Verlinkung bzw. „nächste Seite“).
+        // Eine verwaiste Seite mit Eigentümer-Frage ist gelb (löschen), nicht rot — sie sieht kein Besucher.
+        const seiten = {};
         for (const p of ld.pages || []) {
           if (p.isResultPage) continue;
           const r = await fetch(basis + '/data/pages/' + p.slug + '.json' + (v ? '?v=' + v : ''));
-          if (!r.ok) continue;
-          const j = await r.json();
+          if (r.ok) { const j = await r.json(); seiten[j.pageId || p.slug] = { slug: p.slug, j, start: !!p.isHomePage }; }
+        }
+        const erreicht = new Set(Object.keys(seiten).filter((id) => seiten[id].start));
+        const schlange = [...erreicht];
+        while (schlange.length) {
+          const { j } = seiten[schlange.shift()];
+          const s = JSON.stringify(j.components || []);
+          for (const m of s.matchAll(/"linking":\{([^}]*)\}/g)) {
+            const pid = (/"pageId":"([0-9a-f]{24})"/.exec(m[1]) || [])[1] || (/"isInternal":true/.test(m[1]) ? j.nextPage : null);
+            if (pid && seiten[pid] && !erreicht.has(pid)) { erreicht.add(pid); schlange.push(pid); }
+          }
+        }
+        for (const [id, { slug, j }] of Object.entries(seiten)) {
           const s = JSON.stringify(j.components || []);
           const m = eigRe.exec(s);
-          if (m) eigFunde.push(p.slug + ': „' + s.slice(m.index, m.index + 40).replace(/<[^>]*>|\\[nrt"]/g, ' ').replace(/\s+/g, ' ').trim() + '“');
+          if (!m) continue;
+          const stelle = slug + ': „' + s.slice(m.index, m.index + 40).replace(/<[^>]*>|\\[nrt"]/g, ' ').replace(/\s+/g, ' ').trim() + '“';
+          if (erreicht.has(id)) eigFunde.push(stelle);
+          else gelb('Eigentümer-Frage', 'Verwaiste Seite (kein Weg dorthin) trägt noch die Frage — ' + stelle + ' — im Editor löschen.');
         }
       } else gelb('Eigentümer-Frage', 'layoutData.json nicht gefunden — nur diese Seite geprüft.');
     } catch (x) { gelb('Eigentümer-Frage', 'Andere Seiten nicht lesbar (' + x.message + ') — nur diese Seite geprüft.'); }
