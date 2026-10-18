@@ -6,7 +6,9 @@
  *     logo:    true,                          // Logo muss oben stehen
  *     ctaMin:  3,                             // Mindestzahl Handlungsaufforderungen
  *     impressum: 'energie-fischer.de',        // Domain der echten Rechtsseiten
- *     bilderMin: 5                            // Mindestzahl echter Kundenbilder
+ *     bilderMin: 5,                           // Mindestzahl echter Kundenbilder
+ *     eigeneBilder: ['6ad4b491…'],            // Mediathek-IDs mit belegter Herkunft (optional)
+ *     knopfText: 'Jetzt unverbindlich anfragen' // der EINE Knopftext (Badsanierungs-Standard)
  *   })
  *
  * Gibt eine Liste mit 🔴/🟢 je Prüfpunkt zurück. 🔴 = NICHT ausliefern.
@@ -106,13 +108,16 @@ window.funnelAbnahme = async function (opt = {}) {
   }
 
   // 4 — Echte Kundenbilder, kein Stock, kein fremder Kunde
-  const echte = quellen.filter((q) => o.kunde && q.url.indexOf('/' + o.kunde + '/') > -1);
+  // eigeneBilder: Perspective-Mediathek-IDs (imgix) mit belegter Herkunft (stand.md des Kunden), z. B. Startfrage-Fotos.
+  const eigen = (u) => (o.eigeneBilder || []).some((id) => u.indexOf(id) > -1);
+  const echte = quellen.filter((q) => (o.kunde && q.url.indexOf('/' + o.kunde + '/') > -1) || eigen(q.url));
   const fremd = quellen.filter(
     (q) => o.kunde && /funnels-assets/.test(q.url) && q.url.indexOf('/' + o.kunde + '/') < 0
   );
   const unbekannt = quellen.filter(
     (q) =>
       !piktogramm(q.url) &&
+      !eigen(q.url) &&
       !/funnels-assets/.test(q.url) &&
       !/favicon|32x32/.test(datei(q.url)) &&
       !/logo/i.test(q.alt)
@@ -209,8 +214,10 @@ window.funnelAbnahme = async function (opt = {}) {
     if (c.display !== 'grid' && c.display !== 'table') return false;
     return e.children.length >= 4 && grossGenug(e);
   });
+  // [data-anker]: Karten mit Piktogramm je Zeile zählen als Veranschaulichung (Noah 18.10.2026: „du kannst es ja
+  // auch ohne fotos veranschaulichen!!“ — Stimpfle-Vergleich mit Icon-Kacheln war sonst Textwand-Fehlalarm).
   const anker = [
-    ...[...document.querySelectorAll('img,svg,table,video,picture')].filter(grossGenug),
+    ...[...document.querySelectorAll('img,svg,table,video,picture,[data-anker]')].filter(grossGenug),
     ...grosseZahl,
     ...hintergrundbild,
     ...raster,
