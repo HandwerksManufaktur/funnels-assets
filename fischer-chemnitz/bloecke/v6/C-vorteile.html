@@ -1,0 +1,60 @@
+<style>
+.stf-karte{transition:transform .25s ease,box-shadow .25s ease}
+.stf-karte:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(20,23,31,.16)}
+.stf-foto{overflow:hidden}
+.stf-foto img{transition:transform .5s ease}
+.stf-foto:hover img{transform:scale(1.04)}
+.stf-zeile{transition:background-color .2s ease}
+.stf-zeile:hover{background:#f7f8fd}
+.stf-mosaik{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.stf-mosaik .stf-gross{grid-column:1 / -1;aspect-ratio:3/2}
+.stf-mosaik .stf-klein{aspect-ratio:1/1}
+@media (min-width:640px){
+ .stf-mosaik{grid-template-columns:repeat(4,1fr)}
+ .stf-mosaik .stf-gross{grid-column:1 / 3;grid-row:1 / 3;aspect-ratio:auto}
+}
+.stf-team{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
+@media (min-width:720px){.stf-team{grid-template-columns:5fr 6fr}}
+.stf-kachel{display:grid;grid-template-columns:44px 1fr 84px;column-gap:12px;row-gap:4px;align-items:start}
+@media (min-width:640px){.stf-kachel{grid-template-columns:48px 1fr 96px;column-gap:16px;row-gap:6px}}
+.stf-kachel .stf-ic{grid-row:1 / 3}
+.stf-kachel .stf-mini{grid-row:1 / 3;grid-column:3;align-self:center}
+.stf-vz{display:grid;grid-template-columns:1fr}
+.stf-vz .stf-neu{border-top:1px solid #e3e6ef}
+.stf-vkopf{display:none}
+.stf-trenn{border-top:8px solid #eef1fb}
+.stf-lbl2{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px}
+.stf-lbl{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px}
+@media (min-width:640px){.stf-vz{grid-template-columns:1fr 1fr}.stf-vz .stf-neu{border-top:0;border-left:1px solid #e3e6ef}.stf-vkopf{display:grid}.stf-trenn{border-top:1px solid #dfe3ef}}
+</style>
+<div style="height:32px;background:#FFFFFF;box-shadow:0 0 0 100vmax #FFFFFF;clip-path:inset(-2px -100vmax 0 -100vmax);"></div>
+<div style="background:#1A1A1A;box-shadow:0 0 0 100vmax #1A1A1A;clip-path:inset(0 -100vmax);padding:72px 20px 32px;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="text-align:center;max-width:680px;margin:0 auto 32px;">
+      <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6FC0F0;margin:0 0 12px;">Das spricht für uns</p>
+      <h2 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(28px,6vw,40px);letter-spacing:-0.02em;line-height:1.12;color:#FFFFFF;margin:0;">Darauf kannst du dich verlassen</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;">
+      <div class="stf-karte" style="background:#2A2A2A;border-radius:16px;padding:22px;border-top:3px solid #0076BE;display:grid;grid-template-columns:48px 1fr;column-gap:16px;row-gap:6px;align-items:start;">
+        <div style="grid-row:1 / 3;width:48px;height:48px;border-radius:12px;background:#0076BE;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 12V6.5a2.5 2.5 0 0 1 5 0"/><path d="M7 19l-1 2M17 19l1 2"/></svg></div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">1 Werktag</div>
+        <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#D4D4D4;margin:0;">Für eine Tür in deine vorhandene Wanne. Die Fliesen bleiben, abends badest du wieder.</p>
+      </div>
+      <div class="stf-karte" style="background:#2A2A2A;border-radius:16px;padding:22px;border-top:3px solid #0076BE;display:grid;grid-template-columns:48px 1fr;column-gap:16px;row-gap:6px;align-items:start;">
+        <div style="grid-row:1 / 3;width:48px;height:48px;border-radius:12px;background:#0076BE;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M9 13.5L7.5 21l4.5-2.5 4.5 2.5-1.5-7.5"/></svg></div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">proBAD</div>
+        <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#D4D4D4;margin:0;">Geschult und geprüft für Beratung, Verkauf und Montage der Wannentür, seit Oktober 2025.</p>
+      </div>
+      <div class="stf-karte" style="background:#2A2A2A;border-radius:16px;padding:22px;border-top:3px solid #0076BE;display:grid;grid-template-columns:48px 1fr;column-gap:16px;row-gap:6px;align-items:start;">
+        <div style="grid-row:1 / 3;width:48px;height:48px;border-radius:12px;background:#0076BE;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.6c2.6.3 4.5 2 4.5 5"/></svg></div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">15</div>
+        <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#D4D4D4;margin:0;">Leute im eigenen Betrieb. Bei dir im Bad arbeiten unsere eigenen Monteure.</p>
+      </div>
+      <div class="stf-karte" style="background:#2A2A2A;border-radius:16px;padding:22px;border-top:3px solid #0076BE;display:grid;grid-template-columns:48px 1fr;column-gap:16px;row-gap:6px;align-items:start;">
+        <div style="grid-row:1 / 3;width:48px;height:48px;border-radius:12px;background:#0076BE;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 6.5A7 7 0 1 0 17 17.5"/><path d="M4 10.5h9M4 13.5h9"/></svg></div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">6–120</div>
+        <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#D4D4D4;margin:0;">Monate Ratenzahlung möglich, mit oder ohne Anzahlung.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<style>
+.stg-zl{position:relative;display:grid;gap:36px;max-width:760px;margin:0 auto}
+.stg-spur{position:absolute;left:23px;top:24px;bottom:24px;width:2px;border-radius:2px;background:#9CCBEA}
+.stg-schritt{position:relative;display:grid;grid-template-columns:48px 1fr;column-gap:16px}
+.stg-knoten{grid-column:1;grid-row:1 / 3;position:relative;z-index:1;width:48px;height:48px;border-radius:50%;background:#0076BE;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;box-shadow:0 0 0 6px #E6F2FB,0 8px 20px rgba(0,118,190,.30)}
+.stg-medien{grid-column:2;grid-row:1;aspect-ratio:4/3;border-radius:16px 16px 0 0;overflow:hidden;position:relative}
+.stg-medien img{width:100%;height:100%;object-fit:cover;display:block}
+.stg-text{grid-column:2;grid-row:2;background:#fff;border-radius:0 0 16px 16px;padding:18px 20px 22px;box-shadow:0 12px 32px rgba(0,118,190,.10)}
+.stg-zeit{display:flex;align-items:center;gap:8px;font-weight:800;font-size:24px;letter-spacing:-.01em;color:#0076BE;margin:0 0 6px;line-height:1.1}
+.stg-mock{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px;box-sizing:border-box;text-align:center}
+@media (min-width:720px){
+ .stg-zl{gap:48px}
+ .stg-spur{left:calc(50% - 1px)}
+ .stg-schritt{grid-template-columns:1fr 64px 1fr;column-gap:24px;align-items:center}
+ .stg-knoten{grid-column:2;grid-row:1;justify-self:center}
+ .stg-medien{grid-column:1;grid-row:1;border-radius:16px;box-shadow:0 12px 32px rgba(0,118,190,.14)}
+ .stg-text{grid-column:3;grid-row:1;background:transparent;box-shadow:none;padding:0;border-radius:0}
+ .stg-schritt.gerade .stg-medien{grid-column:3}
+ .stg-schritt.gerade .stg-text{grid-column:1;text-align:right}
+ .stg-schritt.gerade .stg-zeit{justify-content:flex-end}
+ .stg-zeit{font-size:28px}
+}
+</style>
+<div style="height:32px;background:#FFFFFF;box-shadow:0 0 0 100vmax #FFFFFF;clip-path:inset(-2px -100vmax 0 -100vmax);"></div>
+<div style="background:#E6F2FB;box-shadow:0 0 0 100vmax #E6F2FB;clip-path:inset(0 -100vmax);padding:72px 20px 32px;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="text-align:center;max-width:680px;margin:0 auto 32px;">
+      <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0076BE;margin:0 0 12px;">Beispiel Badewannentür</p>
+      <h2 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(28px,6vw,40px);letter-spacing:-0.02em;line-height:1.12;color:#1A1A1A;margin:0;">Morgens kommen wir, abends badest&nbsp;du</h2>
+    </div>
+    <div class="stg-zl"><div class="stg-spur"></div>
+      <div class="stg-schritt">
+        <div class="stg-knoten" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">1</div>
+        <div class="stg-medien"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@2785623cffc68cb7610f99663867fdfa8927141e/fischer-chemnitz/einbau-1-anzeichnen.jpg" alt="Monteur der Firma Fischer zeichnet die Türöffnung an einer Badewanne an" loading="lazy" style="object-position:center;"></div>
+        <div class="stg-text">
+          <p class="stg-zeit" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0076BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>07:30</span></p>
+          <h3 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.01em;color:#1A1A1A;margin:0 0 6px;">Unser Monteur zeichnet an</h3>
+          <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#404040;margin:0;">Das Bad wird abgedeckt, die Türöffnung an der Wanne angezeichnet.</p>
+        </div>
+      </div>
+      <div class="stg-schritt gerade">
+        <div class="stg-knoten" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">2</div>
+        <div class="stg-medien"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@2785623cffc68cb7610f99663867fdfa8927141e/fischer-chemnitz/einbau-2-flexen.jpg" alt="Monteur der Firma Fischer schneidet die Türöffnung aus der Badewanne" loading="lazy" style="object-position:center;"></div>
+        <div class="stg-text">
+          <p class="stg-zeit" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0076BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>10:00</span></p>
+          <h3 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.01em;color:#1A1A1A;margin:0 0 6px;">Der Ausschnitt</h3>
+          <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#404040;margin:0;">Die Öffnung wird sauber aus der Wanne geschnitten. Die Fliesen bleiben, wo sie sind.</p>
+        </div>
+      </div>
+      <div class="stg-schritt">
+        <div class="stg-knoten" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">3</div>
+        <div class="stg-medien"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@2785623cffc68cb7610f99663867fdfa8927141e/fischer-chemnitz/einbau-3-auskleiden.jpg" alt="Monteur der Firma Fischer setzt die Tür in die Badewanne ein" loading="lazy" style="object-position:center;"></div>
+        <div class="stg-text">
+          <p class="stg-zeit" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0076BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>14:00</span></p>
+          <h3 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.01em;color:#1A1A1A;margin:0 0 6px;">Tür einsetzen, auskleiden, abdichten</h3>
+          <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#404040;margin:0;">Auf Wunsch mit Haltegriff und Sitz.</p>
+        </div>
+      </div>
+      <div class="stg-schritt gerade">
+        <div class="stg-knoten" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">4</div>
+        <div class="stg-medien"><div class="stg-mock" style="background:linear-gradient(135deg,#0076BE,#00558A);"><div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h18v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M6 12V6.5a2.5 2.5 0 0 1 5 0"/><path d="M7 19l-1 2M17 19l1 2"/></svg></div><p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:20px;font-weight:800;color:#fff;margin:14px 0 0;">Du badest wieder.</p></div></div>
+        <div class="stg-text">
+          <p class="stg-zeit" style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0076BE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Abends</span></p>
+          <h3 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:19px;letter-spacing:-0.01em;color:#1A1A1A;margin:0 0 6px;">Ein Werktag, und fertig</h3>
+          <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#404040;margin:0;">Kein Zimmer voller Staub, keine Woche ohne Bad.</p>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:560px;margin:64px auto 0;background:#FFFFFF;border-radius:16px;padding:24px 22px;text-align:center;box-shadow:0 12px 32px rgba(0,118,190,.10);"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@2785623cffc68cb7610f99663867fdfa8927141e/fischer-chemnitz/probad-urkunde.jpg" alt="proBAD-Zertifikat der Firma Fischer vom 23. Oktober 2025" loading="lazy" style="width:100%;max-width:300px;border-radius:10px;display:block;margin:0 auto;"><h3 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:19px;color:#1A1A1A;margin:16px 0 6px;">Wir sind dafür geprüft</h3><p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:#404040;margin:0;">Schulung für die proBAD-Wannentür abgeschlossen am 23. Oktober 2025. Das Zertifikat läuft auf die Firma.</p></div>
+  </div>
+</div>
