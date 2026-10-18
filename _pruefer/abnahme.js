@@ -14,7 +14,11 @@
  */
 window.funnelAbnahme = async function (opt = {}) {
   const o = Object.assign(
-    { kunde: null, logo: true, ctaMin: 2, impressum: null, bilderMin: 3, fremdeKunden: [] },
+    { kunde: null, logo: true, ctaMin: 2, impressum: null, bilderMin: 3, fremdeKunden: [],
+      // Badsanierungs-Standard (18.10.2026): standard:false nur für eigene HWM-Funnels.
+      // knopfText: der EINE Knopftext ('Jetzt unverbindlich anfragen'; Recruiting z. B. 'Jetzt bewerben'; false = nur Einheitlichkeit).
+      // startseite: true/false, sonst automatisch (letzter Pfadteil ist kein page_…/danke/mieter).
+      standard: true, knopfText: 'Jetzt unverbindlich anfragen', startseite: null, handyHoehe: 844, alleSeiten: true },
     opt
   );
   // Erst messen, wenn die Seite wirklich steht — sonst fehlt z.B. das Kopf-Logo.
@@ -280,6 +284,14 @@ window.funnelAbnahme = async function (opt = {}) {
   if (knopfSicht.length) gelb('Knopfabstände', 'Neben fremdem iframe nicht messbar, Sichtprüfung: ' + knopfSicht.map((k) => '„' + k.knopf + '" (' + k.sicht + ')').join(' · '));
 
 
+  // 15–20 — Badsanierungs-Standard (Noah 18.10.2026, Skill funnel-bauen Abschnitt „Badsanierungs-Standard“):
+  // „Ich will mit diesen Dingern keine Arbeit mehr … speichere dir das wirklich als rote Regel, als Skill ab.“
+  const std = await window.funnelStandard(document, o);
+  for (const b of std) befunde.push(b);
+
+
+
+
   const rote = befunde.filter((b) => b.stand === '🔴');
   console.table(befunde);
   console.log(rote.length ? '🔴 ' + rote.length + ' Punkt(e) offen — NICHT ausliefern.' : '🟢 Abnahme bestanden.');
@@ -399,4 +411,167 @@ window.funnelKnopfAbstand = function (doc) {
     oFremd = oFremd && !f.includes('oben'); uFremd = uFremd && !f.includes('unten');
     return { knopf: g.text, oben: o, unten: u, fehler: f.join(', '), sicht: [oFremd && 'oben', uFremd && 'unten'].filter(Boolean).join(', ') };
   });
+};
+
+/**
+ * Badsanierungs-Standard (Noah 18.10.2026) — die messbaren roten Punkte aus dem Skill funnel-bauen.
+ *   15 Startfrage:      Startseite zeigt als erste Frage genau ZWEI Bildkarten, ganz im ersten Bildschirm (390×844).
+ *   16 Kartenlabels:    alle Antwortkarten einer Frage haben gleich viele Zeilen und sind gleich hoch.
+ *   17 Eigentümer-Frage: keine Quizfrage mit „gehört …“/„Wem gehört“/„Eigentümer“ (Seite + alle Quiz-Seiten des Funnels).
+ *   18 Vertrauensleiste: jeder Eintrag steht in EINER Zeile, die Leiste bricht nicht in zwei Reihen um.
+ *   19 Knopftext:       alle CTA-Knöpfe tragen denselben Text (o.knopfText), keine Varianten, keine Chips.
+ * Rückgabe: Liste {stand, punkt, text} wie funnelAbnahme. Selbsttest: system/apps/funnel-check/test/standard_selbsttest.py
+ */
+window.funnelStandard = async function (doc, o) {
+  doc = doc || document;
+  o = Object.assign({ standard: true, knopfText: 'Jetzt unverbindlich anfragen', startseite: null, handyHoehe: 844, alleSeiten: true }, o || {});
+  const out = [];
+  const ok = (p, t) => out.push({ stand: '🟢', punkt: p, text: t });
+  const rot = (p, t) => out.push({ stand: '🔴', punkt: p, text: t });
+  const gelb = (p, t) => out.push({ stand: '🟡', punkt: p, text: t });
+  if (o.standard === false) return out;
+  const win = doc.defaultView;
+  const sy = () => win.scrollY;
+  const vis = (el) => { const s = win.getComputedStyle(el); const r = el.getBoundingClientRect(); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05 && r.width > 0 && r.height > 0; };
+  const nurSymbol = (t) => !/[\p{L}\p{N}]/u.test(t);
+  // Zeilen eines Elements = verschiedene Oberkanten seiner Textzeilen (Emoji-/Symbolknoten zählen nicht).
+  const zeilen = (el) => {
+    const tops = [];
+    const tw = doc.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = tw.nextNode())) {
+      if (!n.textContent.trim() || nurSymbol(n.textContent)) continue;
+      if (n.parentElement && !vis(n.parentElement)) continue;
+      const r = doc.createRange(); r.selectNodeContents(n);
+      for (const rc of r.getClientRects()) if (rc.width > 1 && rc.height > 1 && !tops.some((t) => Math.abs(t - rc.top) < rc.height * 0.5)) tops.push(rc.top);
+    }
+    return tops.length;
+  };
+  const piktogramm = (u) => /^[0-9a-f]{4,6}\.png$/i.test((u.split('/').pop() || '').split('?')[0]) || /icons8\.com|twemoji|emoji/i.test(u);
+  const hatFoto = (el) => [...el.querySelectorAll('img')].some((i) => { const r = i.getBoundingClientRect(); return r.width >= 80 && r.height >= 60 && !piktogramm(i.currentSrc || i.src || ''); })
+    || [...el.querySelectorAll('*')].some((e) => { const b = win.getComputedStyle(e).backgroundImage; const r = e.getBoundingClientRect(); return b && b.startsWith('url') && r.width >= 80 && r.height >= 60 && !piktogramm(b); });
+
+  // ── Antwortkarten-Gruppen (Perspective: div[role=button] je Antwort) ──
+  const karten = [...doc.querySelectorAll('div[role=button]')].filter((c) => vis(c) && c.offsetHeight > 30 && !c.parentElement.closest('[role=button]'));
+  const gruppen = new Map();
+  for (const c of karten) {
+    let a = c.parentElement;
+    for (let i = 0; i < 8 && a && karten.filter((k) => a.contains(k)).length < 2; i++) a = a.parentElement;
+    if (!a) a = c.parentElement;
+    if (!gruppen.has(a)) gruppen.set(a, []);
+    gruppen.get(a).push(c);
+  }
+  const liste = [...gruppen.entries()].map(([wurzel, ks]) => ({ wurzel, ks, top: Math.min(...ks.map((k) => k.getBoundingClientRect().top + sy())) }))
+    .sort((a, b) => a.top - b.top);
+  const label = (k) => k.innerText.split('\n').map((s) => s.trim()).filter((s) => s && !nurSymbol(s)).join(' ').slice(0, 40);
+
+  // 15 — Startfrage
+  let start = o.startseite;
+  if (start === null || start === undefined) {
+    const teile = win.location.pathname.split('/').filter(Boolean);
+    const letzter = teile[teile.length - 1] || '';
+    start = teile.length <= 1 || /^startseite$/i.test(letzter); // Variante B direkt geladen: startseite:true mitgeben
+  }
+  if (start) {
+    const g = liste[0];
+    const handy = win.innerWidth <= 430;
+    if (!g) rot('Startfrage', 'Keine Startfrage mit Antwortkarten auf der Startseite.');
+    else {
+      const f = [];
+      if (g.ks.length !== 2) f.push(g.ks.length + ' Antworten statt 2');
+      const ohne = g.ks.filter((k) => !hatFoto(k));
+      if (ohne.length) f.push('ohne Foto: ' + ohne.map(label).join(', '));
+      const unten = Math.round(Math.max(...g.ks.map((k) => k.getBoundingClientRect().bottom + sy())));
+      if (handy && unten > o.handyHoehe) f.push('Karten enden bei ' + unten + ' px, erster Bildschirm endet bei ' + o.handyHoehe);
+      if (f.length) rot('Startfrage', f.join(' · ') + ' — Soll: genau 2 Bildkarten mit Action-Fotos, ohne Scrollen sichtbar.');
+      else ok('Startfrage', '2 Bildkarten (' + g.ks.map(label).join(' / ') + ')' + (handy ? ', Unterkante ' + unten + ' px ≤ ' + o.handyHoehe : '') + '. Fotoart (Action, keine Porträts/Bäder) per Auge prüfen.');
+      if (!handy) gelb('Startfrage', 'Erster Bildschirm nur bei 390×844 messbar (jetzt ' + win.innerWidth + '×' + win.innerHeight + ').');
+    }
+  }
+
+  // 16 — Kartenlabels gleich lang (Zeilen) und Karten gleich hoch, je Frage
+  const schief = [];
+  for (const g of liste) {
+    if (g.ks.length < 2) continue;
+    const z = g.ks.map((k) => zeilen(k));
+    const h = g.ks.map((k) => Math.round(k.getBoundingClientRect().height));
+    if (Math.max(...z) !== Math.min(...z)) schief.push(g.ks.map((k, i) => '„' + label(k) + '" ' + z[i] + ' Z.').join(' / '));
+    else if (Math.max(...h) - Math.min(...h) > 2) schief.push('Höhen ' + h.join('/') + ' px: ' + g.ks.map(label).join(' / '));
+  }
+  if (!liste.length) ok('Kartenlabels', 'Keine Antwortkarten auf dieser Seite.');
+  else if (schief.length) rot('Kartenlabels', schief.join(' · ') + ' — Labels gleich lang (gleiche Zeilenzahl bei 390), Karten gleich hoch.');
+  else ok('Kartenlabels', liste.length + ' Frage(n), Labels je Frage gleiche Zeilenzahl, Karten gleich hoch.');
+
+  // 17 — Keine Eigentümer-Frage (Noah 18.10.2026: „wie bei Sussmann“)
+  const eigRe = /wem\s+geh(ö|\\u00f6)rt|geh(ö|\\u00f6)rt\s+(dir|euch|ihnen|die\s+immobilie|das\s+haus)|eigent(ü|\\u00fc)mer|bist\s+du\s+(der\s+)?eigent/i;
+  const eigFunde = [];
+  for (const g of liste) {
+    let w = g.wurzel; for (let i = 0; i < 3 && w.parentElement; i++) w = w.parentElement;
+    const t = (w.innerText || '');
+    const m = eigRe.exec(t);
+    if (m) eigFunde.push('diese Seite: „' + t.slice(Math.max(0, m.index - 20), m.index + 40).replace(/\s+/g, ' ').trim() + '“');
+  }
+  if (o.alleSeiten && /perspectivefunnel|perspective\.co/.test(win.location.host + (win.location.href || ''))) {
+    try {
+      const e = win.performance.getEntriesByType('resource').map((x) => x.name).find((n) => /\/data\/layoutData\.json/.test(n));
+      if (e) {
+        const basis = e.split('/data/')[0];
+        const v = (e.split('v=')[1] || '').split('&')[0];
+        const ld = await fetch(e).then((r) => r.json());
+        for (const p of ld.pages || []) {
+          if (p.isResultPage) continue;
+          const r = await fetch(basis + '/data/pages/' + p.slug + '.json' + (v ? '?v=' + v : ''));
+          if (!r.ok) continue;
+          const j = await r.json();
+          const s = JSON.stringify(j.components || []);
+          const m = eigRe.exec(s);
+          if (m) eigFunde.push(p.slug + ': „' + s.slice(m.index, m.index + 40).replace(/<[^>]*>|\\[nrt"]/g, ' ').replace(/\s+/g, ' ').trim() + '“');
+        }
+      } else gelb('Eigentümer-Frage', 'layoutData.json nicht gefunden — nur diese Seite geprüft.');
+    } catch (x) { gelb('Eigentümer-Frage', 'Andere Seiten nicht lesbar (' + x.message + ') — nur diese Seite geprüft.'); }
+  }
+  if (eigFunde.length) rot('Eigentümer-Frage', [...new Set(eigFunde)].join(' · ') + ' — keine Eigentümer-Frage im Quiz (wie Sussmann).');
+  else ok('Eigentümer-Frage', 'Keine Frage nach Eigentum/„gehört dir“.');
+
+  // 18 — Vertrauensleiste: jeder Eintrag eine Zeile, keine zweite Reihe (oberer Bereich, 1,5 Bildschirme)
+  const grenze = win.innerHeight * 1.5;
+  const leisten = [];
+  doc.querySelectorAll('[data-leiste], div, ul, p').forEach((e) => {
+    if (!vis(e) || e.closest('[role=button],button')) return;
+    const top = e.getBoundingClientRect().top + sy();
+    if (top > grenze) return;
+    if (e.hasAttribute('data-leiste')) { leisten.push({ e, eintraege: [...e.children].filter(vis) }); return; }
+    const s = win.getComputedStyle(e);
+    const kids = [...e.children].filter(vis);
+    if ((s.display === 'flex' || s.display === 'grid') && kids.length >= 3 && kids.every((k) => { const t = (k.innerText || '').trim(); return t.length >= 3 && t.length <= 45 && !k.querySelector('img[width], h1, h2, h3') && k.getBoundingClientRect().height < 70 && !/\n/.test(t); })
+      && kids.every((k) => k.children.length <= 3) && !e.closest('[data-leiste]')) leisten.push({ e, eintraege: kids });
+  });
+  const lFehler = [];
+  for (const { e, eintraege } of leisten) {
+    const mehr = eintraege.filter((k) => zeilen(k) > 1).map((k) => '„' + k.innerText.trim().slice(0, 30) + '" ' + zeilen(k) + ' Z.');
+    const s = win.getComputedStyle(e);
+    const reihe = s.display === 'grid' ? false : !/column/.test(s.flexDirection);
+    const tops = [...new Set(eintraege.map((k) => Math.round(k.getBoundingClientRect().top / 4)))];
+    if (mehr.length) lFehler.push('Eintrag umgebrochen: ' + mehr.join(', '));
+    if (reihe && tops.length > 1) lFehler.push('Leiste „' + eintraege.map((k) => k.innerText.trim().slice(0, 18)).join(' · ') + '" bricht in ' + tops.length + ' Reihen um');
+  }
+  if (lFehler.length) rot('Vertrauensleiste', lFehler.join(' · ') + ' — kürzer oder kleiner, eine Zeile bei 390.');
+  else if (start && !leisten.length) gelb('Vertrauensleiste', 'Keine Leiste erkannt (Tipp: data-leiste an den Container) — Sichtprüfung.');
+  else ok('Vertrauensleiste', leisten.length ? leisten.length + ' Leiste(n), jeder Eintrag einzeilig, keine zweite Reihe.' : 'Keine Leiste auf dieser Seite.');
+
+  // 19 — Ein Knopftext, keine verspielten Varianten, keine Chips
+  const norm = (t) => t.replace(/[^\p{L}\p{N} ]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  const ctas = [...doc.querySelectorAll('button')].filter((b) => vis(b) && b.offsetHeight > 30 && !b.closest('form') && !/^(open chat|dismiss|schließen)$/i.test(b.textContent.trim()))
+    .map((b) => (b.innerText || b.textContent).split('\n').map((s) => s.trim()).find((s) => s && !nurSymbol(s)) || '')
+    .filter((t) => t.length > 3);
+  const texte = [...new Set(ctas.map(norm))];
+  const kFehler = [];
+  if (texte.length > 1) kFehler.push(texte.length + ' verschiedene Knopftexte: ' + [...new Set(ctas)].join(' · '));
+  if (o.knopfText && texte.length && texte.some((t) => t !== norm(o.knopfText))) kFehler.push('Soll „' + o.knopfText + '“, ist ' + [...new Set(ctas)].map((t) => '„' + t + '“').join(', '));
+  const chip = /schnellster weg|passt f(ü|u)r mich|klingt nach mir|genau mein problem|schritt 1 starten/i.exec(doc.body.innerText);
+  if (chip) kFehler.push('verspielte Variante/Chip im Text: „' + chip[0] + '“');
+  if (kFehler.length) rot('Knopftext', kFehler.join(' · '));
+  else ok('Knopftext', ctas.length ? ctas.length + ' Knöpfe, ein Text: „' + ctas[0] + '“' : 'Keine CTA-Knöpfe auf dieser Seite.');
+
+  return out;
 };
