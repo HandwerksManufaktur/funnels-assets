@@ -15,7 +15,8 @@
 }
 .stf-team{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media (min-width:720px){.stf-team{grid-template-columns:5fr 6fr}}
-.stf-kachel{display:grid;grid-template-columns:48px 1fr 96px;column-gap:16px;row-gap:6px;align-items:start}
+.stf-kachel{display:grid;grid-template-columns:44px 1fr 84px;column-gap:12px;row-gap:4px;align-items:start}
+@media (min-width:640px){.stf-kachel{grid-template-columns:48px 1fr 96px;column-gap:16px;row-gap:6px}}
 .stf-kachel .stf-ic{grid-row:1 / 3}
 .stf-kachel .stf-mini{grid-row:1 / 3;grid-column:3;align-self:center}
 .stf-vz{display:grid;grid-template-columns:1fr}
@@ -36,25 +37,25 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;">
       <div class="stf-karte stf-kachel" style="background:#242833;border-radius:16px;padding:22px;border-top:3px solid #2541b2;">
         <div class="stf-ic" style="width:48px;height:48px;border-radius:12px;background:#2541b2;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></div>
-        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;">1</div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">1</div>
         <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#c9ced9;margin:0;">fester Ansprechpartner, von der Besichtigung bis zur Übergabe</p>
         <div class="stf-mini" style="border-radius:12px;overflow:hidden;aspect-ratio:4/3;"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@c0233eb7afe9966be6c137690426e919c94d2026/stimpfle/shooting-yannick-quadrat.webp" alt="Yannick Stimpfle" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block;"></div>
       </div>
       <div class="stf-karte stf-kachel" style="background:#242833;border-radius:16px;padding:22px;border-top:3px solid #2541b2;">
         <div class="stf-ic" style="width:48px;height:48px;border-radius:12px;background:#2541b2;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
-        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;">≈ 1 Woche</div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">≈ 1 Woche</div>
         <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#c9ced9;margin:0;">Bauzeit pro Bad, je nach Größe und Ausstattung</p>
         <div class="stf-mini" style="border-radius:12px;overflow:hidden;aspect-ratio:4/3;"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@c0233eb7afe9966be6c137690426e919c94d2026/stimpfle/bad-led-wanne.webp" alt="Fertiges Bad mit Badewanne und Lichtleiste" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div>
       </div>
       <div class="stf-karte stf-kachel" style="background:#242833;border-radius:16px;padding:22px;border-top:3px solid #2541b2;">
         <div class="stf-ic" style="width:48px;height:48px;border-radius:12px;background:#2541b2;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.6c2.6.3 4.5 2 4.5 5"/></svg></div>
-        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;">3</div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">3</div>
         <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#c9ced9;margin:0;">Mann im eigenen Team, dazu unser Büro in Stadtbergen</p>
         <div class="stf-mini" style="border-radius:12px;overflow:hidden;aspect-ratio:4/3;"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@07a11d52f2283aeb9e9e7c142fc31f1ee543bf20/stimpfle/antwort-betrieb-3.jpg" alt="Das Team von Yannick Stimpfle in der Werkstatt" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div>
       </div>
       <div class="stf-karte stf-kachel" style="background:#242833;border-radius:16px;padding:22px;border-top:3px solid #2541b2;">
         <div class="stf-ic" style="width:48px;height:48px;border-radius:12px;background:#2541b2;display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg></div>
-        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;">2</div>
+        <div style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;letter-spacing:-0.02em;color:#FFFFFF;white-space:nowrap;">2</div>
         <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.45;color:#c9ced9;margin:0;">Partnerbetriebe für Elektro und Maurer, wir stimmen alles ab</p>
         <div class="stf-mini" style="border-radius:12px;overflow:hidden;aspect-ratio:4/3;"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@c0233eb7afe9966be6c137690426e919c94d2026/stimpfle/bad-nische-spots.webp" alt="Beleuchtete Wandnische im fertigen Bad" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div>
       </div>
