@@ -380,12 +380,15 @@ window.funnelKnopfAbstand = function (doc) {
       if (it.u <= g.t + 1 && it.u > oben) { oben = it.u; oFremd = it.fremd; }
       if (!it.fuss && it.t >= g.u - 1 && it.t < unten) { unten = it.t; uFremd = it.fremd; }
     }
-    const o = oben < -1e8 || oFremd ? null : Math.round(g.t - oben);
-    const u = unten > 1e8 || uFremd ? null : Math.round(unten - g.u);
+    // Neben fremdem iframe ist der Wert nur eine Untergrenze (Innenabstand kommt dazu):
+    // rot nur, wenn schon die Untergrenze zu groß ist, sonst Sichtprüfung.
+    const o = oben < -1e8 ? null : Math.round(g.t - oben);
+    const u = unten > 1e8 ? null : Math.round(unten - g.u);
     const f = [];
-    if (o !== null && (o < 23 || o > 33)) f.push('oben');
-    if (u !== null && (u < 39 || u > 57)) f.push('unten');
-    if (o !== null && u !== null && u < o) f.push('unten < oben');
+    if (o !== null && (o > 33 || (!oFremd && o < 23))) f.push('oben');
+    if (u !== null && (u > 57 || (!uFremd && u < 39))) f.push('unten');
+    if (o !== null && u !== null && !oFremd && !uFremd && u < o) f.push('unten < oben');
+    oFremd = oFremd && !f.includes('oben'); uFremd = uFremd && !f.includes('unten');
     return { knopf: g.text, oben: o, unten: u, fehler: f.join(', '), sicht: [oFremd && 'oben', uFremd && 'unten'].filter(Boolean).join(', ') };
   });
 };
