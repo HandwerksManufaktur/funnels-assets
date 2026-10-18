@@ -231,7 +231,8 @@ window.funnelAbnahme = async function (opt = {}) {
     const bis = y + hoehe;
     // Ein Anker zaehlt, wenn er mit mindestens 120 px in dieses Band ragt. Die fruehere
     // 70-%-Mitte-Regel schlug an Sektionsgrenzen falsch an (Fischer, 21.09.2026).
-    const hat = anker.some(([a, b]) => Math.min(b, bis) - Math.max(a, y) >= 120);
+    // Ein kleinerer Anker (z. B. 112-px-Foto in einer Zeitleiste) zählt, wenn er ganz im Band liegt (Irlbacher 18.10.2026).
+    const hat = anker.some(([a, b]) => Math.min(b, bis) - Math.max(a, y) >= Math.min(120, (b - a) * 0.9));
     const txt = document.elementsFromPoint ? '' : '';
     if (!hat) nurText.push(Math.round(y) + '–' + Math.round(bis) + 'px');
   }
@@ -257,7 +258,10 @@ window.funnelAbnahme = async function (opt = {}) {
     let blockEl = b.parentElement;
     for (let i = 0; i < 12 && blockEl; i++) { const c = getComputedStyle(blockEl).backgroundColor; if (c && c !== 'rgba(0, 0, 0, 0)') break; blockEl = blockEl.parentElement; }
     const blockTop = blockEl ? blockEl.getBoundingClientRect().top : r.top;
-    const oben = document.elementFromPoint(x, Math.round(blockTop - 4));
+    // Gemessen am linken Rand des CTA-Blocks (+4 px), nicht in der Mitte: in der Mitte liegt oft die unterste Karte
+    // der Sektion (Irlbacher 18.10.2026: weiße Karte auf grauer Sektion → Fehlalarm), am Rand die Sektionsfläche.
+    const xRand = Math.round((blockEl ? blockEl.getBoundingClientRect().left : r.left) + 4);
+    const oben = document.elementFromPoint(xRand, Math.round(blockTop - 4));
     const soll = oben ? farbeVon(oben) : null;
     const ist = farbeVon(b.parentElement);
     if (soll && soll !== 'transparent' && soll !== ist)
