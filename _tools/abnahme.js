@@ -379,9 +379,10 @@ window.funnelKnopfAbstand = function (doc) {
     const rc = e.getBoundingClientRect();
     if (rc.height < 8 || rc.width < 8) return;
     const tag = e.tagName;
+    let bg = null;
     if (!/^(IMG|VIDEO|IFRAME|SVG|INPUT|TEXTAREA|SELECT)$/.test(tag)) {
       if (e.classList.contains('fx') || [...e.classList].some((c) => c.startsWith('fun-'))) return;
-      if (rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98) return;
+      const gross = rc.height > win.innerHeight * 1.5 || rc.width > win.innerWidth * 0.98;
       const s = win.getComputedStyle(e);
       // Fläche zählt nur, wenn sie sich vom Grund dahinter abhebt (Stimpfle 18.10.2026: weiße
       // Hülle auf weißer Seite endete genau am Knopf, gemessen 0, sichtbar 32).
@@ -390,18 +391,24 @@ window.funnelKnopfAbstand = function (doc) {
       for (let a = e.parentElement; a; a = a.parentElement) { const c = win.getComputedStyle(a).backgroundColor; if (!leer(c)) { grund = c; break; } }
       const flaeche = !leer(s.backgroundColor) && s.backgroundColor !== grund;
       const rahmen = parseFloat(s.borderTopWidth) > 0 || parseFloat(s.borderBottomWidth) > 0;
+      // „Gemessen am Bild“ (Noah 18.10.2026): eine randlose Sektion in ANDERER Farbe als das Knopf-Band ist
+      // sichtbar der nächste Inhalt — ihre Kante zählt. Gleiche Farbe wie das Band = unsichtbar, zählt nicht (bg-Vergleich unten).
+      if (gross && !flaeche) return;
       if (!flaeche && !rahmen) return;
+      if (flaeche) bg = s.backgroundColor;
     }
     // Fremdes iframe (Perspective-Embed auf eigener Subdomain): sein Innenabstand ist von hier
     // nicht sichtbar, der Abstand zum Rahmen sagt nichts (Irlbacher 18.10.2026: gemessen 0, sichtbar ~26).
     let fremd = false;
     if (tag === 'IFRAME') { try { fremd = !e.contentDocument; } catch (x) { fremd = true; } }
-    items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(e), fremd });
+    items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(e), fremd, bg });
   });
+  const bandVon = (el) => { for (let a = el.parentElement; a; a = a.parentElement) { const c = win.getComputedStyle(a).backgroundColor; if (c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') return c; } return 'rgb(255, 255, 255)'; };
   return gruppen.map((g, i) => {
     let oben = -1e9, unten = 1e9, oFremd = false, uFremd = false, fussT = 1e9;
-
+    const band = bandVon(g.els[0]);
     for (const it of items) {
+      if (it.bg && it.bg === band) continue; // Fläche in Bandfarbe ist keine sichtbare Kante
       if (it.u <= g.t + 1 && it.u > oben) { oben = it.u; oFremd = it.fremd; }
       if (!it.fuss && it.t >= g.u - 1 && it.t < unten) { unten = it.t; uFremd = it.fremd; }
       if (it.fuss && it.t >= g.u - 1 && it.t < fussT) fussT = it.t;
