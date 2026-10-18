@@ -268,14 +268,14 @@ window.funnelAbnahme = async function (opt = {}) {
   else ok('Spalt vor dem CTA', 'Keine Naht zwischen Sektion und CTA-Block.');
 
 
-  // 14 — Knopfabstände: oben 24–32 px, unten 40–56 px, unten nie kleiner als oben, in 390 UND 1440 px.
+  // 14 — Knopfabstände: oben 24–32 px, unten mindestens 64 px (Noah 18.10.2026, vorher 40–56), unten nie kleiner als oben, in 390 UND 1440 px.
   // Noah, 18.10.2026 (Fischer): „abstände unter den buttons sind oft noch zu gering und über den buttons
   // manchmal noch zu groß". Gemessen wird vom sichtbaren Inhalt (Text, Bild, Karte mit Fläche/Rahmen)
   // bis zur Knopfkante, nicht von Block zu Block. Knöpfe mit < 36 px Abstand zählen als eine Gruppe.
   const knopf = window.funnelKnopfAbstand(document);
   const knopfRot = knopf.filter((k) => k.fehler);
-  if (knopfRot.length) rot('Knopfabstände', knopfRot.map((k) => '„' + k.knopf + '" oben ' + k.oben + ' / unten ' + k.unten + ' (' + k.fehler + ')').join(' · ') + ' — Soll oben 24–32, unten 40–56.');
-  else ok('Knopfabstände', knopf.length + ' Knopfgruppe(n), oben 24–32 und unten 40–56 px.');
+  if (knopfRot.length) rot('Knopfabstände', knopfRot.map((k) => '„' + k.knopf + '" oben ' + k.oben + ' / unten ' + k.unten + ' (' + k.fehler + ')').join(' · ') + ' — Soll oben 24–32, unten mindestens 64.');
+  else ok('Knopfabstände', knopf.length + ' Knopfgruppe(n), oben 24–32 und unten mindestens 64 px.');
   const knopfSicht = knopf.filter((k) => k.sicht);
   if (knopfSicht.length) gelb('Knopfabstände', 'Neben fremdem iframe nicht messbar, Sichtprüfung: ' + knopfSicht.map((k) => '„' + k.knopf + '" (' + k.sicht + ')').join(' · '));
 
@@ -380,18 +380,21 @@ window.funnelKnopfAbstand = function (doc) {
     items.push({ t: rc.top + sy, u: rc.bottom + sy, fuss: istFuss(e), fremd });
   });
   return gruppen.map((g, i) => {
-    let oben = -1e9, unten = 1e9, oFremd = false, uFremd = false;
+    let oben = -1e9, unten = 1e9, oFremd = false, uFremd = false, fussT = 1e9;
+
     for (const it of items) {
       if (it.u <= g.t + 1 && it.u > oben) { oben = it.u; oFremd = it.fremd; }
       if (!it.fuss && it.t >= g.u - 1 && it.t < unten) { unten = it.t; uFremd = it.fremd; }
+      if (it.fuss && it.t >= g.u - 1 && it.t < fussT) fussT = it.t;
     }
     // Neben fremdem iframe ist der Wert nur eine Untergrenze (Innenabstand kommt dazu):
     // rot nur, wenn schon die Untergrenze zu groß ist, sonst Sichtprüfung.
     const o = oben < -1e8 ? null : Math.round(g.t - oben);
-    const u = unten > 1e8 ? null : Math.round(unten - g.u);
+    // Letzter Knopf: Abstand zum Fuß gilt mit (Noah 18.10.2026: „auch der letzte vor dem Fuß“).
+    const u = unten < 1e8 ? Math.round(unten - g.u) : fussT < 1e8 ? Math.round(fussT - g.u) : null;
     const f = [];
     if (o !== null && (o > 33 || (!oFremd && o < 23))) f.push('oben');
-    if (u !== null && (u > 57 || (!uFremd && u < 39))) f.push('unten');
+    if (u !== null && (u > 88 || (!uFremd && u < 64))) f.push('unten');
     if (o !== null && u !== null && !oFremd && !uFremd && u < o) f.push('unten < oben');
     oFremd = oFremd && !f.includes('oben'); uFremd = uFremd && !f.includes('unten');
     return { knopf: g.text, oben: o, unten: u, fehler: f.join(', '), sicht: [oFremd && 'oben', uFremd && 'unten'].filter(Boolean).join(', ') };
