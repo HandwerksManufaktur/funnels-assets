@@ -611,7 +611,8 @@ window.funnelStandard = async function (doc, o) {
   // keine aus der Sperrliste (Spielereien wie „Passt für mich“), keine Chips wie „Schnellster Weg“.
   const norm = (t) => t.replace(/[^\p{L}\p{N} ]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
   const knoepfe19 = [...doc.querySelectorAll('button')].filter((b) => vis(b) && b.offsetHeight > 30 && !b.closest('form') && !/^(open chat|dismiss|schließen)$/i.test(b.textContent.trim()));
-  const haupt = (b) => { const el = [...b.querySelectorAll('p,strong,span,div')].find((e) => { const t = (e.innerText || '').trim(); return t && !nurSymbol(t) && !e.querySelector('p,div'); }) || b; return el; };
+  // Hauptzeile = kleinstes Element, das genau die erste Textzeile trägt (Unterzeile „Dauert keine 60 Sekunden“ zählt nicht mit).
+  const haupt = (b) => { const erste = ((b.innerText || '').split('\n').map((x) => x.trim()).find((x) => x && !nurSymbol(x)) || ''); const k = [...b.querySelectorAll('*')].filter((e) => { const t = (e.innerText || '').trim(); return t.includes(erste) && t.length <= erste.length + 4; }); return k.length ? k.reduce((m, e) => (e.contains(m) ? m : m.contains(e) ? e : m)) : b; };
   const ctas = knoepfe19.map((b) => ({ b, t: ((b.innerText || b.textContent).split('\n').map((s) => s.trim()).find((s) => s && !nurSymbol(s)) || '') })).filter((x) => x.t.length > 3);
   const texte = [...new Set(ctas.map((x) => norm(x.t)))];
   const sperre = /passt f(ü|u)r mich|klingt nach mir|genau mein problem|schritt 1 starten|endlich anfragen|ich will so eine|los geht|schnellster weg/i;
