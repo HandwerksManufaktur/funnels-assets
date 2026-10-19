@@ -331,7 +331,7 @@ window.funnelAbnahme = async function (opt = {}) {
     else ok('Abstandsraster', 'Kein Leerraum über 220 px.');
     if (mittlere.length || spG.length) gelb('Abstandsraster', [...mittlere.map((l) => 'Leerraum ' + l.hoehe + ' px bei y=' + l.y), ...spG.map((x) => 'Überschrift→' + x.art + ' Spannweite ' + x.spannweite + ' px')].join(' · ') + ' — ansehen.');
 
-    const kf = window.funnelKnopfform(document);
+    const kf = (document.documentElement.clientWidth <= 430) ? window.funnelKnopfform(document) : { fehler: [], gelb: [], anzahl: 0 };  // Regel gilt bei 390 (Fischer 19.10.: Desktop-Breiten nach Text = Fehlalarm)
     if (kf.fehler.length) rot('Knopfform', kf.fehler.join(' · ') + ' — alle CTA-Knöpfe gleich breit, mit Rand.');
     else ok('Knopfform', kf.anzahl + ' CTA-Knöpfe gleich groß, mit Rand links/rechts.');
     if (kf.gelb.length) gelb('Knopfform', kf.gelb.join(' · '));
@@ -1063,7 +1063,7 @@ window.funnelBildMittig = function (doc, mittigeSeite) {
     if (r.width < 60 || r.width > win.innerWidth * 0.9 || /logo/i.test((e.alt || '') + (e.src || ''))) continue;
     const mitte = r.left + r.width / 2;
     const daneben = rects.some((o) => o.e !== e && o.r.bottom > r.top + r.height * 0.3 && o.r.top < r.bottom - r.height * 0.3 && (o.r.right <= r.left + 2 || o.r.left >= r.right - 2))
-      || textRects.some((t) => t.bottom > r.top + r.height * 0.3 && t.top < r.bottom - r.height * 0.3 && (t.right <= r.left + 2 || t.left >= r.right - 2));
+      || textRects.some((t) => t.bottom > r.top - 40 && t.top < r.bottom && (t.right <= r.left + 2 || t.left >= r.right - 2));  // auch Zeitleisten-Nummer oben links (Fischer 19.10. Fehlalarm)
     if (daneben) continue;
     if (Math.abs(mitte - fm) > 6) funde.push({ was: (e.alt || e.src || '').split('/').pop().slice(0, 30), y: Math.round(r.top + sy), abweichung: Math.round(mitte - fm) });
   }
@@ -1128,6 +1128,7 @@ window.funnelAbnahmeAlle = async function (opt = {}) {
         const w = f.contentWindow;
         w.eval(quelle);
         const o = Object.assign({}, opt, { startseite: !!sei.start, alleSeiten: !!sei.start && !!opt.alleSeiten });
+        if (!sei.start) { o.ctaMin = 0; o.bilderMin = 0; }  // Quiz-/Unterseiten haben keine Mindestzahl (Fischer 19.10.: 6 Fehlalarme)
         delete o.urls; delete o.breiten;
         const r = await w.funnelAbnahme(o);
         ergebnis.seiten.push({ url: sei.url, slug: sei.slug || '', start: !!sei.start, breite: b, rot: r.rot, befunde: r.befunde.filter((x) => x.stand !== '🟢'), bilder: r.bilder || [] });
