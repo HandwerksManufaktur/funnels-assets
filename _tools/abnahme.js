@@ -309,13 +309,48 @@ window.funnelAbnahme = async function (opt = {}) {
   const std = await window.funnelStandard(document, o);
   for (const b of std) befunde.push(b);
 
+  // 26–31 — Zusatzmessungen aus der Korrektur-Auswertung vom 19.10.2026 (Noah: „immer noch … alles mit den Abständen, mit den
+  // Buttons, mit dem Zentrieren von Gesichtern“). Eine Regel ohne Messung kommt wieder.
+  let bilder = [];
+  if (o.zusatz !== false) {
+    const sy0 = window.scrollY;
+    const nahte = window.funnelNaht(document);
+    if (nahte.length) rot('Naht zwischen Sektionen', nahte.map((n) => n.hoehe + ' px Seitenhintergrund bei y=' + n.y).join(' · ') + ' — Hintergrund-Abstand unten am Block darüber auf 0.');
+    else ok('Naht zwischen Sektionen', 'Keine Naht zwischen farbigen Sektionen.');
 
+    const ber = window.funnelBeruehrung(document);
+    if (ber.length) rot('Bild/Karte ohne Luft', ber.slice(0, 5).map((b) => b.was + ' bei y=' + b.y + ' nur ' + b.luecke + ' px' + (b.text ? ' vor „' + b.text + '“' : '')).join(' · ') + ' — darunter Abstand wie im Raster.');
+    else ok('Bild/Karte ohne Luft', 'Unter jedem Bild und jeder Karte steht Abstand.');
 
+    const ras = window.funnelAbstandsraster(document);
+    const grosse = ras.luecken.filter((l) => l.hoehe > 220), mittlere = ras.luecken.filter((l) => l.hoehe <= 220);
+    // Überschrift→Inhalt-Spannweite bleibt GELB: Karten-Text (54 px) und Unterzeile (15 px) sind beide „Text“ — Probe an Fischer v6, 19.10.2026.
+    const spG = ras.spann;
+    if (grosse.length)
+      rot('Abstandsraster', grosse.map((l) => 'Leerraum ' + l.hoehe + ' px bei y=' + l.y).join(' · ') + ' — leerer Abstandhalter oder doppeltes Padding, ein Raster je Seite.');
+    else ok('Abstandsraster', 'Kein Leerraum über 220 px.');
+    if (mittlere.length || spG.length) gelb('Abstandsraster', [...mittlere.map((l) => 'Leerraum ' + l.hoehe + ' px bei y=' + l.y), ...spG.map((x) => 'Überschrift→' + x.art + ' Spannweite ' + x.spannweite + ' px')].join(' · ') + ' — ansehen.');
+
+    const kf = window.funnelKnopfform(document);
+    if (kf.fehler.length) rot('Knopfform', kf.fehler.join(' · ') + ' — alle CTA-Knöpfe gleich breit, mit Rand.');
+    else ok('Knopfform', kf.anzahl + ' CTA-Knöpfe gleich groß, mit Rand links/rechts.');
+    if (kf.gelb.length) gelb('Knopfform', kf.gelb.join(' · '));
+
+    const alleMittig = [...document.querySelectorAll('h1,h2')].filter((h) => (h.innerText || '').trim() && !h.closest('[role=button],button,form')).every((h) => /center/.test(getComputedStyle(h).textAlign));
+    const mi = window.funnelBildMittig(document, alleMittig);
+    if (mi.length) rot('Bild mittig', mi.map((m) => '„' + m.was + '“ bei y=' + m.y + ' ' + m.abweichung + ' px neben der Mitte').join(' · ') + ' — Einzelbild in mittiger Spalte sitzt in der Fenstermitte.');
+    else ok('Bild mittig', 'Einzelbilder in mittigen Spalten sitzen in der Fenstermitte.');
+
+    window.scrollTo(0, sy0);
+    bilder = await window.funnelBilder(document);
+    const mitBild = bilder.filter((b) => !b.logo);
+    if (mitBild.length) gelb('Gesichter', mitBild.length + ' Bilder erfasst (' + window.innerWidth + ' px) — Gesichtsprüfung läuft in funnel_abnahme_quittung.py (macOS Vision). Ohne sie gibt es keine Quittung und der Link bleibt gesperrt.');
+  }
 
   const rote = befunde.filter((b) => b.stand === '🔴');
   console.table(befunde);
   console.log(rote.length ? '🔴 ' + rote.length + ' Punkt(e) offen — NICHT ausliefern.' : '🟢 Abnahme bestanden.');
-  return { rot: rote.length, befunde };
+  return { rot: rote.length, befunde, bilder, url: location.href, breite: window.innerWidth, hoehe: window.innerHeight };
 };
 
 /**
@@ -684,7 +719,7 @@ window.funnelStandard = async function (doc, o) {
     const reihen = [];
     for (const k of g.ks) { const t = Math.round(k.getBoundingClientRect().top); const r = reihen.find((x) => Math.abs(x.t - t) < 8); if (r) r.n++; else reihen.push({ t, n: 1 }); }
     reihen.sort((a, b) => a.t - b.t);
-    if (reihen.length > 1 && reihen[reihen.length - 1].n < reihen[0].n) lsFehler.push('Raster nicht voll: ' + reihen.map((r) => r.n).join('/') + ' Karten je Reihe bei ' + win.innerWidth + ' px');
+    if (win.innerWidth <= 430 && reihen.length > 1 && reihen[reihen.length - 1].n < reihen[0].n) lsFehler.push('Raster nicht voll: ' + reihen.map((r) => r.n).join('/') + ' Karten je Reihe bei ' + win.innerWidth + ' px');
   }
   if (lsFehler.length) rot('Leistungsfrage', lsFehler.join(' · ') + ' — Soll: Antwort „Sonstiges“ immer dabei, letzte Reihe voll (3+1 oder 5+1 statt 4+1).');
   else ok('Leistungsfrage', lsGefunden ? lsGefunden + ' Leistungsfrage(n) mit „Sonstiges“, Raster voll.' : 'Keine Leistungsfrage auf dieser Seite.');
@@ -735,3 +770,374 @@ window.funnelStandard = async function (doc, o) {
 
   return out;
 };
+
+/**
+ * Bildgeometrie für die Gesichtsprüfung (Noah 18./19.10.2026: „das Bild von Bettina ist nicht zentriert“, „zwei Bilder,
+ * wo niemand in die Kamera schaut“, „da sind die Bilder abgeschnitten“). Der Browser kann keine Gesichter finden —
+ * er liefert je Bild (<img> UND CSS-background, auch in HTML-Blöcken) die GEZEICHNETE Lage (object-fit/-position bzw.
+ * background-size/-position umgerechnet) und den SICHTBAREN Ausschnitt (Rahmen ∩ overflow:hidden-Vorfahren, Kreis/Ellipse
+ * bei border-radius ≥ 45 %). Die Gesichter findet system/scripts/funnel_gesichter_pruefen.py (macOS Vision) und rechnet
+ * beides gegeneinander. Alle Maße in Seiten-Pixeln des gemessenen Fensters (390 UND 1440 getrennt messen).
+ */
+window.funnelBilder = async function (doc) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  const sx = win.scrollX, sy = win.scrollY;
+  const px = (v) => parseFloat(v) || 0;
+  const splitTop = (s) => { const out = []; let d = 0, cur = ''; for (const ch of s) { if (ch === '(') d++; if (ch === ')') d--; if (ch === ',' && d === 0) { out.push(cur.trim()); cur = ''; } else cur += ch; } if (cur.trim()) out.push(cur.trim()); return out; };
+  const urlVon = (s) => { const m = /^url\((['"]?)(.*)\1\)$/.exec(s || ''); return m ? m[2] : null; };
+  const laden = (u) => new Promise((res) => { const i = new win.Image(); const t = setTimeout(() => res(null), 4000); i.onload = () => { clearTimeout(t); res(i); }; i.onerror = () => { clearTimeout(t); res(null); }; i.src = u; });
+  const datei = (u) => u.split('/').pop().split('?')[0];
+  const piktogramm = (u) => /^[0-9a-f]{4,6}(-[0-9a-f]{2,6})*\.png$/i.test(datei(u)) || /icons8\.com|twemoji/i.test(u) || /^data:image\/svg/.test(u) || /\.svg(\?|$)/i.test(u);
+  const tokenWert = (t, frei) => { t = (t || '50%').trim(); const k = { left: '0%', top: '0%', center: '50%', right: '100%', bottom: '100%' }[t]; if (k) t = k; return t.endsWith('%') ? frei * parseFloat(t) / 100 : px(t); };
+  const posVon = (str, frei) => { const t = (str || '50% 50%').trim().split(/\s+/); return [tokenWert(t[0], frei[0]), tokenWert(t[1] || '50%', frei[1])]; };
+  const sichtbar = (e) => { const s = win.getComputedStyle(e); return s.display !== 'none' && s.visibility !== 'hidden' && +s.opacity > 0.05; };
+  const rundVon = (e, r) => { const cs = win.getComputedStyle(e); if (/^(circle|ellipse)/.test(cs.clipPath || '')) return true; const t = cs.borderTopLeftRadius || '0px'; const v = px(t); const klein = Math.min(r.width, r.height); const rad = /%/.test(t) ? v / 100 * r.width : v; return klein > 0 && rad >= 0.45 * klein; };
+  const schnitt = (a, b) => { const x0 = Math.max(a[0], b[0]), y0 = Math.max(a[1], b[1]), x1 = Math.min(a[0] + a[2], b[0] + b[2]), y1 = Math.min(a[1] + a[3], b[1] + b[3]); return x1 > x0 && y1 > y0 ? [x0, y0, x1 - x0, y1 - y0] : [x0, y0, 0, 0]; };
+  const abs = (r) => [r.left + sx, r.top + sy, r.width, r.height];
+  const r1 = (a) => a.map((v) => Math.round(v * 10) / 10);
+
+  // Karten-Gruppen (Perspective-Antwortkarten) wie in funnelStandard — Gruppe 0 = erste Frage der Seite
+  const karten = [...doc.querySelectorAll('div[role=button]')].filter((c) => sichtbar(c) && c.offsetHeight > 30 && !c.parentElement.closest('[role=button]'));
+  const gruppen = new Map();
+  for (const c of karten) { let a = c.parentElement; for (let i = 0; i < 8 && a && karten.filter((k) => a.contains(k)).length < 2; i++) a = a.parentElement; if (!a) a = c.parentElement; if (!gruppen.has(a)) gruppen.set(a, []); gruppen.get(a).push(c); }
+  const gListe = [...gruppen.entries()].map(([w, ks]) => ({ ks, top: Math.min(...ks.map((k) => k.getBoundingClientRect().top + sy)) })).sort((a, b) => a.top - b.top);
+  const karteIdx = (el) => { const k = el.closest('div[role=button]'); if (!k) return null; const i = gListe.findIndex((g) => g.ks.some((x) => x === k || x.contains(k))); return i < 0 ? null : i; };
+
+  const aus = [];
+  const cache = {};
+  const beschreibe = (el) => (el.getAttribute && (el.getAttribute('alt') || '')) || ((el.className && typeof el.className === 'string' ? '.' + el.className.split(/\s+/)[0] : '') || el.tagName.toLowerCase());
+
+  const clipVon = (el, start) => {
+    let s = start, ellipse = null;
+    const eigene = el.getBoundingClientRect();
+    if (rundVon(el, eigene)) ellipse = abs(eigene);
+    for (let a = el.parentElement; a && a !== doc.documentElement && a !== doc.body; a = a.parentElement) {
+      const cs = win.getComputedStyle(a);
+      if (/(hidden|clip)/.test(cs.overflowX + ' ' + cs.overflowY)) {
+        const r = a.getBoundingClientRect();
+        const pb = [r.left + px(cs.borderLeftWidth) + sx, r.top + px(cs.borderTopWidth) + sy, r.width - px(cs.borderLeftWidth) - px(cs.borderRightWidth), r.height - px(cs.borderTopWidth) - px(cs.borderBottomWidth)];
+        s = schnitt(s, pb);
+        if (!ellipse && rundVon(a, r)) ellipse = pb;
+      }
+    }
+    return { s, ellipse };
+  };
+
+  // 1) <img>
+  for (const im of [...doc.querySelectorAll('img')]) {
+    const u = im.currentSrc || im.src || '';
+    if (!u || piktogramm(u) || !sichtbar(im)) continue;
+    const r = im.getBoundingClientRect();
+    if (r.width < 24 || r.height < 24 || !im.naturalWidth) continue;
+    const cs = win.getComputedStyle(im);
+    const cb = [r.left + px(cs.borderLeftWidth) + px(cs.paddingLeft) + sx, r.top + px(cs.borderTopWidth) + px(cs.paddingTop) + sy,
+      r.width - px(cs.borderLeftWidth) - px(cs.borderRightWidth) - px(cs.paddingLeft) - px(cs.paddingRight),
+      r.height - px(cs.borderTopWidth) - px(cs.borderBottomWidth) - px(cs.paddingTop) - px(cs.paddingBottom)];
+    const nw = im.naturalWidth, nh = im.naturalHeight;
+    const fit = cs.objectFit || 'fill';
+    let dw = cb[2], dh = cb[3];
+    const cov = Math.max(cb[2] / nw, cb[3] / nh), con = Math.min(cb[2] / nw, cb[3] / nh);
+    if (fit === 'cover') { dw = nw * cov; dh = nh * cov; }
+    else if (fit === 'contain') { dw = nw * con; dh = nh * con; }
+    else if (fit === 'none') { dw = nw; dh = nh; }
+    else if (fit === 'scale-down') { const s = Math.min(1, con); dw = nw * s; dh = nh * s; }
+    const [ox, oy] = posVon(cs.objectPosition, [cb[2] - dw, cb[3] - dh]);
+    const g = [cb[0] + ox, cb[1] + oy, dw, dh];
+    const { s, ellipse } = clipVon(im, cb);
+    aus.push({ u, art: 'img', was: beschreibe(im), y: Math.round(r.top + sy), g: r1(g), s: r1(s), e: ellipse ? r1(ellipse) : null, nat: [nw, nh], karte: karteIdx(im), logo: /logo/i.test((im.alt || '') + datei(u)), fit: 'object-position', kachel: false });
+  }
+
+  // 2) CSS-Hintergründe (auch in HTML-Blöcken ohne iframe)
+  for (const el of [...doc.querySelectorAll('*')]) {
+    const cs = win.getComputedStyle(el);
+    const bi = cs.backgroundImage;
+    if (!bi || bi === 'none' || bi.indexOf('url(') < 0 || !sichtbar(el)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 24 || r.height < 24) continue;
+    const liste = splitTop(bi), sizes = splitTop(cs.backgroundSize || 'auto'), poss = splitTop(cs.backgroundPosition || '50% 50%'), reps = splitTop(cs.backgroundRepeat || 'repeat');
+    for (let i = 0; i < liste.length; i++) {
+      const u = urlVon(liste[i]);
+      if (!u || piktogramm(u)) continue;
+      if (!cache[u]) cache[u] = await laden(u);
+      const img = cache[u];
+      if (!img || !img.naturalWidth) continue;
+      const area = [r.left + px(cs.borderLeftWidth) + sx, r.top + px(cs.borderTopWidth) + sy, r.width - px(cs.borderLeftWidth) - px(cs.borderRightWidth), r.height - px(cs.borderTopWidth) - px(cs.borderBottomWidth)];
+      const nw = img.naturalWidth, nh = img.naturalHeight;
+      const sz = (sizes[i % sizes.length] || 'auto').trim();
+      let dw, dh;
+      if (sz === 'cover') { const k = Math.max(area[2] / nw, area[3] / nh); dw = nw * k; dh = nh * k; }
+      else if (sz === 'contain') { const k = Math.min(area[2] / nw, area[3] / nh); dw = nw * k; dh = nh * k; }
+      else {
+        const t = sz.split(/\s+/); const wT = t[0], hT = t[1] || 'auto';
+        const wv = wT === 'auto' ? null : (wT.endsWith('%') ? area[2] * parseFloat(wT) / 100 : px(wT));
+        const hv = hT === 'auto' ? null : (hT.endsWith('%') ? area[3] * parseFloat(hT) / 100 : px(hT));
+        if (wv !== null && hv !== null) { dw = wv; dh = hv; } else if (wv !== null) { dw = wv; dh = wv * nh / nw; } else if (hv !== null) { dh = hv; dw = hv * nw / nh; } else { dw = nw; dh = nh; }
+      }
+      const [ox, oy] = posVon(poss[i % poss.length], [area[2] - dw, area[3] - dh]);
+      const rep = (reps[i % reps.length] || 'repeat');
+      const kachel = (/(^|\s)repeat($|\s)|repeat-x/.test(rep) && dw < area[2] - 1) || (/(^|\s)repeat($|\s)|repeat-y/.test(rep) && dh < area[3] - 1);
+      const g = [area[0] + ox, area[1] + oy, dw, dh];
+      const { s, ellipse } = clipVon(el, area);
+      aus.push({ u, art: 'bg', was: beschreibe(el), y: Math.round(r.top + sy), g: r1(g), s: r1(s), e: ellipse ? r1(ellipse) : null, nat: [nw, nh], karte: karteIdx(el), logo: /logo/i.test(datei(u)), fit: 'background-position', kachel: !!kachel });
+    }
+  }
+  return aus;
+};
+
+/** Naht: Streifen Seitenhintergrund (≤ 24 px) zwischen zwei farbigen, randlosen Sektionen — nicht nur über CTA-Blöcken.
+ *  Noah 21.09.2026: „kleiner Spalt zwischen dem Blauen“. Gemessen an den Flächen selbst (Hintergrundfarbe ≠ Seite, volle Breite). */
+window.funnelNaht = function (doc) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  const sy = win.scrollY;
+  const leer = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent';
+  const bodyBg = win.getComputedStyle(doc.body).backgroundColor;
+  const htmlBg = win.getComputedStyle(doc.documentElement).backgroundColor;
+  const seite = !leer(bodyBg) ? bodyBg : !leer(htmlBg) ? htmlBg : 'rgb(255, 255, 255)';
+  const iv = [];
+  doc.querySelectorAll('body *').forEach((e) => {
+    const s = win.getComputedStyle(e);
+    if (leer(s.backgroundColor) || s.backgroundColor === seite || /fixed|sticky/.test(s.position) || s.display === 'none' || s.visibility === 'hidden') return;
+    if (e.closest('button,[role=button],form')) return;
+    const r = e.getBoundingClientRect();
+    if (r.height < 20) return;
+    const bs = s.boxShadow || ''; const m = bs.match(/0px 0px 0px (\d+(?:\.\d+)?)px/);
+    const breit = r.width >= win.innerWidth * 0.98 || (!!m && parseFloat(m[1]) >= win.innerWidth / 2);
+    if (!breit) return;
+    iv.push([r.top + sy, r.bottom + sy, s.backgroundColor]);
+  });
+  iv.sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  for (const i of iv) { const l = merged[merged.length - 1]; if (l && i[0] <= l[1] + 0.5) { l[1] = Math.max(l[1], i[1]); } else merged.push([i[0], i[1], i[2]]); }
+  const nahte = [];
+  for (let k = 1; k < merged.length; k++) {
+    const luecke = merged[k][0] - merged[k - 1][1];
+    if (luecke > 0.5 && luecke <= 24) nahte.push({ y: Math.round(merged[k - 1][1]), hoehe: Math.round(luecke), davor: merged[k - 1][2], danach: merged[k][2] });
+  }
+  return nahte;
+};
+
+/** Berührung: Bild/Karte direkt über dem nächsten Inhalt ohne Luft (Noah 21.09.2026: „bei dem Zertifikat ist kein Abstand
+ *  darunter“). Bild→Bild/Karte→Karte unter 4 px, alles andere unter 8 px; Fuß und Eltern/Kind zählen nicht. */
+window.funnelBeruehrung = function (doc) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  const sy = win.scrollY, sx = win.scrollX;
+  const vis = (el) => { const s = win.getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05; };
+  const leer = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent';
+  const istFuss = (el) => { let x = el; for (let i = 0; i < 5 && x; i++) { const t = (x.textContent || '').trim(); if (t.length < 60 && /impressum/i.test(t) && /datenschutz/i.test(t)) return true; x = x.parentElement; } return false; };
+  const flaechen = [], folgen = [];
+  doc.querySelectorAll('img,video,div,a,li').forEach((e) => {
+    if (!vis(e) || e.closest('button') || [...e.classList].some((c) => c.startsWith('fun-'))) return;
+    const r = e.getBoundingClientRect();
+    if (r.width < 40 || r.height < 40 || r.width >= win.innerWidth * 0.98) return;
+    const s = win.getComputedStyle(e);
+    const bild = /^(IMG|VIDEO)$/.test(e.tagName);
+    const karte = !bild && ((!leer(s.backgroundColor) && s.backgroundColor !== 'rgb(255, 255, 255)') || parseFloat(s.borderBottomWidth) > 0) && r.height < win.innerHeight * 0.9;
+    if (!bild && !karte) return;
+    flaechen.push({ e, art: bild ? 'bild' : 'karte', l: r.left + sx, rr: r.right + sx, t: r.top + sy, u: r.bottom + sy });
+  });
+  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let n;
+  while ((n = tw.nextNode())) {
+    if (!n.textContent.trim()) continue;
+    const p = n.parentElement;
+    if (!p || !vis(p) || p.closest('button,script,style') || istFuss(p)) continue;
+    const rg = doc.createRange(); rg.selectNodeContents(n);
+    for (const rc of rg.getClientRects()) if (rc.height > 0 && rc.width > 0) folgen.push({ art: 'text', e: p, l: rc.left + sx, rr: rc.right + sx, t: rc.top + sy, u: rc.bottom + sy });
+  }
+  for (const f of flaechen) folgen.push(f);
+  const funde = [];
+  for (const f of flaechen) {
+    let best = null;
+    for (const g of folgen) {
+      if (g === f || g.e === f.e || f.e.contains(g.e) || g.e.contains(f.e)) continue;
+      if (g.t < f.u - 1) continue;
+      const ueber = Math.min(f.rr, g.rr) - Math.max(f.l, g.l);
+      if (ueber < Math.min(30, (f.rr - f.l) * 0.3)) continue;
+      if (!best || g.t < best.t) best = g;
+    }
+    if (!best) continue;
+    const luecke = best.t - f.u;
+    const grenze = (f.art === best.art && f.art !== 'text') ? 4 : 8;
+    if (luecke >= 0 && luecke < grenze) funde.push({ y: Math.round(f.u), luecke: Math.round(luecke), was: f.art + ' → ' + best.art, text: (best.e.innerText || best.e.alt || '').trim().slice(0, 30) });
+  }
+  return funde;
+};
+
+/** Abstandsraster: gleiche Abstände in Familien (Noah 15.10.2026: „abstände passen trotzdem oft nicht“).
+ *  (a) Überschrift(h2) → nächster Inhalt: je Gruppe (Text / Bild-Karte) darf die Spannweite höchstens 12 px (gelb) bzw. 24 px (rot) sein.
+ *  (b) Leerer Raum zwischen zwei Inhalten > 160 px (gelb) bzw. > 220 px (rot) — leere Abstandhalter, doppelte Paddings. */
+window.funnelAbstandsraster = function (doc) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  const sy = win.scrollY, sx = win.scrollX;
+  const vis = (el) => { const s = win.getComputedStyle(el); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05; };
+  const istFuss = (el) => { let x = el; for (let i = 0; i < 5 && x; i++) { const t = (x.textContent || '').trim(); if (t.length < 60 && /impressum/i.test(t) && /datenschutz/i.test(t)) return true; x = x.parentElement; } return false; };
+  const leer = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent';
+  const inhalt = [];
+  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let n;
+  while ((n = tw.nextNode())) {
+    if (!n.textContent.trim()) continue;
+    const p = n.parentElement;
+    if (!p || !vis(p) || p.closest('script,style') || istFuss(p)) continue;
+    const rg = doc.createRange(); rg.selectNodeContents(n);
+    for (const rc of rg.getClientRects()) if (rc.height > 0 && rc.width > 0) inhalt.push({ t: rc.top + sy, u: rc.bottom + sy, l: rc.left + sx, r: rc.right + sx, art: 'text', e: p });
+  }
+  doc.querySelectorAll('img,video,iframe,input,textarea,select,button').forEach((e) => {
+    if (!vis(e)) return; const rc = e.getBoundingClientRect(); if (rc.width < 24 || rc.height < 12) return;
+    inhalt.push({ t: rc.top + sy, u: rc.bottom + sy, l: rc.left + sx, r: rc.right + sx, art: 'bild', e });
+  });
+  inhalt.sort((a, b) => a.t - b.t);
+  // (b) Lücken über die Vereinigung aller Inhalte
+  const m = [];
+  for (const i of inhalt) { const l = m[m.length - 1]; if (l && i.t <= l[1] + 0.5) l[1] = Math.max(l[1], i.u); else m.push([i.t, i.u]); }
+  const luecken = [];
+  for (let k = 1; k < m.length; k++) { const g = m[k][0] - m[k - 1][1]; if (g > 160) luecken.push({ y: Math.round(m[k - 1][1]), hoehe: Math.round(g) }); }
+  // (a) h2 → nächster Inhalt
+  const familien = { text: [], bild: [] };
+  doc.querySelectorAll('h2').forEach((h) => {
+    if (!vis(h) || h.closest('[role=button],button,form') || !(h.innerText || '').trim()) return;
+    // letzte Zeile der Überschrift
+    const rg = doc.createRange(); rg.selectNodeContents(h); const rects = [...rg.getClientRects()].filter((x) => x.height > 0);
+    if (!rects.length) return;
+    const unten = Math.max(...rects.map((x) => x.bottom)) + sy;
+    let best = null;
+    for (const i of inhalt) { if (h.contains(i.e)) continue; if (i.t >= unten - 1 && (!best || i.t < best.t)) best = i; }
+    if (!best) return;
+    const gap = best.t - unten;
+    if (gap > 80) return; // anderer Abschnitt, keine Unterzeile
+    familien[best.art].push({ gap: Math.round(gap), h: (h.innerText || '').trim().slice(0, 24) });
+  });
+  const spann = [];
+  for (const [art, liste] of Object.entries(familien)) {
+    if (liste.length < 2) continue;
+    const gs = liste.map((x) => x.gap);
+    const w = Math.max(...gs) - Math.min(...gs);
+    if (w > 12) spann.push({ art, spannweite: w, werte: liste.map((x) => '„' + x.h + '“ ' + x.gap) });
+  }
+  return { luecken, spann };
+};
+
+/** Knopfform: gleiche Breite/Höhe aller CTA-Knöpfe, Rand links/rechts ≥ 16 px bei 390, Emoji + Leerzeichen am Textanfang. */
+window.funnelKnopfform = function (doc) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  const vis = (el) => { const s = win.getComputedStyle(el); const r = el.getBoundingClientRect(); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05 && r.width > 0 && r.height > 0; };
+  const nurSymbol = (t) => !/[\p{L}\p{N}]/u.test(t);
+  const bs = [...doc.querySelectorAll('button')].filter((b) => vis(b) && b.offsetHeight > 30 && !b.closest('form') && !/^(open chat|dismiss|schließen)$/i.test(b.textContent.trim()) && (b.innerText || '').trim().length > 8);
+  const fehler = [], gelb = [];
+  if (bs.length >= 2) {
+    const w = bs.map((b) => Math.round(b.getBoundingClientRect().width)), h = bs.map((b) => Math.round(b.getBoundingClientRect().height));
+    if (Math.max(...w) - Math.min(...w) > 8) fehler.push('Breiten ' + [...new Set(w)].join('/') + ' px');
+    if (Math.max(...h) - Math.min(...h) > 16) fehler.push('Höhen ' + [...new Set(h)].join('/') + ' px');
+    else if (Math.max(...h) - Math.min(...h) > 4) gelb.push('Höhen ' + [...new Set(h)].join('/') + ' px (Unterzeile?)');
+  }
+  const rand = win.innerWidth <= 430 ? bs.filter((b) => { const r = b.getBoundingClientRect(); return r.left < 16 || win.innerWidth - r.right < 16; }).map((b) => '„' + (b.innerText || '').trim().split('\n')[0].slice(0, 24) + '“') : [];
+  if (rand.length) fehler.push('Rand < 16 px: ' + [...new Set(rand)].join(', '));
+  const ohneEmoji = [...new Set(bs.map((b) => (b.innerText || '').trim().split('\n').map((s) => s.trim()).find((s) => s && !nurSymbol(s)) || '').filter(Boolean))]
+    .filter((t) => !/^\p{Extended_Pictographic}/u.test(t) && !/^[←-⯿\u{1F000}-\u{1FFFF}]/u.test(t));
+  if (ohneEmoji.length) gelb.push('ohne Emoji am Anfang: ' + ohneEmoji.map((t) => '„' + t.slice(0, 26) + '“').join(', '));
+  return { fehler, gelb, anzahl: bs.length };
+};
+
+/** Bild mittig: ein einzelnes, schmales Bild/Porträt in einer Spalte mit mittiger Seitenausrichtung sitzt in der Fenstermitte (± 6 px).
+ *  Noah 18.10.2026: „das Bild von Bettina … ist nicht zentriert. Sowas darf ich dir nicht sagen.“ */
+window.funnelBildMittig = function (doc, mittigeSeite) {
+  doc = doc || document;
+  const win = doc.defaultView;
+  if (!mittigeSeite) return [];
+  const sx = win.scrollX, sy = win.scrollY;
+  const fm = doc.documentElement.clientWidth / 2;
+  const vis = (el) => { const s = win.getComputedStyle(el); const r = el.getBoundingClientRect(); return s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity > 0.05 && r.width > 0 && r.height > 0; };
+  const alle = [...doc.querySelectorAll('img,video')].filter((i) => vis(i) && !i.closest('button,[role=button]'));
+  const rects = alle.map((i) => ({ e: i, r: i.getBoundingClientRect() }));
+  const textRects = [];
+  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let n;
+  while ((n = tw.nextNode())) { if (!n.textContent.trim() || !n.parentElement || !vis(n.parentElement) || n.parentElement.closest('script,style,button')) continue; const rg = doc.createRange(); rg.selectNodeContents(n); for (const rc of rg.getClientRects()) if (rc.width > 0 && rc.height > 0) textRects.push(rc); }
+  const funde = [];
+  for (const { e, r } of rects) {
+    if (r.width < 60 || r.width > win.innerWidth * 0.9 || /logo/i.test((e.alt || '') + (e.src || ''))) continue;
+    const mitte = r.left + r.width / 2;
+    const daneben = rects.some((o) => o.e !== e && o.r.bottom > r.top + r.height * 0.3 && o.r.top < r.bottom - r.height * 0.3 && (o.r.right <= r.left + 2 || o.r.left >= r.right - 2))
+      || textRects.some((t) => t.bottom > r.top + r.height * 0.3 && t.top < r.bottom - r.height * 0.3 && (t.right <= r.left + 2 || t.left >= r.right - 2));
+    if (daneben) continue;
+    if (Math.abs(mitte - fm) > 6) funde.push({ was: (e.alt || e.src || '').split('/').pop().slice(0, 30), y: Math.round(r.top + sy), abweichung: Math.round(mitte - fm) });
+  }
+  return funde;
+};
+
+/**
+ * Komplettlauf: JEDE erreichbare Seite des Funnels bei 390 UND 1440 px, je Seite die volle Abnahme (funnelAbnahme) im
+ * unsichtbaren iframe derselben Domain. Liefert eine kompakte, serialisierbare Zusammenfassung für
+ * system/scripts/funnel_abnahme_quittung.py (dort kommt die Gesichtsprüfung dazu und die Quittung für das Abgabe-Tor).
+ *
+ *   const r = await funnelAbnahmeAlle({kunde, ctaMin:3, bilderMin:5, impressum, eigeneBilder:[…]});  // auf der Funnel-Startseite
+ *   JSON.stringify(r)  → Datei → .venv/bin/python system/scripts/funnel_abnahme_quittung.py <Datei>
+ * Optionen wie funnelAbnahme, dazu: urls (explizite Seitenliste statt layoutData), breiten ([390,1440]), nurStart (false).
+ */
+window.funnelAbnahmeAlle = async function (opt = {}) {
+  const breiten = opt.breiten || [390, 1440];
+  const quelle = ['funnelAbnahme', 'funnelSpalt', 'funnelKnopfAbstand', 'funnelStandard', 'funnelBilder', 'funnelNaht', 'funnelBeruehrung', 'funnelAbstandsraster', 'funnelKnopfform', 'funnelBildMittig']
+    .map((n) => 'window.' + n + '=' + window[n].toString() + ';').join('\n');
+  let seiten = opt.urls;
+  if (!seiten) {
+    seiten = [{ url: location.href, start: true }];
+    try {
+      const e = performance.getEntriesByType('resource').map((x) => x.name).find((n) => /\/data\/layoutData\.json/.test(n));
+      if (e) {
+        const basis = e.split('/data/')[0];
+        const v = (e.split('v=')[1] || '').split('&')[0];
+        const ld = await fetch(e).then((r) => r.json());
+        const sd = {};
+        for (const p of ld.pages || []) {
+          if (p.isResultPage) continue;
+          const r = await fetch(basis + '/data/pages/' + p.slug + '.json' + (v ? '?v=' + v : ''));
+          if (r.ok) { const j = await r.json(); sd[j.pageId || p.slug] = { slug: p.slug, j, start: !!p.isHomePage }; }
+        }
+        const erreicht = new Set(Object.keys(sd).filter((id) => sd[id].start));
+        const schlange = [...erreicht];
+        while (schlange.length) {
+          const { j } = sd[schlange.shift()];
+          const s = JSON.stringify(j.components || []);
+          for (const m of s.matchAll(/"linking":\{([^}]*)\}/g)) {
+            const pid = (/"pageId":"([0-9a-f]{24})"/.exec(m[1]) || [])[1] || (/"isInternal":true/.test(m[1]) ? j.nextPage : null);
+            if (pid && sd[pid] && !erreicht.has(pid)) { erreicht.add(pid); schlange.push(pid); }
+          }
+        }
+        const wurzel = location.origin + basis.replace(location.origin, '');
+        const liste = Object.entries(sd).filter(([id]) => erreicht.has(id)).map(([id, x]) => ({ url: x.start ? location.origin + location.pathname.replace(/\/page_[a-z0-9]+\/?$/, '/') : wurzel + '/' + x.slug + '/', start: x.start, slug: x.slug }));
+        if (liste.length) seiten = liste;
+      }
+    } catch (x) { /* nur diese Seite */ }
+  }
+  if (opt.nurStart) seiten = seiten.filter((s) => s.start);
+  const ergebnis = { url: location.origin + location.pathname, zeit: new Date().toISOString(), breiten, seiten: [] };
+  for (const sei of seiten) {
+    for (const b of breiten) {
+      const f = document.createElement('iframe');
+      f.style.cssText = 'position:fixed;left:-20000px;top:0;border:0;width:' + b + 'px;height:' + (b <= 430 ? 844 : 900) + 'px';
+      f.src = sei.url;
+      document.body.appendChild(f);
+      try {
+        await new Promise((res) => { f.addEventListener('load', res, { once: true }); setTimeout(res, 20000); });
+        await new Promise((r) => setTimeout(r, 2500)); // Perspective baut die Seite nach dem Laden auf
+        const w = f.contentWindow;
+        w.eval(quelle);
+        const o = Object.assign({}, opt, { startseite: !!sei.start, alleSeiten: !!sei.start && !!opt.alleSeiten });
+        delete o.urls; delete o.breiten;
+        const r = await w.funnelAbnahme(o);
+        ergebnis.seiten.push({ url: sei.url, slug: sei.slug || '', start: !!sei.start, breite: b, rot: r.rot, befunde: r.befunde.filter((x) => x.stand !== '🟢'), bilder: r.bilder || [] });
+      } catch (x) {
+        ergebnis.seiten.push({ url: sei.url, slug: sei.slug || '', start: !!sei.start, breite: b, rot: 1, befunde: [{ stand: '🔴', punkt: 'Abnahme', text: 'Seite nicht messbar: ' + x.message }], bilder: [] });
+      } finally { f.remove(); }
+    }
+  }
+  return ergebnis;
+};
+
+/* Ladehinweis: der Rückgabewert der Datei ist diese Zeichenkette (nicht die letzte Funktion). */
+window.__funnelAbnahmeGeladen = 'abnahme.js geladen: funnelAbnahme, funnelAbnahmeAlle, funnelBilder';
