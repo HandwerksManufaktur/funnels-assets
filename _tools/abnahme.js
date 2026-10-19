@@ -752,6 +752,15 @@ window.funnelStandard = async function (doc, o) {
   const ausr = {};
   doc.querySelectorAll('h1, h2').forEach((h) => {
     if (!vis(h) || h.closest('[role=button],button,form') || !(h.innerText || '').trim()) return;
+    // Kartentitel zählen nicht: Überschrift in einer gerundeten Karte (Hintergrund oder Bild), schmaler als die Seite —
+    // sie steht bündig über ihrem Kartentext (Fischer 19.10.: „Eigene Monteure aus Chemnitz“ in Bildkarte = Fehlalarm).
+    let k = h.parentElement, karte = false;
+    for (let i = 0; i < 5 && k && k !== doc.body; i++, k = k.parentElement) {
+      const ks = win.getComputedStyle(k);
+      if (parseFloat(ks.borderTopLeftRadius) >= 8 && k.getBoundingClientRect().width < doc.documentElement.clientWidth * 0.97
+          && (!/rgba\(0, 0, 0, 0\)|transparent/.test(ks.backgroundColor) || k.querySelector('img'))) { karte = true; break; }
+    }
+    if (karte) return;
     let a = win.getComputedStyle(h).textAlign;
     a = /center/.test(a) ? 'mittig' : /right|end/.test(a) && win.getComputedStyle(h).direction !== 'rtl' ? 'rechts' : 'links';
     (ausr[a] = ausr[a] || []).push((h.innerText || '').trim().slice(0, 30));
