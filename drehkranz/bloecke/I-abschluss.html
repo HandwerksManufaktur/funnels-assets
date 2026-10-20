@@ -1,0 +1,30 @@
+<style>
+.dk-karte{transition:transform .25s ease,box-shadow .25s ease}
+.dk-karte:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(21,26,23,.16)}
+.dk-foto{overflow:hidden}
+.dk-foto img{transition:transform .5s ease}
+.dk-foto:hover img{transform:scale(1.04)}
+.dk-team{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
+@media (min-width:720px){.dk-team{grid-template-columns:5fr 6fr}}
+.dk-kachel{display:grid;grid-template-columns:44px 1fr 84px;column-gap:12px;row-gap:4px;align-items:start}
+@media (min-width:640px){.dk-kachel{grid-template-columns:48px 1fr 96px;column-gap:16px;row-gap:6px}}
+.dk-kachel .dk-ic{grid-row:1 / 3}
+.dk-kachel .dk-mini{grid-row:1 / 3;grid-column:3;align-self:center}
+.dk-lbl2{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px}
+</style>
+<style>
+div.fun-relative.fun-z-10 > div:last-child:has(.answer) .wrapper.fun-text-center{display:none}
+div.fun-relative.fun-z-10 > div:last-child:has(.answer) .answer{margin-top:0!important}
+div.fun-relative.fun-z-10 > div:last-child:has(.answer) > div{padding-top:32px!important;padding-bottom:56px!important}
+main:has(.dk-abschluss) > div.fun-border-box.fun-relative.fun-w-full:not(.fun-flex-1){background:#151a17!important;border-top:1px solid #262c27}
+main:has(.dk-abschluss) > div.fun-border-box.fun-relative.fun-w-full:not(.fun-flex-1) a{color:#a6aca7!important}
+</style>
+<div class="dk-abschluss" style="background:#151a17;box-shadow:0 0 0 100vmax #151a17;clip-path:inset(0 -100vmax);padding:72px 20px 0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="max-width:760px;margin:0 auto;">
+    <div style="text-align:center;margin:0 0 20px;"><span style="display:inline-flex;width:112px;height:112px;border-radius:50%;background:#fff;align-items:center;justify-content:center;border:4px solid #379f2c;box-shadow:0 10px 30px rgba(0,0,0,.35);"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@e18e22a34b882e13a27c8e6aad765e7168adb08a/drehkranz/signet.png" alt="Signet Drehkranzservice Schwarz" loading="lazy" style="width:92px;height:92px;object-fit:contain;"></span><p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;font-weight:600;color:#f3e739;margin:10px 0 0;">Josef Schwarz und Team</p></div>
+    <div style="text-align:center;max-width:680px;margin:0 auto 0px;">
+      <h2 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(28px,6vw,40px);letter-spacing:-0.02em;line-height:1.12;color:#FFFFFF;margin:0;">Was ist an deinem Drehkranz los?</h2>
+      <p style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:17px;line-height:1.5;color:#c9cfca;margin:14px 0 0;">Wähl eine Antwort. Danach folgen noch ein paar kurze Fragen.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<style>
+.dk-karte{transition:transform .25s ease,box-shadow .25s ease}
+.dk-karte:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(21,26,23,.16)}
+.dk-foto{overflow:hidden}
+.dk-foto img{transition:transform .5s ease}
+.dk-foto:hover img{transform:scale(1.04)}
+.dk-team{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
+@media (min-width:720px){.dk-team{grid-template-columns:5fr 6fr}}
+.dk-kachel{display:grid;grid-template-columns:44px 1fr 84px;column-gap:12px;row-gap:4px;align-items:start}
+@media (min-width:640px){.dk-kachel{grid-template-columns:48px 1fr 96px;column-gap:16px;row-gap:6px}}
+.dk-kachel .dk-ic{grid-row:1 / 3}
+.dk-kachel .dk-mini{grid-row:1 / 3;grid-column:3;align-self:center}
+.dk-lbl2{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px}
+</style>
+<div style="background:#FFFFFF;box-shadow:0 0 0 100vmax #FFFFFF;clip-path:inset(0 -100vmax);padding:40px 20px 72px;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="max-width:480px;margin:0 auto;">
+    <h1 style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:800;font-size:clamp(28px,7vw,36px);letter-spacing:-0.02em;line-height:1.15;color:#151a17;margin:0;text-align:center;">Danke für deine Anfrage</h1>
+    <div style="background:#eef0ea;border-radius:16px;padding:20px;margin:32px 0 0;">
+      <div style="display:flex;gap:14px;align-items:center;"><span style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:#379f2c;display:inline-flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.4;color:#151a17;">Deine Angaben sind bei uns angekommen.</span></div>
+      <div style="display:flex;gap:14px;align-items:center;margin-top:14px;"><span style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:#379f2c;display:inline-flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span><span style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.4;color:#151a17;">Wir rufen dich an und klären die Details.</span></div>
+      <div style="display:flex;gap:14px;align-items:center;margin-top:14px;"><span style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:#379f2c;display:inline-flex;align-items:center;justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg></span><span style="font-family:'Inter',system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:1.4;color:#151a17;">Dann bekommst du dein Angebot: Reparatur oder Tausch.</span></div>
+    </div>
+    <div style="margin:32px 0 0;"><div class="dk-foto" style="border-radius:16px;overflow:hidden;aspect-ratio:3/2;box-shadow:0 12px 40px rgba(21,26,23,0.18);"><img src="https://cdn.jsdelivr.net/gh/HandwerksManufaktur/funnels-assets@e18e22a34b882e13a27c8e6aad765e7168adb08a/drehkranz/drehen.webp" alt="Drehkranz auf der Drehbank in der Werkstatt" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"></div></div>
+  </div>
+</div>
